@@ -34,7 +34,7 @@ function Login() {
 
         <div className="register-content">
           {/* هنا حطيت عنوان الصفحة */}
-          <p className="register-subtitle">أهلًا فيك من جديد</p>
+          <p className="register-subtitle">يا أهلًا فيك من جديد</p>
           <h1>سجلي دخولك</h1>
           <p className="register-description">أدخلي الإيميل وكلمة المرور.</p>
 
