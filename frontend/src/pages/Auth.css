@@ -24,7 +24,7 @@
   background: #ffffff;
 }
 
-/* هنا الشعار: السهم في مربع أخضر بإطار أصفر وجنبه كلمة مكسب */
+/* هنا الشعار: الخط الصاعد في مربع أخضر بإطار أصفر وجنبه كلمة مكسب */
 .register-logo {
   display: flex;
   align-items: center;
@@ -80,6 +80,7 @@
   margin-bottom: 24px;
 }
 
+/* هنا حددت لون الكلام بنفسي لأن Safari يخلي الأزرار زرقاء */
 .account-types button {
   display: flex;
   flex-direction: column;
@@ -89,6 +90,7 @@
   border: 1.5px solid var(--border);
   border-radius: 14px;
   background: #ffffff;
+  color: var(--text);
   font-family: inherit;
   text-align: right;
   cursor: pointer;

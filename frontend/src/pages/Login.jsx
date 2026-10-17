@@ -14,7 +14,7 @@ function Login() {
     // هنا منعت الصفحة تعيد التحميل
     event.preventDefault();
 
-    // هنا جمعت البيانات بنفس الأسماء اللي ينتظرها الباك إند حق ريم
+    // هنا جمعت البيانات بنفس الأسماء اللي ينتظرها الباك إند
     const formData = {
       email: email,
       password: password,
@@ -28,13 +28,19 @@ function Login() {
     <main className="register-page" dir="rtl">
       <section className="register-form-section">
         <div className="register-logo">
-          <span>↗</span>
+          <span>
+            {/* هنا رسمت أيقونة خط صاعد مثل شعار Figma */}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <polyline points="3 17 9 11 13 15 21 7" />
+              <polyline points="15 7 21 7 21 13" />
+            </svg>
+          </span>
           <strong>مكسب</strong>
         </div>
 
         <div className="register-content">
           {/* هنا حطيت عنوان الصفحة */}
-          <p className="register-subtitle">يا أهلًا فيك من جديد</p>
+          <p className="register-subtitle">أهلًا فيك من جديد</p>
           <h1>سجلي دخولك</h1>
           <p className="register-description">أدخلي الإيميل وكلمة المرور.</p>
 
