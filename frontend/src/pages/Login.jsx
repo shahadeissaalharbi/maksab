@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./Register.css";
+import "./Auth.css";
 
 // هنا جهزت صفحة تسجيل الدخول، وهي وحدة للأسرة المنتجة والمورد مع بعض
 function Login() {

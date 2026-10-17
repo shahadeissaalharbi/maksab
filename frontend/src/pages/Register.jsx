@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./Register.css";
+import "./Auth.css";
 // هنا جهزت صفحة التسجيل وحطيت الأشياء اللي بحتاجها فيها
 function Register() {
     // هنا خليت الأسرة المنتجة هي الخيار الافتراضي وخزنت نوع الحساب اللي يختاره المستخدم
@@ -64,8 +64,7 @@ function Register() {
                 <input
                     id="businessName"
                     type="text"
-                    placeholder="مثال: معمول نورة"
-                    value={businessName}
+                    placeholder={accountType === "merchant" ? "مثال: معمول نورة" : "مثال: مستودع الخير للجملة"} /* هنا خليت المثال يتغير حسب نوع الحساب */                    value={businessName}
                     onChange={(event) => setBusinessName(event.target.value)}
                     required
                 />
