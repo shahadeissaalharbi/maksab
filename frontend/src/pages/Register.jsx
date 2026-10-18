@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { API_URL } from "../api.js";
 import "./Auth.css";
 
 // هنا جهزت صفحة التسجيل وحطيت الأشياء اللي بحتاجها فيها
@@ -6,21 +8,26 @@ function Register() {
   // هنا خليت الأسرة المنتجة هي الخيار الافتراضي وخزنت نوع الحساب اللي يختاره المستخدم
   const [accountType, setAccountType] = useState("merchant");
 
-  // هنا خزنت اسم النشاط اللي يدخله المستخدم
+  // هنا خزنت اسم النشاط والإيميل وكلمة المرور اللي يدخلها المستخدم
   const [businessName, setBusinessName] = useState("");
-
-  // هنا خزنت الإيميل اللي يدخله المستخدم
   const [email, setEmail] = useState("");
-
-  // هنا خزنت كلمة المرور اللي يكتبها المستخدم
   const [password, setPassword] = useState("");
 
+  // هنا خزنت الرسالة اللي تطلع للمستخدم بعد الإرسال ونوعها نجاح أو خطأ
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
+
+  // هنا خزنت حالة الانتظار عشان أوقف الزر وقت الإرسال
+  const [loading, setLoading] = useState(false);
+
+  // هنا جبت أداة التنقل عشان أودي المستخدم لصفحة الدخول بعد التسجيل
+  const navigate = useNavigate();
+
   // هنا جهزت دالة الإرسال اللي تشتغل لما المستخدم يضغط "إنشاء الحساب"
-  const handleSubmit = (event) => {
-    // هنا منعت الصفحة تعيد التحميل لما ينضغط الزر
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // هنا جمعت البيانات في كائن واحد بنفس الأسماء اللي ينتظرها الباك إند
+    // هنا جمعت البيانات بنفس الأسماء اللي ينتظرها الباك إند
     const formData = {
       full_name: businessName,
       email: email,
@@ -28,8 +35,42 @@ function Register() {
       role: accountType,
     };
 
-    // هنا طبعت البيانات للتجربة، وخبيت كلمة المرور عشان الأمان
-    console.log("بيانات التسجيل:", { ...formData, password: "********" });
+    setLoading(true);
+    setMessage("");
+
+    try {
+      // هنا أرسلت البيانات للباك وانتظرت الرد
+      const response = await fetch(`${API_URL}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      // هنا إذا نجح التسجيل أعرض رسالة نجاح وأودي المستخدم لصفحة الدخول
+      if (response.status === 201) {
+        setMessageType("success");
+        setMessage("تم إنشاء حسابك بنجاح، جاري تحويلك لتسجيل الدخول");
+        setTimeout(() => navigate("/login"), 1500);
+        return;
+      }
+
+      // هنا ترجمت أخطاء الباك لرسائل واضحة للمستخدم
+      setMessageType("error");
+      if (response.status === 409) {
+        setMessage("هذا الإيميل مسجل من قبل، جربي تسجلين دخول");
+      } else if (response.status === 400) {
+        setMessage("تأكدي من البيانات وحاولي مرة ثانية");
+      } else {
+        setMessage("صار خطأ في الخادم، حاولي بعد شوي");
+      }
+    } catch {
+      // هنا إذا ما قدر يوصل للباك أصلًا مثل انقطاع النت
+      setMessageType("error");
+      setMessage("ما قدرنا نوصل للخادم، تأكدي من اتصالك بالنت");
+    } finally {
+      // هنا رجعت الزر يشتغل بعد ما خلص الإرسال
+      setLoading(false);
+    }
   };
 
   return (
@@ -115,10 +156,13 @@ function Register() {
               required
             />
 
-            {/* هنا حطيت زر إنشاء الحساب */}
-            <button className="register-submit" type="submit">
-              إنشاء الحساب
+            {/* هنا خليت الزر يتوقف ويتغير كلامه وقت الإرسال */}
+            <button className="register-submit" type="submit" disabled={loading}>
+              {loading ? "جاري إنشاء الحساب..." : "إنشاء الحساب"}
             </button>
+
+            {/* هنا تطلع رسالة النجاح أو الخطأ */}
+            {message && <p className={`form-message ${messageType}`}>{message}</p>}
           </form>
 
           <p className="register-login">

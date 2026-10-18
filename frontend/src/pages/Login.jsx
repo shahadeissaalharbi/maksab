@@ -1,17 +1,22 @@
 import { useState } from "react";
+import { API_URL } from "../api.js";
 import "./Auth.css";
 
 // هنا جهزت صفحة تسجيل الدخول، وهي وحدة للأسرة المنتجة والمورد مع بعض
 function Login() {
-  // هنا خزنت الإيميل اللي يكتبه المستخدم
+  // هنا خزنت الإيميل وكلمة المرور اللي يكتبها المستخدم
   const [email, setEmail] = useState("");
-
-  // هنا خزنت كلمة المرور اللي يكتبها المستخدم
   const [password, setPassword] = useState("");
 
+  // هنا خزنت الرسالة اللي تطلع للمستخدم ونوعها نجاح أو خطأ
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
+
+  // هنا خزنت حالة الانتظار عشان أوقف الزر وقت الإرسال
+  const [loading, setLoading] = useState(false);
+
   // هنا جهزت دالة الدخول اللي تشتغل لما المستخدم يضغط "تسجيل الدخول"
-  const handleSubmit = (event) => {
-    // هنا منعت الصفحة تعيد التحميل
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     // هنا جمعت البيانات بنفس الأسماء اللي ينتظرها الباك إند
@@ -20,8 +25,46 @@ function Login() {
       password: password,
     };
 
-    // هنا طبعت البيانات للتجربة، وخبيت كلمة المرور عشان الأمان
-    console.log("بيانات الدخول:", { ...formData, password: "********" });
+    setLoading(true);
+    setMessage("");
+
+    try {
+      // هنا أرسلت البيانات للباك وانتظرت الرد
+      const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      // هنا إذا نجح الدخول أحفظ التوكن وبيانات المستخدم في المتصفح
+      if (response.status === 200) {
+        const data = await response.json();
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        const accountName = data.user.role === "supplier" ? "مورد" : "أسرة منتجة";
+        setMessageType("success");
+        setMessage(`أهلًا ${data.user.full_name}، تم تسجيل دخولك كـ ${accountName}`);
+        return;
+      }
+
+      // هنا ترجمت أخطاء الباك لرسائل واضحة للمستخدم
+      setMessageType("error");
+      if (response.status === 401) {
+        setMessage("الإيميل أو كلمة المرور غلط");
+      } else if (response.status === 400) {
+        setMessage("أدخلي الإيميل وكلمة المرور");
+      } else {
+        setMessage("صار خطأ في الخادم، حاولي بعد شوي");
+      }
+    } catch {
+      // هنا إذا ما قدر يوصل للباك أصلًا مثل انقطاع النت
+      setMessageType("error");
+      setMessage("ما قدرنا نوصل للخادم، تأكدي من اتصالك بالنت");
+    } finally {
+      // هنا رجعت الزر يشتغل بعد ما خلص الإرسال
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,10 +111,13 @@ function Login() {
               required
             />
 
-            {/* هنا حطيت زر الدخول */}
-            <button className="register-submit" type="submit">
-              تسجيل الدخول
+            {/* هنا خليت الزر يتوقف ويتغير كلامه وقت الإرسال */}
+            <button className="register-submit" type="submit" disabled={loading}>
+              {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
             </button>
+
+            {/* هنا تطلع رسالة النجاح أو الخطأ */}
+            {message && <p className={`form-message ${messageType}`}>{message}</p>}
           </form>
 
           {/* هنا حطيت رابط يودي لصفحة إنشاء الحساب */}

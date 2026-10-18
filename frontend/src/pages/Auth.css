@@ -223,3 +223,27 @@
     padding: 24px;
   }
 }
+/* هنا شكل رسالة النجاح أو الخطأ تحت الزر */
+.form-message {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.form-message.success {
+  background: #e8faf3;
+  color: var(--green);
+}
+
+.form-message.error {
+  background: #fdecec;
+  color: #b42318;
+}
+
+/* هنا شكل الزر وقت الانتظار */
+.register-submit:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
