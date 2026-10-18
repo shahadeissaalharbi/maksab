@@ -15,7 +15,6 @@ import psycopg
 from flask import Flask, jsonify, request
 from werkzeug.security import generate_password_hash, check_password_hash
 
-app = Flask(__name__)
 
 DATABASE_URL = os.environ["DATABASE_URL"]
 JWT_SECRET = os.environ["JWT_SECRET"]
