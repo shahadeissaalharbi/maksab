@@ -69,10 +69,6 @@ def get_products():
         }), 503
 
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
-        return jsonify({"error": "Database temporarily unavailable"}), 503
-
 
 @app.route("/api/auth/register", methods=["POST"])
 def register():
