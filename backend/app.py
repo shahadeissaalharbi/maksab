@@ -5,9 +5,10 @@ import psycopg
 from flask import Flask, jsonify, request
 
 from auth import auth_bp
-
+from flask_cors import CORS  # للسماح بالتواصل بين الفرونت إند والباك إند وبدون مشاكل CORS
 
 app = Flask(__name__)
+CORS(app)# <--- هذي تفتح الاتصال بسلاسة مع الرياكت
 app.register_blueprint(auth_bp)
 
 DATABASE_URL = os.environ["DATABASE_URL"]
@@ -22,41 +23,6 @@ def health_check():
         "status": "healthy",
         "message": "Maksab API is running"
     }), 200
-
-
-@app.route("/api/products", methods=["GET"])
-def get_products():
-    try:
-        with psycopg.connect(DATABASE_URL) as connection:
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT id, name, description, price, stock_quantity
-                    FROM products
-                    ORDER BY id;
-                """)
-
-                rows = cursor.fetchall()
-
-                products = [
-                    {
-                        "id": row[0],
-                        "name": row[1],
-                        "description": row[2],
-                        "price": str(row[3]),
-                        "stock_quantity": row[4]
-                    }
-                    for row in rows
-                ]
-
-        return jsonify({
-            "products": products,
-            "count": len(products)
-        }), 200
-
-    except psycopg.Error:
-        app.logger.exception("Database error while fetching products")
-        return jsonify({"error": "Database temporarily unavailable"}), 503
-
 
 @app.route("/api/auth/me", methods=["GET"])
 def get_current_user():
@@ -83,7 +49,7 @@ def get_current_user():
         with psycopg.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, full_name, email, role
+                    SELECT id, name, email, role
                     FROM users
                     WHERE id = %s;
                 """, (user_id,))
