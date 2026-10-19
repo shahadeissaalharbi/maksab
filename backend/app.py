@@ -1,4 +1,4 @@
-import os
+﻿import os
 from functools import wraps
 
 import jwt
@@ -132,6 +132,7 @@ def trader_home():
         with psycopg.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
+
                     SELECT COUNT(*)
                     FROM products
                     WHERE stock_quantity > 0;

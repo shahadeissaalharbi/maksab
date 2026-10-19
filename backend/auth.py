@@ -23,13 +23,13 @@ def register():
     if not isinstance(data, dict):
         return jsonify({"error": "Invalid data"}), 400
 
-    full_name = data.get("full_name")
+    name = data.get("name")
     email = data.get("email")
     password = data.get("password")
     role = data.get("role", "merchant")
 
     if not all([
-        isinstance(full_name, str) and full_name.strip(),
+        isinstance(name, str) and name.strip(),
         isinstance(email, str) and email.strip(),
         isinstance(password, str) and len(password) >= 8
     ]):
@@ -38,7 +38,7 @@ def register():
     if role not in ["merchant", "supplier"]:
         return jsonify({"error": "Invalid role"}), 400
 
-    full_name = full_name.strip()
+    name = name.strip()
     email = email.strip().lower()
 
     if (
@@ -49,7 +49,7 @@ def register():
     ):
         return jsonify({"error": "Invalid email"}), 400
 
-    if len(full_name) > 100:
+    if len(name) > 100:
         return jsonify({"error": "Name is too long"}), 400
 
     password_hash = generate_password_hash(password)
@@ -58,10 +58,10 @@ def register():
         with psycopg.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    INSERT INTO users (full_name, email, password, role)
+                    INSERT INTO users (name, email, password, role)
                     VALUES (%s, %s, %s, %s)
                     RETURNING id;
-                """, (full_name, email, password_hash, role))
+                """, (name, email, password_hash, role))
 
                 user_id = cursor.fetchone()[0]
 
@@ -101,7 +101,7 @@ def login():
         with psycopg.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, full_name, email, password, role
+                    SELECT id, name, email, password, role
                     FROM users
                     WHERE email = %s;
                 """, (email,))
@@ -129,11 +129,12 @@ def login():
         "token": token,
         "user": {
             "id": user[0],
-            "full_name": user[1],
+            "name": user[1],
             "email": user[2],
             "role": user[4]
         }
     }), 200
+
 
 # Log out the current user
 @auth_bp.route("/api/auth/logout", methods=["POST"])
