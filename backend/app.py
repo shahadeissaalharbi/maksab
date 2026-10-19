@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 import jwt
 import psycopg
 from flask import Flask, jsonify, request
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
 
@@ -81,7 +81,12 @@ def register():
     full_name = full_name.strip()
     email = email.strip().lower()
 
-    if "@" not in email or len(email) > 120:
+    if (
+        email.count("@") != 1
+        or email.startswith("@")
+        or "." not in email.split("@")[-1]
+        or len(email) > 120
+    ):
         return jsonify({"error": "Invalid email"}), 400
 
     if len(full_name) > 100:
