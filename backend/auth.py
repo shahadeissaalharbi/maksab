@@ -134,3 +134,10 @@ def login():
             "role": user[4]
         }
     }), 200
+
+# Log out the current user
+@auth_bp.route("/api/auth/logout", methods=["POST"])
+def logout():
+    return jsonify({
+        "message": "Remove the token on the client to log out"
+    }), 200

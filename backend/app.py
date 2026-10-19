@@ -107,11 +107,6 @@ def get_current_user():
     }), 200
 
 
-@app.route("/api/auth/logout", methods=["POST"])
-def logout():
-    return jsonify({
-        "message": "Remove the token on the client to log out"
-    }), 200
 
 
 if __name__ == "__main__":
