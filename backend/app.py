@@ -1,4 +1,5 @@
 import os
+ feature/db-setup
 
 import psycopg
 from flask import Flask, jsonify
@@ -8,6 +9,9 @@ app = Flask(__name__)
 CORS(app)
 
 DATABASE_URL = os.environ["DATABASE_URL"]
+
+from functools import wraps
+ development
 from datetime import datetime, timedelta, timezone
 
 import jwt
@@ -20,6 +24,32 @@ DATABASE_URL = os.environ["DATABASE_URL"]
 JWT_SECRET = os.environ["JWT_SECRET"]
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 2
+
+
+def token_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        auth_header = request.headers.get("Authorization", "")
+
+        if not auth_header.startswith("Bearer "):
+            return jsonify({"error": "Token required"}), 401
+
+        token = auth_header[7:]
+
+        try:
+            payload = jwt.decode(
+                token,
+                JWT_SECRET,
+                algorithms=[JWT_ALGORITHM]
+            )
+            request.user_id = int(payload["sub"])
+            request.user_role = payload["role"]
+
+        except (jwt.InvalidTokenError, ValueError, KeyError):
+            return jsonify({"error": "Invalid or expired token"}), 401
+
+        return f(*args, **kwargs)
+    return wrapper
 
 
 @app.route("/api/health", methods=["GET"])
@@ -67,6 +97,66 @@ def get_products():
             "error": "Database temporarily unavailable"
         }), 503
 
+
+
+@app.route("/api/trader/home", methods=["GET"])
+@token_required
+def trader_home():
+    if request.user_role != "merchant":
+        return jsonify({"error": "Access denied"}), 403
+
+    try:
+        page = int(request.args.get("page", 1))
+        limit = int(request.args.get("limit", 20))
+    except ValueError:
+        return jsonify({"error": "page and limit must be numbers"}), 400
+
+    if page < 1 or limit < 1 or limit > 100:
+        return jsonify({"error": "Invalid page or limit"}), 400
+
+    offset = (page - 1) * limit
+
+    try:
+        with psycopg.connect(DATABASE_URL) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT COUNT(*)
+                    FROM products
+                    WHERE stock_quantity > 0;
+                """)
+                total = cursor.fetchone()[0]
+
+                cursor.execute("""
+                    SELECT id, name, description, price, stock_quantity
+                    FROM products
+                    WHERE stock_quantity > 0
+                    ORDER BY id
+                    LIMIT %s OFFSET %s;
+                """, (limit, offset))
+
+                rows = cursor.fetchall()
+
+        products = [
+            {
+                "id": row[0],
+                "name": row[1],
+                "description": row[2],
+                "price": str(row[3]),
+                "stock_quantity": row[4]
+            }
+            for row in rows
+        ]
+
+        return jsonify({
+            "products": products,
+            "page": page,
+            "limit": limit,
+            "total": total
+        }), 200
+
+    except psycopg.Error:
+        app.logger.exception("Database error while fetching trader home")
+        return jsonify({"error": "Database unavailable"}), 503
 
 
 @app.route("/api/auth/register", methods=["POST"])
@@ -184,26 +274,8 @@ def login():
 
 
 @app.route("/api/auth/me", methods=["GET"])
+@token_required
 def get_current_user():
-    auth_header = request.headers.get("Authorization", "")
-
-    if not auth_header.startswith("Bearer "):
-        return jsonify({"error": "Token required"}), 401
-
-    token = auth_header[7:]
-
-    try:
-        payload = jwt.decode(
-            token,
-            JWT_SECRET,
-            algorithms=[JWT_ALGORITHM]
-        )
-
-        user_id = int(payload["sub"])
-
-    except (jwt.InvalidTokenError, ValueError, KeyError):
-        return jsonify({"error": "Invalid or expired token"}), 401
-
     try:
         with psycopg.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
@@ -211,7 +283,7 @@ def get_current_user():
                     SELECT id, full_name, email, role
                     FROM users
                     WHERE id = %s;
-                """, (user_id,))
+                """, (request.user_id,))
 
                 user = cursor.fetchone()
 
