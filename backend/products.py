@@ -1,41 +1,22 @@
-import os
-import psycopg
-from flask import Blueprint, jsonify
+from functools import wraps
+from flask import request, jsonify
+import jwt
+from config import Config
 
-# Products Blueprint
-products_bp = Blueprint("products_bp", __name__)
+def token_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        auth_header = request.headers.get("Authorization", "")
+        if not auth_header.startswith("Bearer "):
+            return jsonify({"error": "Token required"}), 401
 
-DATABASE_URL = os.environ["DATABASE_URL"]
+        token = auth_header[7:]
+        try:
+            payload = jwt.decode(token, Config.JWT_SECRET, algorithms=[Config.JWT_ALGORITHM])
+            request.user_id = int(payload["sub"])
+            request.user_role = payload["role"]
+        except (jwt.InvalidTokenError, ValueError, KeyError):
+            return jsonify({"error": "Invalid or expired token"}), 401
 
-@products_bp.route("/api/products", methods=["GET"])
-def get_products():
-    try:
-        # الاتصال بقاعدة البيانات وجلب المنتجات
-        with psycopg.connect(DATABASE_URL) as connection:
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT id, name, description, price, stock_quantity
-                    FROM products
-                    ORDER BY id;
-                """)
-                rows = cursor.fetchall()
-
-                # تحويل البيانات القادمة من الداتابيز إلى قائمة من الـ Dictionaries
-                products = [
-                    {
-                        "id": row[0],
-                        "name": row[1],
-                        "description": row[2],
-                        "price": str(row[3]),
-                        "stock_quantity": row[4]
-                    }
-                    for row in rows
-                ]
-
-        return jsonify({
-            "products": products,
-            "count": len(products)
-        }), 200
-
-    except psycopg.Error:
-        return jsonify({"error": "Database temporarily unavailable"}), 503
+        return f(*args, **kwargs)
+    return wrapper
