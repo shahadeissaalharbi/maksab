@@ -7,10 +7,31 @@ import psycopg
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from werkzeug.security import check_password_hash, generate_password_hash
+<<<<<<< HEAD
+=======
+ development
+from flask import Flask, jsonify
+from flask_cors import CORS
+
+from routes.auth import auth_bp
+from routes.products import products_bp
+>>>>>>> feature/connect-frontend-backend
 
 app = Flask(__name__)
 CORS(app)
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+ refactor/code-cleanup
+app = Flask(__name__)
+CORS(app)
+app.register_blueprint(auth_bp)
+
+DATABASE_URL = os.environ["DATABASE_URL"]
+JWT_SECRET = os.environ["JWT_SECRET"]
+
+>>>>>>> feature/connect-frontend-backend
 DATABASE_URL = os.environ.get("DATABASE_URL")
 JWT_SECRET = os.environ.get("JWT_SECRET")
 JWT_ALGORITHM = "HS256"
@@ -41,6 +62,10 @@ def token_required(f):
 
         return f(*args, **kwargs)
     return wrapper
+=======
+app.register_blueprint(auth_bp)
+app.register_blueprint(products_bp)
+>>>>>>> Stashed changes
 
 
 @app.route("/api/health", methods=["GET"])
@@ -51,6 +76,14 @@ def health_check():
     }), 200
 
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+# -------------------------
+# Products
+# -------------------------
+
+>>>>>>> feature/connect-frontend-backend
 @app.route("/api/products", methods=["GET"])
 def get_products():
     try:
@@ -299,5 +332,7 @@ def logout():
     }), 200
 
 
+=======
+>>>>>>> Stashed changes
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
