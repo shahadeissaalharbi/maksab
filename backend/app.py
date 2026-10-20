@@ -178,7 +178,6 @@ def trader_home():
 # -------------------------
 # Current User
 # -------------------------
-
 @app.route("/api/auth/me", methods=["GET"])
 @token_required
 def get_current_user():
@@ -209,6 +208,22 @@ def get_current_user():
             "email": user[2],
             "role": user[3]
         }
+    }), 200
+
+
+# -------------------------
+# Supplier Home
+# -------------------------
+
+@app.route("/api/supplier/home", methods=["GET"])
+@token_required
+def supplier_home():
+    if request.user_role != "supplier":
+        return jsonify({"error": "Access denied"}), 403
+
+    return jsonify({
+        "message": "Welcome to supplier home",
+        "supplier_id": request.user_id
     }), 200
 
 
