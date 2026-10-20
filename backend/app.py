@@ -1,20 +1,36 @@
+ refactor/code-cleanup
 ﻿import os
+
+import os
+from datetime import datetime, timedelta, timezone
+ development
 from functools import wraps
 
 import jwt
 import psycopg
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+ refactor/code-cleanup
 
 from auth import auth_bp
 
+from werkzeug.security import check_password_hash, generate_password_hash
+ development
 
+app = Flask(__name__)
+CORS(app)
+
+ refactor/code-cleanup
 app = Flask(__name__)
 CORS(app)
 app.register_blueprint(auth_bp)
 
 DATABASE_URL = os.environ["DATABASE_URL"]
 JWT_SECRET = os.environ["JWT_SECRET"]
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+JWT_SECRET = os.environ.get("JWT_SECRET")
+ development
 JWT_ALGORITHM = "HS256"
 
 
@@ -85,7 +101,11 @@ def get_products():
                         "name": row[1],
                         "description": row[2],
                         "price": str(row[3]),
+refactor/code-cleanup
                         "stock_status": row[4]
+
+                        "stock_quantity": row[4]
+ development
                     }
                     for row in rows
                 ]
@@ -102,10 +122,13 @@ def get_products():
         }), 503
 
 
+ refactor/code-cleanup
 # -------------------------
 # Trader Home
 # -------------------------
 
+
+ development
 @app.route("/api/trader/home", methods=["GET"])
 @token_required
 def trader_home():
