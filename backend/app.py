@@ -1,42 +1,21 @@
- refactor/code-cleanup
-﻿import os
-
 import os
 from datetime import datetime, timedelta, timezone
- development
 from functools import wraps
 
 import jwt
 import psycopg
 from flask import Flask, jsonify, request
 from flask_cors import CORS
- refactor/code-cleanup
-
-from auth import auth_bp
-
 from werkzeug.security import check_password_hash, generate_password_hash
- development
 
 app = Flask(__name__)
 CORS(app)
-
- refactor/code-cleanup
-app = Flask(__name__)
-CORS(app)
-app.register_blueprint(auth_bp)
-
-DATABASE_URL = os.environ["DATABASE_URL"]
-JWT_SECRET = os.environ["JWT_SECRET"]
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 JWT_SECRET = os.environ.get("JWT_SECRET")
- development
 JWT_ALGORITHM = "HS256"
+JWT_EXPIRATION_HOURS = 2
 
-
-# -------------------------
-# JWT Authentication
-# -------------------------
 
 def token_required(f):
     @wraps(f)
@@ -54,7 +33,6 @@ def token_required(f):
                 JWT_SECRET,
                 algorithms=[JWT_ALGORITHM]
             )
-
             request.user_id = int(payload["sub"])
             request.user_role = payload["role"]
 
@@ -62,13 +40,8 @@ def token_required(f):
             return jsonify({"error": "Invalid or expired token"}), 401
 
         return f(*args, **kwargs)
-
     return wrapper
 
-
-# -------------------------
-# Health Check
-# -------------------------
 
 @app.route("/api/health", methods=["GET"])
 def health_check():
@@ -78,17 +51,13 @@ def health_check():
     }), 200
 
 
-# -------------------------
-# Products
-# -------------------------
-
 @app.route("/api/products", methods=["GET"])
 def get_products():
     try:
         with psycopg.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, name, description, price, stock_status
+                    SELECT id, name, description, price, stock_quantity
                     FROM products
                     ORDER BY id;
                 """)
@@ -101,11 +70,7 @@ def get_products():
                         "name": row[1],
                         "description": row[2],
                         "price": str(row[3]),
-refactor/code-cleanup
-                        "stock_status": row[4]
-
                         "stock_quantity": row[4]
- development
                     }
                     for row in rows
                 ]
@@ -122,13 +87,6 @@ refactor/code-cleanup
         }), 503
 
 
- refactor/code-cleanup
-# -------------------------
-# Trader Home
-# -------------------------
-
-
- development
 @app.route("/api/trader/home", methods=["GET"])
 @token_required
 def trader_home():
@@ -138,16 +96,11 @@ def trader_home():
     try:
         page = int(request.args.get("page", 1))
         limit = int(request.args.get("limit", 20))
-
     except ValueError:
-        return jsonify({
-            "error": "page and limit must be numbers"
-        }), 400
+        return jsonify({"error": "page and limit must be numbers"}), 400
 
     if page < 1 or limit < 1 or limit > 100:
-        return jsonify({
-            "error": "Invalid page or limit"
-        }), 400
+        return jsonify({"error": "Invalid page or limit"}), 400
 
     offset = (page - 1) * limit
 
@@ -155,18 +108,16 @@ def trader_home():
         with psycopg.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-
                     SELECT COUNT(*)
                     FROM products
-                    WHERE stock_status = 'in_stock';
+                    WHERE stock_quantity > 0;
                 """)
-
                 total = cursor.fetchone()[0]
 
                 cursor.execute("""
-                    SELECT id, name, description, price, stock_status
+                    SELECT id, name, description, price, stock_quantity
                     FROM products
-                    WHERE stock_status = 'in_stock'
+                    WHERE stock_quantity > 0
                     ORDER BY id
                     LIMIT %s OFFSET %s;
                 """, (limit, offset))
@@ -179,7 +130,7 @@ def trader_home():
                 "name": row[1],
                 "description": row[2],
                 "price": str(row[3]),
-                "stock_status": row[4]
+                "stock_quantity": row[4]
             }
             for row in rows
         ]
@@ -193,14 +144,123 @@ def trader_home():
 
     except psycopg.Error:
         app.logger.exception("Database error while fetching trader home")
+        return jsonify({"error": "Database unavailable"}), 503
+
+
+@app.route("/api/auth/register", methods=["POST"])
+def register():
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid data"}), 400
+
+    full_name = data.get("full_name")
+    email = data.get("email")
+    password = data.get("password")
+    role = data.get("role", "merchant")
+
+    if not all([
+        isinstance(full_name, str) and full_name.strip(),
+        isinstance(email, str) and email.strip(),
+        isinstance(password, str) and len(password) >= 8
+    ]):
+        return jsonify({"error": "Invalid name, email or password"}), 400
+
+    if role not in ["merchant", "supplier"]:
+        return jsonify({"error": "Invalid role"}), 400
+
+    full_name = full_name.strip()
+    email = email.strip().lower()
+
+    if "@" not in email or len(email) > 120:
+        return jsonify({"error": "Invalid email"}), 400
+
+    if len(full_name) > 100:
+        return jsonify({"error": "Name is too long"}), 400
+
+    password_hash = generate_password_hash(password)
+
+    try:
+        with psycopg.connect(DATABASE_URL) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO users (full_name, email, password, role)
+                    VALUES (%s, %s, %s, %s)
+                    RETURNING id;
+                """, (full_name, email, password_hash, role))
+
+                user_id = cursor.fetchone()[0]
+
         return jsonify({
-            "error": "Database unavailable"
-        }), 503
+            "message": "Account created successfully",
+            "user_id": user_id
+        }), 201
+
+    except psycopg.errors.UniqueViolation:
+        return jsonify({"error": "Email already registered"}), 409
+
+    except psycopg.Error:
+        app.logger.exception("Registration database error")
+        return jsonify({"error": "Database unavailable"}), 503
 
 
-# -------------------------
-# Current User
-# -------------------------
+@app.route("/api/auth/login", methods=["POST"])
+def login():
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid data"}), 400
+
+    email = data.get("email")
+    password = data.get("password")
+
+    if not isinstance(email, str) or not isinstance(password, str):
+        return jsonify({"error": "Email and password are required"}), 400
+
+    email = email.strip().lower()
+
+    if not email or not password:
+        return jsonify({"error": "Email and password are required"}), 400
+
+    try:
+        with psycopg.connect(DATABASE_URL) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT id, full_name, email, password, role
+                    FROM users
+                    WHERE email = %s;
+                """, (email,))
+
+                user = cursor.fetchone()
+
+    except psycopg.Error:
+        app.logger.exception("Login database error")
+        return jsonify({"error": "Database unavailable"}), 503
+
+    if not user or not check_password_hash(user[3], password):
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    now = datetime.now(timezone.utc)
+
+    token = jwt.encode({
+        "sub": str(user[0]),
+        "role": user[4],
+        "iat": now,
+        "exp": now + timedelta(hours=JWT_EXPIRATION_HOURS)
+    }, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+    return jsonify({
+        "message": "Login successful",
+        "token": token,
+        "user": {
+            "id": user[0],
+            "full_name": user[1],
+            "email": user[2],
+            "role": user[4]
+        }
+    }), 200
+
+
 @app.route("/api/auth/me", methods=["GET"])
 @token_required
 def get_current_user():
@@ -208,7 +268,7 @@ def get_current_user():
         with psycopg.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, name, email, role
+                    SELECT id, full_name, email, role
                     FROM users
                     WHERE id = %s;
                 """, (request.user_id,))
@@ -217,9 +277,7 @@ def get_current_user():
 
     except psycopg.Error:
         app.logger.exception("Database error while fetching user")
-        return jsonify({
-            "error": "Database unavailable"
-        }), 503
+        return jsonify({"error": "Database unavailable"}), 503
 
     if not user:
         return jsonify({"error": "User not found"}), 404
@@ -227,83 +285,19 @@ def get_current_user():
     return jsonify({
         "user": {
             "id": user[0],
-            "name": user[1],
+            "full_name": user[1],
             "email": user[2],
             "role": user[3]
         }
     }), 200
 
 
-# -------------------------
-# Supplier Home
-# -------------------------
+@app.route("/api/auth/logout", methods=["POST"])
+def logout():
+    return jsonify({
+        "message": "Remove the token on the client to log out"
+    }), 200
 
-@app.route("/api/supplier/home", methods=["GET"])
-@token_required
-def supplier_home():
-
-    # Only suppliers can access this endpoint
-    if request.user_role != "supplier":
-        return jsonify({"error": "Access denied"}), 403
-
-    try:
-        with psycopg.connect(DATABASE_URL) as connection:
-            with connection.cursor() as cursor:
-
-                # Get supplier information
-                cursor.execute("""
-                    SELECT id, name, business_name
-                    FROM users
-                    WHERE id = %s AND role = 'supplier';
-                """, (request.user_id,))
-
-                supplier = cursor.fetchone()
-
-                if supplier is None:
-                    return jsonify({"error": "Supplier not found"}), 404
-
-                # Get products belonging to this supplier
-                cursor.execute("""
-                    SELECT id, name, price, stock_status
-                    FROM products
-                    WHERE supplier_id = %s
-                    ORDER BY id;
-                """, (request.user_id,))
-
-                rows = cursor.fetchall()
-
-        # Convert products into a list
-        products = [
-            {
-                "id": row[0],
-                "name": row[1],
-                "price": str(row[2]),
-                "stock_status": row[3]
-            }
-            for row in rows
-        ]
-
-        return jsonify({
-            "message": "Welcome to supplier home",
-            "supplier": {
-                "id": supplier[0],
-                "name": supplier[1],
-                "business_name": supplier[2]
-            },
-            "total_products": len(products),
-            "products": products
-        }), 200
-
-    except psycopg.Error:
-        app.logger.exception("Database error in supplier home")
-        return jsonify({
-            "error": "Database temporarily unavailable"
-        }), 503
-
-
-# -------------------------
-# Run Flask
-# -------------------------
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
