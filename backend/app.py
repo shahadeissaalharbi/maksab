@@ -16,10 +16,16 @@ from auth import auth_bp
 
 from werkzeug.security import check_password_hash, generate_password_hash
  development
+from flask import Flask, jsonify
+from flask_cors import CORS
+
+from routes.auth import auth_bp
+from routes.products import products_bp
 
 app = Flask(__name__)
 CORS(app)
 
+<<<<<<< Updated upstream
  refactor/code-cleanup
 app = Flask(__name__)
 CORS(app)
@@ -64,6 +70,10 @@ def token_required(f):
         return f(*args, **kwargs)
 
     return wrapper
+=======
+app.register_blueprint(auth_bp)
+app.register_blueprint(products_bp)
+>>>>>>> Stashed changes
 
 
 # -------------------------
@@ -78,6 +88,7 @@ def health_check():
     }), 200
 
 
+<<<<<<< Updated upstream
 # -------------------------
 # Products
 # -------------------------
@@ -305,5 +316,7 @@ def supplier_home():
 # Run Flask
 # -------------------------
 
+=======
+>>>>>>> Stashed changes
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
