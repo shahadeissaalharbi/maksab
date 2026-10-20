@@ -1,23 +1,16 @@
-// هنا جبت أدوات التنقل بين الصفحات من مكتبة React Router
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
-// هنا جبت صفحة التسجيل وصفحة الدخول اللي سويتها
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
+import { ROUTES } from "./constants/routes.js";
 
-// هنا حددت كل رابط وش الصفحة اللي يفتحها
+// هنا كل رابط وش الصفحة اللي يفتحها، والروابط نفسها من ROUTES
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* هنا خليت الرابط الرئيسي يودي لصفحة التسجيل تلقائيًا */}
-        <Route path="/" element={<Navigate to="/register" />} />
-
-        {/* هنا ربطت /register بصفحة التسجيل */}
-        <Route path="/register" element={<Register />} />
-
-        {/* هنا ربطت /login بصفحة الدخول */}
-        <Route path="/login" element={<Login />} />
+        <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.REGISTER} />} />
+        <Route path={ROUTES.REGISTER} element={<Register />} />
+        <Route path={ROUTES.LOGIN} element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
