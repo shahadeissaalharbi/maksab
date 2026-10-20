@@ -1,0 +1,10 @@
+$kind: http-request
+name: http://localhost:5000/api/supplier/home
+description: ""
+url: http://localhost:5000/api/supplier/home
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: ""
+order: 3000
