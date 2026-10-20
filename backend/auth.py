@@ -58,7 +58,7 @@ def register():
         with psycopg.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    INSERT INTO users (name, email, password, role)
+                    INSERT INTO users (name, email, password_hash, role)
                     VALUES (%s, %s, %s, %s)
                     RETURNING id;
                 """, (name, email, password_hash, role))
@@ -101,7 +101,7 @@ def login():
         with psycopg.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, name, email, password, role
+                    SELECT id, name, email, password_hash, role
                     FROM users
                     WHERE email = %s;
                 """, (email,))

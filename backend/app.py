@@ -72,7 +72,7 @@ def get_products():
         with psycopg.connect(DATABASE_URL) as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, name, description, price, stock_quantity
+                    SELECT id, name, description, price, stock_status
                     FROM products
                     ORDER BY id;
                 """)
@@ -85,7 +85,7 @@ def get_products():
                         "name": row[1],
                         "description": row[2],
                         "price": str(row[3]),
-                        "stock_quantity": row[4]
+                        "stock_status": row[4]
                     }
                     for row in rows
                 ]
@@ -135,15 +135,15 @@ def trader_home():
 
                     SELECT COUNT(*)
                     FROM products
-                    WHERE stock_quantity > 0;
+                    WHERE stock_status = 'in_stock';
                 """)
 
                 total = cursor.fetchone()[0]
 
                 cursor.execute("""
-                    SELECT id, name, description, price, stock_quantity
+                    SELECT id, name, description, price, stock_status
                     FROM products
-                    WHERE stock_quantity > 0
+                    WHERE stock_status = 'in_stock'
                     ORDER BY id
                     LIMIT %s OFFSET %s;
                 """, (limit, offset))
@@ -156,7 +156,7 @@ def trader_home():
                 "name": row[1],
                 "description": row[2],
                 "price": str(row[3]),
-                "stock_quantity": row[4]
+                "stock_status": row[4]
             }
             for row in rows
         ]

@@ -6,7 +6,6 @@
     ports:
       - "5000:5000"
     environment:
-      D    environment:
       DATABASE_URL: postgresql://maksab_user:maksab_dev_password@db:5432/maksab_db
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
     depends_on:
