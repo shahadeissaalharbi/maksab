@@ -7,6 +7,8 @@
       - "5000:5000"
     environment:
       DATABASE_URL: postgresql://maksab_user:maksab_dev_password@db:5432/maksab_db
+      D    environment:
+      DATABASE_URL: postgresql://maksab_user:maksab_dev_password@db:5432/maksab_db
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
     depends_on:
       db:
@@ -20,6 +22,7 @@
       POSTGRES_USER: maksab_user
       POSTGRES_PASSWORD: maksab_dev_password
     ports:
+      - "127.0.0.1:5433:5432"
       - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -31,4 +34,5 @@
     restart: unless-stopped
 
 volumes:
+  postgres_data:
   postgres_data:
