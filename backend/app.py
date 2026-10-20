@@ -1,27 +1,18 @@
 import os
- feature/db-setup
-
-import psycopg
-from flask import Flask, jsonify
-from flask_cors import CORS
-
-app = Flask(__name__)
-CORS(app)
-
-DATABASE_URL = os.environ["DATABASE_URL"]
-
-from functools import wraps
- development
 from datetime import datetime, timedelta, timezone
+from functools import wraps
 
 import jwt
 import psycopg
 from flask import Flask, jsonify, request
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask_cors import CORS
+from werkzeug.security import check_password_hash, generate_password_hash
 
+app = Flask(__name__)
+CORS(app)
 
-DATABASE_URL = os.environ["DATABASE_URL"]
-JWT_SECRET = os.environ["JWT_SECRET"]
+DATABASE_URL = os.environ.get("DATABASE_URL")
+JWT_SECRET = os.environ.get("JWT_SECRET")
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 2
 
@@ -79,7 +70,6 @@ def get_products():
                         "name": row[1],
                         "description": row[2],
                         "price": str(row[3]),
-                        "stock_quantity": row[4],
                         "stock_quantity": row[4]
                     }
                     for row in rows
@@ -92,11 +82,9 @@ def get_products():
 
     except psycopg.Error:
         app.logger.exception("Database error while fetching products")
-
         return jsonify({
             "error": "Database temporarily unavailable"
         }), 503
-
 
 
 @app.route("/api/trader/home", methods=["GET"])
