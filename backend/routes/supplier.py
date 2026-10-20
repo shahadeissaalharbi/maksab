@@ -1,43 +1,34 @@
 import psycopg
-
 from flask import Blueprint, current_app, jsonify, request
 
 from config import Config
 from decorators import token_required
 
-
 supplier_bp = Blueprint("supplier", __name__)
 
+def get_db_connection():
+    return psycopg.connect(Config.DATABASE_URL)
 
 @supplier_bp.route("/api/supplier/home", methods=["GET"])
 @token_required
 def supplier_home():
-
-    # Only suppliers can access this endpoint
     if request.user_role != "supplier":
-        return jsonify({
-            "error": "Access denied"
-        }), 403
+        return jsonify({"error": "Access denied"}), 403
 
     try:
-        with psycopg.connect(Config.DATABASE_URL) as connection:
+        with get_db_connection() as connection:
             with connection.cursor() as cursor:
-
-                # Get supplier information
                 cursor.execute("""
                     SELECT id, name, business_name
                     FROM users
                     WHERE id = %s AND role = 'supplier';
                 """, (request.user_id,))
-
+                
                 supplier = cursor.fetchone()
 
                 if supplier is None:
-                    return jsonify({
-                        "error": "Supplier not found"
-                    }), 404
+                    return jsonify({"error": "Supplier not found"}), 404
 
-                # Get supplier products
                 cursor.execute("""
                     SELECT id, name, price, stock_status
                     FROM products
@@ -48,15 +39,9 @@ def supplier_home():
                 rows = cursor.fetchall()
 
     except psycopg.Error:
-        current_app.logger.exception(
-            "Database error in supplier home"
-        )
+        current_app.logger.exception("Database error in supplier home")
+        return jsonify({"error": "Database temporarily unavailable"}), 503
 
-        return jsonify({
-            "error": "Database temporarily unavailable"
-        }), 503
-
-    # Convert products into JSON
     products = [
         {
             "id": row[0],
