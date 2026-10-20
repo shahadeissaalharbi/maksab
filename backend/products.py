@@ -1,7 +1,9 @@
 from functools import wraps
-from flask import request, jsonify
+from flask import Blueprint, request, jsonify
 import jwt
 from config import Config
+
+products_bp = Blueprint('products', __name__)
 
 def token_required(f):
     @wraps(f)
@@ -10,9 +12,8 @@ def token_required(f):
         if not auth_header.startswith("Bearer "):
             return jsonify({"error": "Token required"}), 401
 
-        token = auth_header[7:]
         try:
-            payload = jwt.decode(token, Config.JWT_SECRET, algorithms=[Config.JWT_ALGORITHM])
+            payload = jwt.decode(auth_header[7:], Config.JWT_SECRET, algorithms=[Config.JWT_ALGORITHM])
             request.user_id = int(payload["sub"])
             request.user_role = payload["role"]
         except (jwt.InvalidTokenError, ValueError, KeyError):
@@ -20,3 +21,8 @@ def token_required(f):
 
         return f(*args, **kwargs)
     return wrapper
+
+@products_bp.route('/', methods=['GET'])
+@token_required
+def get_products():
+    return jsonify({"message": "Welcome to products API"})
