@@ -31,6 +31,11 @@ export const NAV_LINKS = Object.freeze([
   Object.freeze({ label: "سوق الجملة", to: ROUTES.TRADER_HOME }),
 ]);
 
+// هنا روابط شريط المورد
+export const SUPPLIER_NAV_LINKS = Object.freeze([
+  Object.freeze({ label: "لوحة المورد", to: ROUTES.SUPPLIER_HOME }),
+]);
+
 // هنا نصوص الصفحات اللي لسا ما انبنت
 export const COMING_SOON_TEXT = Object.freeze({
   BADGE: "قريبًا",

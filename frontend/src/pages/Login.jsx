@@ -4,9 +4,9 @@ import AuthLayout from "../components/AuthLayout.jsx";
 import FormField from "../components/FormField.jsx";
 import SubmitButton from "../components/SubmitButton.jsx";
 import FormMessage from "../components/FormMessage.jsx";
-import { ACCOUNT_TYPES, getAccountTypeLabel } from "../constants/accountTypes.js";
+import { getAccountTypeLabel } from "../constants/accountTypes.js";
 import { HTTP_STATUS, SUCCESS_MESSAGES, getErrorMessage } from "../constants/messages.js";
-import { ROUTES } from "../constants/routes.js";
+import { ROUTES, ROLE_HOME } from "../constants/routes.js";
 import { loginUser } from "../services/authService.js";
 import { saveSession } from "../services/session.js";
 import { useFormStatus } from "../hooks/useFormStatus.js";
@@ -32,9 +32,10 @@ function Login() {
         saveSession(data.token, data.user);
         showSuccess(SUCCESS_MESSAGES.LOGIN(data.user.full_name, getAccountTypeLabel(data.user.role)));
 
-        // هنا الأسرة المنتجة تنتقل لسوق الجملة بعد الترحيب
-        if (data.user.role === ACCOUNT_TYPES.MERCHANT.value) {
-          setTimeout(() => navigate(ROUTES.TRADER_HOME), REDIRECT_DELAY_MS);
+        // هنا كل نوع حساب ينتقل لصفحته بعد الترحيب
+        const homeRoute = ROLE_HOME[data.user.role];
+        if (homeRoute) {
+          setTimeout(() => navigate(homeRoute), REDIRECT_DELAY_MS);
         }
       } else {
         showError(getErrorMessage(status));
