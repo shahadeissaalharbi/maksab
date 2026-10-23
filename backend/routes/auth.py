@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from urllib.parse import urlencode
 
 import jwt
 import psycopg
@@ -7,11 +8,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from config import Config
 from decorators import token_required
+from email_service import send_verification_email
+from verification_tokens import (
+    generate_verification_token,
+    hash_verification_token,
+)
+
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
+
 def get_db_connection():
     return psycopg.connect(Config.DATABASE_URL)
+
 
 def is_valid_email(email):
     return isinstance(email, str) and "@" in email and len(email.strip()) <= 120
@@ -19,6 +28,7 @@ def is_valid_email(email):
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json(silent=True)
+
     if not isinstance(data, dict):
         return jsonify({"error": "Invalid data"}), 400
 
@@ -32,7 +42,9 @@ def register():
         isinstance(email, str) and email.strip(),
         isinstance(password, str) and len(password) >= 8
     ]):
-        return jsonify({"error": "Invalid name, email or password"}), 400
+        return jsonify({
+            "error": "Invalid name, email or password"
+        }), 400
 
     if role not in ["merchant", "supplier"]:
         return jsonify({"error": "Invalid role"}), 400
@@ -48,26 +60,148 @@ def register():
 
     password_hash = generate_password_hash(password)
 
+    # Generate verification token
+    token, token_hash, expires_at = generate_verification_token()
+
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute("""
-                    INSERT INTO users (name, email, password_hash, role)
-                    VALUES (%s, %s, %s, %s)
-                    RETURNING id;
-                """, (full_name, email, password_hash, role))
-                user_id = cursor.fetchone()[0]
-    except psycopg.errors.UniqueViolation:
-        return jsonify({"error": "Email already registered"}), 409
-    except psycopg.Error:
-        current_app.logger.exception("Registration database error")
-        return jsonify({"error": "Database unavailable"}), 503
 
-    return jsonify({"message": "Account created successfully", "user_id": user_id}), 201
+                cursor.execute("""
+                    INSERT INTO users (
+                        name,
+                        email,
+                        password_hash,
+                        role,
+                        is_verified
+                    )
+                    VALUES (%s, %s, %s, %s, FALSE)
+                    RETURNING id;
+                """, (
+                    full_name,
+                    email,
+                    password_hash,
+                    role
+                ))
+
+                user_id = cursor.fetchone()[0]
+
+                cursor.execute("""
+                    INSERT INTO email_verification_tokens (
+                        user_id,
+                        token_hash,
+                        expires_at
+                    )
+                    VALUES (%s, %s, %s);
+                """, (
+                    user_id,
+                    token_hash,
+                    expires_at
+                ))
+
+    except psycopg.errors.UniqueViolation:
+        return jsonify({
+            "error": "Email already registered"
+        }), 409
+
+    except psycopg.Error:
+        current_app.logger.exception(
+            "Registration database error"
+        )
+        return jsonify({
+            "error": "Database unavailable"
+        }), 503
+
+    verification_url = (
+        f"{Config.EMAIL_VERIFICATION_BASE_URL.rstrip('/')}"
+        f"/api/auth/verify-email?"
+        f"{urlencode({'token': token})}"
+    )
+
+    # Send verification email
+    try:
+        send_verification_email(email, verification_url)
+
+    except Exception:
+        current_app.logger.exception(
+            "Failed to send verification email"
+        )
+
+        return jsonify({
+            "error": "Account created, but verification email could not be sent",
+            "user_id": user_id
+        }), 502
+
+    return jsonify({
+        "message": "Account created. Please verify your email.",
+        "user_id": user_id
+    }), 201
+
+@auth_bp.route("/verify-email", methods=["GET"])
+def verify_email():
+    token = request.args.get("token")
+
+    if not token:
+        return jsonify({
+            "error": "Verification token is required"
+        }), 400
+
+    token_hash = hash_verification_token(token)
+
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+
+                cursor.execute("""
+                    SELECT id, user_id
+                    FROM email_verification_tokens
+                    WHERE token_hash = %s
+                      AND used_at IS NULL
+                      AND expires_at > NOW()
+                    FOR UPDATE;
+                """, (token_hash,))
+
+                verification = cursor.fetchone()
+
+                if not verification:
+                    return jsonify({
+                        "error": "Invalid or expired verification link"
+                    }), 400
+
+                verification_id, user_id = verification
+
+                # Activate account
+                cursor.execute("""
+                    UPDATE users
+                    SET is_verified = TRUE,
+                        email_verified_at = NOW()
+                    WHERE id = %s;
+                """, (user_id,))
+
+                # Mark token as used
+                cursor.execute("""
+                    UPDATE email_verification_tokens
+                    SET used_at = NOW()
+                    WHERE id = %s;
+                """, (verification_id,))
+
+    except psycopg.Error:
+        current_app.logger.exception(
+            "Email verification database error"
+        )
+
+        return jsonify({
+            "error": "Database unavailable"
+        }), 503
+
+    return jsonify({
+        "message": "Email verified successfully. You can now log in."
+    }), 200
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json(silent=True)
+
     if not isinstance(data, dict):
         return jsonify({"error": "Invalid data"}), 400
 
@@ -75,34 +209,63 @@ def login():
     password = data.get("password")
 
     if not isinstance(email, str) or not isinstance(password, str):
-        return jsonify({"error": "Email and password are required"}), 400
+        return jsonify({
+            "error": "Email and password are required"
+        }), 400
 
     email = email.strip().lower()
+
     if not email or not password:
-        return jsonify({"error": "Email and password are required"}), 400
+        return jsonify({
+            "error": "Email and password are required"
+        }), 400
 
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, name, email, password_hash, role
+                    SELECT
+                        id,
+                        name,
+                        email,
+                        password_hash,
+                        role,
+                        is_verified
                     FROM users
                     WHERE email = %s;
                 """, (email,))
+
                 user = cursor.fetchone()
+
     except psycopg.Error:
-        current_app.logger.exception("Login database error")
-        return jsonify({"error": "Database unavailable"}), 503
+        current_app.logger.exception(
+            "Login database error"
+        )
+
+        return jsonify({
+            "error": "Database unavailable"
+        }), 503
 
     if not user or not check_password_hash(user[3], password):
-        return jsonify({"error": "Invalid email or password"}), 401
+        return jsonify({
+            "error": "Invalid email or password"
+        }), 401
+
+    # Prevent login before email verification
+    if not user[5]:
+        return jsonify({
+            "error": "Please verify your email before logging in"
+        }), 403
 
     now = datetime.now(timezone.utc)
+
     token = jwt.encode({
         "sub": str(user[0]),
         "role": user[4],
         "iat": now,
-        "exp": now + timedelta(hours=Config.JWT_EXPIRATION_HOURS)
+        "exp": now + timedelta(
+            hours=Config.JWT_EXPIRATION_HOURS
+        )
     }, Config.JWT_SECRET, algorithm=Config.JWT_ALGORITHM)
 
     return jsonify({
@@ -127,13 +290,22 @@ def get_current_user():
                     FROM users
                     WHERE id = %s;
                 """, (request.user_id,))
+
                 user = cursor.fetchone()
+
     except psycopg.Error:
-        current_app.logger.exception("Get current user database error")
-        return jsonify({"error": "Database unavailable"}), 503
+        current_app.logger.exception(
+            "Get current user database error"
+        )
+
+        return jsonify({
+            "error": "Database unavailable"
+        }), 503
 
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({
+            "error": "User not found"
+        }), 404
 
     return jsonify({
         "user": {
@@ -146,4 +318,6 @@ def get_current_user():
 
 @auth_bp.route("/logout", methods=["POST"])
 def logout():
-    return jsonify({"message": "Remove the token on the client to log out"}), 200
+    return jsonify({
+        "message": "Remove the token on the client to logout"
+    }), 200
