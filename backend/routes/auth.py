@@ -124,7 +124,7 @@ def register():
 
     except Exception:
         current_app.logger.exception(
-            "Failed to resend verification email"
+            "Failed to send verification email"
         )
 
         # Delete only the token created by this failed attempt.
