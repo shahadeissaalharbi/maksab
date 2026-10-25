@@ -27,6 +27,40 @@ def health_check():
         "message": "Maksab API is running"
     }), 200
 
+@app.route("/api/home/products", methods=["GET"])
+def get_home_products():
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT id, name, description, price, stock_quantity
+                    FROM products
+                    WHERE stock_quantity > 0
+                    ORDER BY id DESC
+                    LIMIT 10;
+                """)
+                rows = cursor.fetchall()
+
+        products = [
+            {
+                "id": row[0],
+                "name": row[1],
+                "description": row[2],
+                "price": str(row[3]),
+                "stock_quantity": row[4]
+            }
+            for row in rows
+        ]
+
+        return jsonify({
+            "products": products,
+            "count": len(products)
+        }), 200
+
+    except psycopg.Error:
+        app.logger.exception("Database error while fetching home products")
+        return jsonify({"error": "Database unavailable"}), 503
+
 @app.route("/api/trader/home", methods=["GET"])
 @token_required
 def trader_home():
