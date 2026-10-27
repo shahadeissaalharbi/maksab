@@ -6,6 +6,7 @@ import OverviewStatCard from "../components/OverviewStatCard.jsx";
 import { OVERVIEW_LOAD, OVERVIEW_TEXT } from "../constants/overview.js";
 import { useOverview } from "../hooks/useOverview.js";
 import { formatNumber, formatToday } from "../utils/overviewFormat.js";
+import "../styles/Auth.css";
 
 const getSalutation = () =>
   new Date().getHours() < 12
