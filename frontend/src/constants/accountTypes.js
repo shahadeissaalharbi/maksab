@@ -3,13 +3,13 @@ export const ACCOUNT_TYPES = Object.freeze({
   MERCHANT: Object.freeze({
     value: "merchant",
     label: "أسرة منتجة",
-    description: "أبحث عن المواد والتغليف بالجملة",
+    description: "موادي وتغليفي بالجملة، بسعر يرفع مكسبي",
     placeholder: "مثال: شعبيات نجدية",
   }),
   SUPPLIER: Object.freeze({
     value: "supplier",
     label: "مورد",
-    description: "أعرض منتجات الجملة وأدير الطلبات",
+    description: "بضاعتي توصل لأسر منتجة في كل مكان",
     placeholder: "مثال: مستودع الخير للجملة",
   }),
 });

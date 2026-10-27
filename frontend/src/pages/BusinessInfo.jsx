@@ -39,17 +39,17 @@ function BusinessInfo() {
       const response = await updateProfile(form);
 
       if (response.status === 200) {
-        setMessage({ type: "success", text: "تم حفظ بياناتك" });
+        setMessage({ type: "success", text: "انحفظت ✓ وطلباتك عرفت طريقها" });
       } else {
         setMessage({
           type: "error",
-          text: "ما انحفظت البيانات، تأكدي منها وحاولي مرة ثانية",
+          text: "ما انحفظت هالمرة، نرجو مراجعة البيانات",
         });
       }
     } catch {
       setMessage({
         type: "error",
-        text: "فيه مشكلة في الاتصال، حاولي بعد شوي",
+        text: "الإنترنت فصل في نص الطريق، نرجو المحاولة بعد شوي",
       });
     }
 
@@ -62,7 +62,7 @@ function BusinessInfo() {
 
       <main className="business-info">
         <h1>بيانات النشاط والعنوان</h1>
-        <p>عدلي بيانات نشاطك والعنوان اللي توصلك عليه الطلبات</p>
+        <p>عنوان دقيق = طلبات توصل أسرع</p>
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="business_name">اسم النشاط</label>
@@ -71,7 +71,7 @@ function BusinessInfo() {
             name="business_name"
             value={form.business_name}
             onChange={handleChange}
-            placeholder="مثل: معمول نورة"
+            placeholder="مثل: حلويات البيت"
             required
           />
 

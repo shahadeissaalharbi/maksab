@@ -1,23 +1,28 @@
-import { Link } from "react-router-dom";
-import { ROUTES } from "../constants/routes.js";
+// هنا أنواع الحسابات، وأي نوع جديد ينضاف من هنا بس
+export const ACCOUNT_TYPES = Object.freeze({
+  MERCHANT: Object.freeze({
+    value: "merchant",
+    label: "أسرة منتجة",
+    description: "موادي وتغليفي بالجملة، بسعر يرفع مكسبي",
+    placeholder: "مثال: شعبيات نجدية",
+  }),
+  SUPPLIER: Object.freeze({
+    value: "supplier",
+    label: "مورد",
+    description: "بضاعتي توصل لأسر منتجة في كل مكان",
+    placeholder: "مثال: مستودع الخير للجملة",
+  }),
+});
 
-// هنا البانر اللي فوق صفحة التاجر، بنفس هوية صفحة التسجيل
-function Banner() {
-  return (
-    <section className="banner">
-      <div className="banner-circle"></div>
+// هنا الأنواع كقائمة عشان أمر عليها، مثل البطاقات في صفحة التسجيل
+export const ACCOUNT_TYPES_ARRAY = Object.freeze([
+  ACCOUNT_TYPES.MERCHANT,
+  ACCOUNT_TYPES.SUPPLIER,
+]);
 
-      <div className="banner-text">
-        <p>مكسب لأعمال أوضح</p>
-        <h2>من أول تكلفة، إلى طلب جملة ناجح.</h2>
-        <span>احسبي تكلفة منتجك، واطلبي موادك من مكان واحد</span>
-      </div>
+// هنا النوع المختار أول ما تفتح صفحة التسجيل
+export const DEFAULT_ACCOUNT_TYPE = ACCOUNT_TYPES.MERCHANT;
 
-      <Link to={ROUTES.CALCULATOR} className="banner-link">
-        احسبي سعر منتجك
-      </Link>
-    </section>
-  );
-}
-
-export default Banner;
+// هنا أحول القيمة اللي يرجعها الباك لاسم يفهمه المستخدم
+export const getAccountTypeLabel = (value) =>
+  ACCOUNT_TYPES_ARRAY.find((type) => type.value === value)?.label ?? "";

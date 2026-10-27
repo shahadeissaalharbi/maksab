@@ -16,17 +16,18 @@ export const MESSAGE_TYPES = Object.freeze({
 
 // هنا كل رد خطأ من الباك مربوط برسالته
 export const ERROR_MESSAGES = Object.freeze({
-  [HTTP_STATUS.BAD_REQUEST]: "تأكدي من البيانات وحاولي مرة ثانية",
-  [HTTP_STATUS.UNAUTHORIZED]: "الإيميل أو كلمة المرور غلط",
-  [HTTP_STATUS.FORBIDDEN]: "وثقي إيميلك أول من الرابط اللي أرسلناه لك",
-  [HTTP_STATUS.CONFLICT]: "هذا الإيميل مسجل من قبل، جربي تسجلين دخول",
-  NETWORK: "ما قدرنا نوصل للخادم، تأكدي من اتصالك بالنت",
-  DEFAULT: "صار خطأ في الخادم، حاولي بعد شوي",
+  [HTTP_STATUS.BAD_REQUEST]: "فيه معلومة ناقصة، نرجو مراجعتها",
+  [HTTP_STATUS.UNAUTHORIZED]: "البريد أو كلمة المرور غير صحيحة",
+  [HTTP_STATUS.FORBIDDEN]: "خطوة أخيرة: رابط التوثيق ينتظرك في بريدك",
+  [HTTP_STATUS.CONFLICT]:
+    "يامرحبا! هذا البريد له حساب عندنا، تسجيل الدخول أسرع",
+  NETWORK: "الإنترنت فصل في نص الطريق، نرجو التأكد منه",
+  DEFAULT: "الخلل عندنا مو عندك، نرجو المحاولة بعد شوي",
 });
 
 // هنا رسائل النجاح، ورسالة الدخول دالة لأن فيها اسم المستخدم ونوع حسابه
 export const SUCCESS_MESSAGES = Object.freeze({
-  REGISTER: "تم إنشاء حسابك، أرسلنا لك رابط توثيق على إيميلك",
+  REGISTER: "أهلًا في مكسب! باقي خطوة: رابط التوثيق في بريدك",
   LOGIN: (name, accountLabel) =>
     `أهلًا ${name}، تم تسجيل دخولك كـ ${accountLabel}`,
 });
