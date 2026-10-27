@@ -1,111 +1,87 @@
-import { useState } from "react";
-import "../styles/SupplierOverview.css";
-import OverviewOrderRow from "../components/OverviewOrderRow.jsx";
+import { Navigate } from "react-router-dom";
 import OverviewSidebar from "../components/OverviewSidebar.jsx";
 import OverviewStatCard from "../components/OverviewStatCard.jsx";
-import { OVERVIEW_LOAD, OVERVIEW_TEXT } from "../constants/overview.js";
+import OverviewOrderRow from "../components/OverviewOrderRow.jsx";
+import { ROUTES } from "../constants/routes.js";
+import { LOAD_STATUS } from "../constants/market.js";
+import { OVERVIEW_TEXT } from "../constants/overview.js";
+import { getToken } from "../services/session.js";
 import { useOverview } from "../hooks/useOverview.js";
 import { formatNumber, formatToday } from "../utils/overviewFormat.js";
 import "../styles/Auth.css";
+import "../styles/SupplierOverview.css";
 
-const getSalutation = () =>
-  new Date().getHours() < 12
-    ? OVERVIEW_TEXT.GOOD_MORNING
-    : OVERVIEW_TEXT.GOOD_EVENING;
+// هنا صباح الخير قبل الساعة 12، وبعدها مساء الخير
+function getSalutation() {
+  return new Date().getHours() < 12 ? OVERVIEW_TEXT.GOOD_MORNING : OVERVIEW_TEXT.GOOD_EVENING;
+}
 
+// هنا النظرة العامة للمورد: الترحيب والأرقام وأحدث الطلبات
 function SupplierOverview() {
-  const [activeNav, setActiveNav] = useState("overview");
   const { supplier, stats, orders, status, changeOrderStatus } = useOverview();
 
-  if (status === OVERVIEW_LOAD.LOADING) {
-    return (
-      <div className="ov-page" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <p className="ov-state-message">{OVERVIEW_TEXT.LOADING}</p>
-      </div>
-    );
+  // هنا اللي ما سجل دخول يرجع لصفحة الدخول
+  if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
+
+  if (status === LOAD_STATUS.LOADING) {
+    return <p className="ov-state">{OVERVIEW_TEXT.LOADING}</p>;
   }
 
-  if (status === OVERVIEW_LOAD.ERROR) {
-    return (
-      <div className="ov-page" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <p className="ov-state-message" style={{ color: "#ef4444" }}>{OVERVIEW_TEXT.ERROR}</p>
-      </div>
-    );
+  if (status === LOAD_STATUS.ERROR) {
+    return <p className="ov-state error">{OVERVIEW_TEXT.ERROR}</p>;
   }
 
   return (
     <div className="ov-page" dir="rtl">
-      {/* القائمة الجانبية */}
-      <OverviewSidebar activeId={activeNav} onSelect={setActiveNav} />
+      <OverviewSidebar activeId="overview" />
 
-      {/* المحتوى الرئيسي */}
       <main className="ov-main">
-        {/* الترويسة العليا */}
-        <div className="ov-page-header">
+        <header className="ov-header">
           <div>
-            <p className="ov-today">{formatToday()}</p>
-            <h1>
-              {OVERVIEW_TEXT.greeting(getSalutation(), supplier?.business_name)}
-            </h1>
-            <p className="ov-subtitle">
-              {OVERVIEW_TEXT.newOrdersNotice(stats?.new_orders ?? 0)}
-            </p>
+            <p className="ov-date">{formatToday()}</p>
+            <h1>{OVERVIEW_TEXT.greeting(getSalutation(), supplier.business_name)}</h1>
+            <p className="ov-subtitle">{OVERVIEW_TEXT.newOrdersNotice(stats.new_orders)}</p>
           </div>
-          <button className="ov-add-product">
+          <button type="button" className="ov-btn-primary ov-add">
             {OVERVIEW_TEXT.ADD_PRODUCT}
           </button>
-        </div>
+        </header>
 
-        {/* البطاقات الإحصائية الثلاث */}
-        <div className="ov-stat-row">
+        <section className="ov-stats">
           <OverviewStatCard
-            label="إجمالي المبيعات"
-            value={`${formatNumber(stats?.total_sales ?? 0)} ر.س`}
-            hint="+12% عن الشهر الماضي"
-            hintTone="green"
+            label={OVERVIEW_TEXT.STAT_SALES}
+            value={`${formatNumber(stats.month_sales)} ${OVERVIEW_TEXT.CURRENCY}`}
           />
           <OverviewStatCard
-            label="الطلبات الجديدة"
-            value={formatNumber(stats?.new_orders ?? 0)}
-            hint="تحتاج إلى مراجعة"
-            hintTone="green"
+            label={OVERVIEW_TEXT.STAT_NEW_ORDERS}
+            value={formatNumber(stats.new_orders)}
+            hint={OVERVIEW_TEXT.STAT_NEW_ORDERS_HINT}
           />
           <OverviewStatCard
-            label="المنتجات النشطة"
-            value={formatNumber(stats?.active_products ?? 0)}
-            hint="متوفرة في المتجر"
-            hintTone="green"
+            label={OVERVIEW_TEXT.STAT_PRODUCTS}
+            value={formatNumber(stats.available_products)}
+            hint={OVERVIEW_TEXT.productsOf(stats.total_products)}
           />
-        </div>
+        </section>
 
-        {/* قسم الطلبات */}
-        <div className="ov-orders-card">
-          <div className="ov-orders-header">
+        <section className="ov-panel">
+          <div className="ov-panel-header">
             <div>
               <p className="ov-eyebrow">{OVERVIEW_TEXT.ORDERS_EYEBROW}</p>
               <h2>{OVERVIEW_TEXT.ORDERS_TITLE}</h2>
             </div>
-            <button className="ov-link-button">
-              {OVERVIEW_TEXT.VIEW_ALL_ORDERS}
-            </button>
+            <span className="ov-link">{OVERVIEW_TEXT.VIEW_ALL_ORDERS}</span>
           </div>
 
-          <div>
-            {orders.map((order) => (
-              <OverviewOrderRow
-                key={order.id}
-                order={order}
-                onStatusChange={changeOrderStatus}
-              />
-            ))}
-          </div>
-        </div>
+          {orders.map((order) => (
+            <OverviewOrderRow key={order.id} order={order} onStatusChange={changeOrderStatus} />
+          ))}
+        </section>
 
-        {/* قسم مسؤولية التوصيل */}
-        <div className="ov-delivery-note">
+        <section className="ov-notice">
           <h3>{OVERVIEW_TEXT.DELIVERY_TITLE}</h3>
           <p>{OVERVIEW_TEXT.DELIVERY_BODY}</p>
-        </div>
+        </section>
       </main>
     </div>
   );

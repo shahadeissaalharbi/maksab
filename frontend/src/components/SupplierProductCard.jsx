@@ -59,6 +59,3 @@ function SupplierProductCard({ product, onUpdatePrice }) {
 }
 
 export default SupplierProductCard;
-
-
-

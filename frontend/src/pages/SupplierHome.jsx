@@ -30,7 +30,7 @@ function SupplierHome() {
   const { search, setSearch, filtered } = useProductFilters(localProducts);
 
   // هنا اللي ما سجل دخول يرجع لصفحة الدخول
-  //if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
+  if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
 
   const displayName = supplier?.business_name ?? getUser()?.full_name;
 
