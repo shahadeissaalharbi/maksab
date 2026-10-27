@@ -10,8 +10,6 @@ import { SUPPLIER_TEXT } from "../constants/supplier.js";
 import { getToken, getUser } from "../services/session.js";
 import { useSupplierHome } from "../hooks/useSupplierHome.js";
 import { useProductFilters } from "../hooks/useProductFilters.js";
-import "../styles/Auth.css";
-import "../styles/Trader.css";
 import "../styles/Supplier.css";
 
 // هنا لوحة المورد: الترحيب والأرقام والبحث والمنتجات مع إمكانية التعديل
@@ -29,7 +27,7 @@ function SupplierHome() {
   const { search, setSearch, filtered } = useProductFilters(localProducts);
 
   // هنا اللي ما سجل دخول يرجع لصفحة الدخول
-  if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
+  //if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
 
   const displayName = supplier?.business_name ?? getUser()?.full_name;
 

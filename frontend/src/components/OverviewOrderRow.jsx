@@ -34,14 +34,17 @@ function OverviewOrderRow({ order, onStatusChange }) {
 
       {/* قائمة حالة الطلب */}
       <div className="flex items-center gap-3">
-        <select
+       <select
           value={order.status}
           onChange={(e) => onStatusChange(order.id, e.target.value)}
           aria-label="حالة الطلب"
           className="text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white text-slate-700 focus:outline-none focus:border-amber-400"
         >
-          {ORDER_STATUS_OPTIONS.map((option) => (
-            <option key={option.id} value={option.id}>
+          {ORDER_STATUS_OPTIONS.map((option, index) => (
+            <option 
+              key={option.id || option.value || index} 
+              value={option.id || option.value}
+            >
               {option.label}
             </option>
           ))}

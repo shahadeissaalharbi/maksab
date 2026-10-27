@@ -1,8 +1,20 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { NAV_ITEMS, OVERVIEW_TEXT } from "../constants/overview.js";
 
 // هنا القائمة الجانبية: الشعار ونوع الحساب وروابط التنقل
 function OverviewSidebar({ activeId, onSelect }) {
+  const navigate = useNavigate();
+
+  const handleItemClick = (item) => {
+    // إذا كان الزر هو المنتجات والمخزون، نوجهه لصفحة المنتجات
+    if (item.id === "products") {
+      navigate("/supplier/products"); // أو المسار المعرّف لديك للمنتجات
+    } else {
+      onSelect(item.id);
+    }
+  };
+
   return (
     <aside className="w-64 bg-slate-900 text-white min-h-screen p-4 flex flex-col justify-between">
       <div>
@@ -23,7 +35,7 @@ function OverviewSidebar({ activeId, onSelect }) {
             return (
               <button
                 key={item.id}
-                onClick={() => onSelect(item.id)}
+                onClick={() => handleItemClick(item)}
                 className={`w-full text-right px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   isActive
                     ? "bg-amber-400 text-slate-950 font-bold"

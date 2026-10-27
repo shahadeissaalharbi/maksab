@@ -3,7 +3,8 @@ import { MARKET_TEXT } from "../constants/market.js";
 
 // هنا بطاقة المنتج، ولون خلفيتها من تصنيفه
 function ProductCard({ product }) {
-  const category = getCategory(product.category?.type);
+  // إضافة قيمة افتراضية لتجنب خطأ لو كان التصنيف غير معرف
+  const category = getCategory(product?.category?.type) || { tone: "green", label: "" };
 
   return (
     <article className="product-card">
@@ -12,16 +13,16 @@ function ProductCard({ product }) {
       </div>
 
       <div className="product-body">
-        <h4>{product.name}</h4>
+        <h4>{product?.name}</h4>
         <p className="product-meta">
-          {product.unit} · {product.supplier_name}
+          {product?.unit} · {product?.supplier_name}
         </p>
 
         <p className="product-price">
-          <strong>{Number(product.price)}</strong> {MARKET_TEXT.CURRENCY}
+          <strong>{Number(product?.price || 0)}</strong> {MARKET_TEXT.CURRENCY}
         </p>
         <span className="product-moq">
-          {MARKET_TEXT.MIN_ORDER} {product.moq}
+          {MARKET_TEXT.MIN_ORDER} {product?.moq}
         </span>
 
         <p className="product-details">{MARKET_TEXT.DETAILS}</p>
