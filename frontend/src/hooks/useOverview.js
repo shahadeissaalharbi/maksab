@@ -1,46 +1,21 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { OVERVIEW_LOAD } from "../constants/overview.js";
-import { getOverview } from "../services/overviewService.js";
 
-// هنا نطلب بيانات المورد مع إحصائياته والطلبات، ونتحكم بتغيير حالة الطلب
 export function useOverview() {
-  const [supplier, setSupplier] = useState(null);
-  const [stats, setStats] = useState(null);
-  const [orders, setOrders] = useState([]);
-  const [status, setStatus] = useState(OVERVIEW_LOAD.LOADING);
+  const [supplier, setSupplier] = useState({ business_name: "متجر بيادر للتمور" });
+  const [stats, setStats] = useState({
+    total_sales: 15420,
+    new_orders: 5,
+    active_products: 12
+  });
+  const [orders, setOrders] = useState([
+    { id: 1, customer_name: "سارة أحمد", total: 250, status: "جديد", date: "2026-10-24" },
+    { id: 2, customer_name: "محمد خالد", total: 420, status: "قيد التنفيذ", date: "2026-10-23" }
+  ]);
+  const [status, setStatus] = useState(OVERVIEW_LOAD.SUCCESS);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    getOverview()
-      .then(({ status: code, data }) => {
-        if (!isMounted) return;
-
-        if (code === 200) {
-          setSupplier(data.supplier);
-          setStats(data.stats);
-          setOrders(data.orders ?? []);
-          setStatus(OVERVIEW_LOAD.READY);
-        } else {
-          setStatus(OVERVIEW_LOAD.ERROR);
-        }
-      })
-      .catch(() => {
-        if (isMounted) setStatus(OVERVIEW_LOAD.ERROR);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  // هنا نغير حالة طلب واحد محلياً، ولما ينربط الباك إند نرسلها له من هنا
   const changeOrderStatus = (orderId, newStatus) => {
-    setOrders((current) =>
-      current.map((order) =>
-        order.id === orderId ? { ...order, status: newStatus } : order
-      )
-    );
+    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
   };
 
   return { supplier, stats, orders, status, changeOrderStatus };
