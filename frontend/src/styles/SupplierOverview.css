@@ -1,0 +1,370 @@
+.ov-page {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Sans Arabic", Tahoma, Arial, sans-serif;
+  line-height: 1.6;
+  --bg: #fafaf8;
+  --surface: #ffffff;
+  --text: #171411;
+  --muted: #6b6560;
+  --border: #e4e2dc;
+  --green: #006b52;
+  --sidebar: #00493a;
+  --sidebar-active: #0a5a49;
+  --yellow: #ffbd20;
+  --note: #fff1bd;
+  --eyebrow: #b0600f;
+}
+
+.ov-page *, 
+.ov-page *::before, 
+.ov-page *::after { 
+  box-sizing: border-box; 
+}
+
+.ov-page button, 
+.ov-page select { 
+  font-family: inherit; 
+}
+
+/* تقسيم الشاشة: القائمة الجانبية والمحتوى */
+.ov-page {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  min-height: 100vh;
+}
+
+/* ===== القائمة الجانبية ===== */
+.ov-sidebar {
+  background: var(--sidebar);
+  color: #fff;
+  padding: 32px 26px 24px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.ov-brand { 
+  display: flex; 
+  align-items: center; 
+  gap: 12px; 
+}
+
+.ov-brand-name { 
+  font-size: 40px; 
+  font-weight: 700; 
+  line-height: 1.1; 
+}
+
+.ov-brand-icon {
+  width: 46px; 
+  height: 46px;
+  border: 2px solid var(--yellow);
+  border-radius: 12px;
+  color: var(--yellow);
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center;
+  font-size: 22px;
+}
+
+.ov-account-type { 
+  margin: 6px 12px 0 0; 
+  font-size: 13px; 
+  color: var(--yellow); 
+}
+
+.ov-nav { 
+  margin-top: 56px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 6px; 
+}
+
+.ov-nav-item {
+  background: transparent;
+  border: none;
+  color: #e6efe9;
+  text-align: right;
+  font-size: 19px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.ov-nav-item:hover { 
+  background: rgba(255, 255, 255, 0.06); 
+}
+
+.ov-nav-item.ov-active { 
+  background: var(--sidebar-active); 
+  color: var(--yellow); 
+  font-weight: 500; 
+}
+
+.ov-sidebar-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ===== المحتوى الرئيسي ===== */
+.ov-main { 
+  padding: 56px 60px 48px; 
+  max-width: 1500px; 
+  width: 100%; 
+}
+
+.ov-state-message { 
+  color: var(--muted); 
+  font-size: 18px; 
+}
+
+.ov-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.ov-today { 
+  margin: 0; 
+  color: var(--muted); 
+  font-size: 13px; 
+}
+
+.ov-page-header h1 { 
+  margin: 6px 0 4px; 
+  font-size: 40px; 
+  font-weight: 500; 
+  line-height: 1.3; 
+}
+
+.ov-subtitle { 
+  margin: 0; 
+  color: var(--muted); 
+  font-size: 20px; 
+}
+
+.ov-add-product {
+  background: var(--yellow);
+  color: var(--text);
+  border: none;
+  border-radius: 999px;
+  padding: 14px 32px;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ov-add-product:hover { 
+  filter: brightness(0.96); 
+}
+
+/* ===== بطاقات الإحصائيات ===== */
+.ov-stat-row { 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 22px; 
+  margin-bottom: 40px; 
+}
+
+.ov-stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ov-stat-label { 
+  color: var(--muted); 
+  font-size: 14px; 
+}
+
+.ov-stat-value { 
+  font-size: 44px; 
+  font-weight: 700; 
+  line-height: 1.3; 
+}
+
+.ov-stat-hint { 
+  font-size: 14px; 
+  font-weight: 500; 
+}
+
+.ov-hint-green { 
+  color: var(--green); 
+}
+
+/* ===== قسم الطلبات ===== */
+.ov-orders-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 26px;
+}
+
+.ov-orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 26px 28px;
+}
+
+.ov-eyebrow { 
+  margin: 0; 
+  color: var(--eyebrow); 
+  font-size: 13px; 
+}
+
+.ov-orders-header h2 { 
+  margin: 2px 0 0; 
+  font-size: 26px; 
+  font-weight: 500; 
+}
+
+.ov-link-button {
+  background: none; 
+  border: none; 
+  color: var(--green);
+  font-size: 19px; 
+  cursor: pointer;
+}
+
+.ov-link-button:hover { 
+  text-decoration: underline; 
+}
+
+.ov-order-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1.2fr 1.1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 28px;
+  border-top: 1px solid var(--border);
+}
+
+.ov-order-info, 
+.ov-order-summary { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 2px; 
+}
+
+.ov-order-id { 
+  font-size: 14px; 
+}
+
+.ov-order-customer, 
+.ov-order-summary span { 
+  color: var(--muted); 
+  font-size: 14px; 
+}
+
+.ov-order-summary strong { 
+  font-size: 15px; 
+}
+
+.ov-order-select {
+  appearance: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--text);
+  width: 100%;
+  cursor: pointer;
+}
+
+.ov-order-action {
+  background: var(--surface);
+  color: var(--green);
+  border: 1.5px solid var(--green);
+  border-radius: 999px;
+  padding: 14px 24px;
+  font-size: 19px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ov-order-action:hover { 
+  background: #e8faf3; 
+}
+
+/* ===== ملاحظة التوصيل ===== */
+.ov-delivery-note {
+  background: var(--note);
+  border-radius: 18px;
+  padding: 22px 28px;
+}
+
+.ov-delivery-note h3 { 
+  margin: 0 0 4px; 
+  font-size: 22px; 
+  font-weight: 500; 
+  color: #5c4400; 
+}
+
+.ov-delivery-note p { 
+  margin: 0; 
+  color: #5c4400; 
+}
+
+/* ===== التجاوب مع الجوال والشاشات الصغيرة ===== */
+@media (max-width: 1100px) {
+  .ov-order-row { 
+    grid-template-columns: 1fr 1fr; 
+  }
+  .ov-order-action { 
+    justify-self: start; 
+  }
+}
+
+@media (max-width: 800px) {
+  .ov-page { 
+    grid-template-columns: 1fr; 
+  }
+  .ov-sidebar { 
+    position: static; 
+    height: auto; 
+    padding: 20px; 
+  }
+  .ov-nav { 
+    margin-top: 20px; 
+    flex-direction: row; 
+    flex-wrap: wrap; 
+  }
+  .ov-nav-item { 
+    font-size: 16px; 
+    padding: 8px 14px; 
+  }
+  .ov-sidebar-footer { 
+    margin-top: 12px; 
+  }
+  .ov-main { 
+    padding: 28px 18px 40px; 
+  }
+  .ov-page-header { 
+    flex-direction: column-reverse; 
+    align-items: stretch; 
+  }
+  .ov-page-header h1 { 
+    font-size: 30px; 
+  }
+  .ov-stat-row { 
+    grid-template-columns: 1fr; 
+  }
+  .ov-order-row { 
+    grid-template-columns: 1fr; 
+  }
+}
