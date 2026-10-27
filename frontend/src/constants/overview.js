@@ -1,4 +1,13 @@
-// قائمة حالات الطلب
+import { ROUTES } from "./routes.js";
+
+// حالات التحميل لصفحة النظرة العامة
+export const OVERVIEW_LOAD = Object.freeze({
+  LOADING: "loading",
+  SUCCESS: "success",
+  ERROR: "error",
+});
+
+// هنا حالات الطلب، و value نفس اللي يرجعه الباك
 export const ORDER_STATUS = Object.freeze({
   NEW: Object.freeze({ value: "new", label: "طلب جديد" }),
   PREPARING: Object.freeze({ value: "preparing", label: "قيد التجهيز" }),
@@ -6,54 +15,42 @@ export const ORDER_STATUS = Object.freeze({
   DELIVERED: Object.freeze({ value: "delivered", label: "تم التسليم" }),
 });
 
-// قائمة الحالات القائمة المنسدلة
-export const ORDER_STATUS_OPTIONS = Object.freeze(Object.values(ORDER_STATUS));
+// هنا الحالات كقائمة، عشان القائمة المنسدلة
+export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
-// زر الإجراء في كل طلب يتغير حسب حالته
-export const ORDER_ACTION_LABEL = Object.freeze({
-  [ORDER_STATUS.NEW.value]: "مراجعة الطلب",
-  [ORDER_STATUS.PREPARING.value]: "تفاصيل العنوان والطلب",
-  [ORDER_STATUS.SHIPPED.value]: "تفاصيل العنوان والطلب",
-  [ORDER_STATUS.DELIVERED.value]: "تفاصيل العنوان والطلب",
-});
+// هنا روابط القائمة الجانبية، واللي ما له رابط يطلع "قريبًا"
+export const NAV_ITEMS = [
+  { id: "overview", label: "نظرة عامة", to: ROUTES.SUPPLIER_HOME },
+  { id: "products", label: "المنتجات والمخزون", to: ROUTES.SUPPLIER_PRODUCTS },
+  { id: "orders", label: "الطلبات الواردة", to: null },
+  { id: "messages", label: "الرسائل", to: null },
+];
 
-// عناصر القائمة الجانبية
-export const NAV_ITEMS = Object.freeze([
-  Object.freeze({ id: "overview", label: "نظرة عامة" }),
-  Object.freeze({ id: "products", label: "المنتجات والمخزون" }),
-  Object.freeze({ id: "orders", label: "الطلبات الواردة" }),
-  Object.freeze({ id: "messages", label: "الرسائل" }),
-]);
-
-// نصوص لوحة المورد في مكان واحد
+// هنا كل نصوص النظرة العامة في مكان واحد
 export const OVERVIEW_TEXT = Object.freeze({
-  BRAND: "مكسب",
   ACCOUNT_TYPE: "حساب المورد",
+  SOON: "قريبًا",
   BACK_TO_PLATFORM: "العودة للمنصة",
   GOOD_MORNING: "صباح الخير",
   GOOD_EVENING: "مساء الخير",
   greeting: (salutation, name) => `${salutation}، ${name}`,
-  newOrdersNotice: (count) => `لديك ${count} طلبات جديدة تحتاج مراجعتك.`,
-  PRODUCT_ADD: "+ إضافة منتج جديد",
+  newOrdersNotice: (count) => `لديك ${count} طلبات جديدة تحتاج مراجعة`,
+  ADD_PRODUCT: "+ إضافة منتج جديد",
+  STAT_SALES: "مبيعات هذا الشهر",
   STAT_NEW_ORDERS: "طلبات جديدة",
-  STAT_NEW_ORDERS_HINT: "تحتاج إجراء",
-  STAT_MONTH_SALES: "مبيعات هذا الشهر",
-  STAT_AVAILABLE_PRODUCTS: "منتجات متوفرة",
-  availableOf: (total) => `من ${total} منتجاً`,
+  STAT_NEW_ORDERS_HINT: "تحتاج مراجعة",
+  STAT_PRODUCTS: "منتجات متوفرة",
+  productsOf: (total) => `من ${total} منتج`,
   ORDERS_EYEBROW: "إدارة الطلبات",
-  TITLE_ORDERS: "أحدث الطلبات الواردة",
+  ORDERS_TITLE: "أحدث الطلبات الواردة",
   VIEW_ALL_ORDERS: "عرض جميع الطلبات",
-  productsCount: (n) => (n === 1 ? "1 منتج" : `${n} منتجات`),
+  itemsCount: (count) => `${count} منتج`,
+  STATUS_LABEL: "حالة الطلب",
+  ACTION_REVIEW: "مراجعة الطلب",
+  ACTION_DETAILS: "تفاصيل الطلب",
   CURRENCY: "ر.س",
   DELIVERY_TITLE: "مسؤولية التوصيل",
-  DELIVERY_BODY: "تنبيه للمورد: تأكد من تجهيز الطلب وتسليمه حسب العنوان المحدد في تفاصيل الطلب.",
+  DELIVERY_BODY: "نرجو تجهيز الطلب وتسليمه على العنوان المحدد في تفاصيله.",
   LOADING: "جاري تحميل لوحتك...",
-  ERROR: "ما قدرنا نجيب بياناتك، حاول بعد شوي",
-});
-
-// حالات التحميل
-export const OVERVIEW_LOAD = Object.freeze({
-  LOADING: "loading",
-  READY: "ready",
-  ERROR: "error",
+  ERROR: "ما قدرنا نجيب بياناتك، نرجو المحاولة بعد شوي",
 });
