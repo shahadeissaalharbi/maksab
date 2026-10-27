@@ -29,6 +29,7 @@ export const NAV_LINKS = Object.freeze([
   Object.freeze({ label: "الرئيسية", to: ROUTES.LANDING }),
   Object.freeze({ label: "حاسبة التسعير", to: ROUTES.CALCULATOR }),
   Object.freeze({ label: "سوق الجملة", to: ROUTES.TRADER_HOME }),
+  Object.freeze({ label: "بيانات النشاط ", to: ROUTES.BUSINESS_INFO }),
 ]);
 
 // هنا روابط شريط المورد

@@ -9,6 +9,7 @@ export const ROUTES = Object.freeze({
   CALCULATOR: "/calculator",
   TRADER_HOME: "/trader",
   SUPPLIER_HOME: "/supplier",
+  BUSINESS_INFO: "/business-info",
 });
 
 // هنا كل نوع حساب وين يروح بعد الدخول

@@ -1,5 +1,7 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Router } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
+import Banner from "../components/Banner.jsx";
+import BestSellers from "../components/BestSellers.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import CategoryFilter from "../components/CategoryFilter.jsx";
 import ProductCard from "../components/ProductCard.jsx";
@@ -14,7 +16,8 @@ import "../styles/Trader.css";
 // هنا صفحة التاجر الرئيسية: تركّب الشريط والبحث والتصنيفات والبطاقات
 function TraderHome() {
   const { products, status } = useTraderProducts();
-  const { search, setSearch, category, setCategory, counts, filtered } = useProductFilters(products);
+  const { search, setSearch, category, setCategory, counts, filtered } =
+    useProductFilters(products);
 
   // هنا اللي ما سجل دخول يرجع لصفحة الدخول
   if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
@@ -22,22 +25,38 @@ function TraderHome() {
   return (
     <div className="trader-page" dir="rtl">
       <Navbar userName={getUser()?.full_name} />
-
+      <Banner />
       <section className="market-hero">
         <span className="market-badge">{MARKET_TEXT.BADGE}</span>
         <h1>{MARKET_TEXT.TITLE}</h1>
-        <SearchBar value={search} onChange={setSearch} placeholder={MARKET_TEXT.SEARCH_PLACEHOLDER} />
+        <SearchBar
+          value={search}
+          onChange={setSearch}
+          placeholder={MARKET_TEXT.SEARCH_PLACEHOLDER}
+        />
       </section>
-
+      <BestSellers products={products} />
       <div className="market-body">
-        <CategoryFilter selected={category} onSelect={setCategory} counts={counts} />
+        <CategoryFilter
+          selected={category}
+          onSelect={setCategory}
+          counts={counts}
+        />
 
         <main className="market-results">
-          <p className="market-count">{MARKET_TEXT.productsCount(filtered.length)}</p>
+          <p className="market-count">
+            {MARKET_TEXT.productsCount(filtered.length)}
+          </p>
 
-          {status === LOAD_STATUS.LOADING && <p className="market-state">{MARKET_TEXT.LOADING}</p>}
-          {status === LOAD_STATUS.ERROR && <p className="market-state error">{MARKET_TEXT.ERROR}</p>}
-          {status === LOAD_STATUS.READY && filtered.length === 0 && <p className="market-state">{MARKET_TEXT.EMPTY}</p>}
+          {status === LOAD_STATUS.LOADING && (
+            <p className="market-state">{MARKET_TEXT.LOADING}</p>
+          )}
+          {status === LOAD_STATUS.ERROR && (
+            <p className="market-state error">{MARKET_TEXT.ERROR}</p>
+          )}
+          {status === LOAD_STATUS.READY && filtered.length === 0 && (
+            <p className="market-state">{MARKET_TEXT.EMPTY}</p>
+          )}
 
           <div className="product-grid">
             {filtered.map((product) => (
