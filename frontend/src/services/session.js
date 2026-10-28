@@ -1,7 +1,7 @@
-const STORAGE_KEYS = Object.freeze({
+const STORAGE_KEYS = {
   TOKEN: "token",
   USER: "user",
-});
+};
 
 export function saveSession(token, user) {
   localStorage.setItem(STORAGE_KEYS.TOKEN, token);

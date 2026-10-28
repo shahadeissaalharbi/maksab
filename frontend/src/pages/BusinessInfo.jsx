@@ -10,14 +10,15 @@ import "../styles/Trader.css";
 
 // هنا صفحة بيانات النشاط والعنوان
 function BusinessInfo() {
-  const user = getUser();
+  // لو ما فيه بيانات محفوظة، نبدأ بكائن فاضي
+  const user = getUser() || {};
 
   // الحقول تبدأ بالبيانات المحفوظة، ولو ما فيه تبدأ فاضية
   const [form, setForm] = useState({
-    business_name: user?.business_name ?? "",
-    commercial_register: user?.commercial_register ?? "",
-    phone: user?.phone ?? "",
-    address_text: user?.address_text ?? "",
+    business_name: user.business_name || "",
+    commercial_register: user.commercial_register || "",
+    phone: user.phone || "",
+    address_text: user.address_text || "",
   });
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -58,7 +59,7 @@ function BusinessInfo() {
 
   return (
     <div className="trader-page" dir="rtl">
-      <Navbar userName={user?.full_name} />
+      <Navbar userName={user.full_name} />
 
       <main className="business-info">
         <h1>بيانات النشاط والعنوان</h1>

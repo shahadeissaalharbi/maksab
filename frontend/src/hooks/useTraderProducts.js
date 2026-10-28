@@ -12,7 +12,7 @@ export function useTraderProducts() {
     getTraderProducts()
       .then(({ status: code, data }) => {
         if (code === HTTP_STATUS.OK) {
-          setProducts(data.products ?? []);
+          setProducts(data.products || []);
           setStatus(LOAD_STATUS.READY);
         } else {
           setStatus(LOAD_STATUS.ERROR);
