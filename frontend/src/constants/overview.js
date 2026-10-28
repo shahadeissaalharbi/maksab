@@ -1,13 +1,12 @@
 import { ROUTES } from "./routes.js";
 
-// حالات التحميل لصفحة النظرة العامة
+
 export const OVERVIEW_LOAD = Object.freeze({
   LOADING: "loading",
   SUCCESS: "success",
   ERROR: "error",
 });
 
-// هنا حالات الطلب، و value نفس اللي يرجعه الباك
 export const ORDER_STATUS = Object.freeze({
   NEW: Object.freeze({ value: "new", label: "طلب جديد" }),
   PREPARING: Object.freeze({ value: "preparing", label: "قيد التجهيز" }),
@@ -15,10 +14,10 @@ export const ORDER_STATUS = Object.freeze({
   DELIVERED: Object.freeze({ value: "delivered", label: "تم التسليم" }),
 });
 
-// هنا الحالات كقائمة، عشان القائمة المنسدلة
+
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
-// هنا روابط القائمة الجانبية، واللي ما له رابط يطلع "قريبًا"
+//روابط القائمة الجانبيةا
 export const NAV_ITEMS = [
   { id: "overview", label: "نظرة عامة", to: ROUTES.SUPPLIER_HOME },
   { id: "products", label: "المنتجات والمخزون", to: ROUTES.SUPPLIER_PRODUCTS },
@@ -26,7 +25,6 @@ export const NAV_ITEMS = [
   { id: "messages", label: "الرسائل", to: null },
 ];
 
-// هنا كل نصوص النظرة العامة في مكان واحد
 export const OVERVIEW_TEXT = Object.freeze({
   ACCOUNT_TYPE: "حساب المورد",
   SOON: "قريبًا",
