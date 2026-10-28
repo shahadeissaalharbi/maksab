@@ -24,3 +24,8 @@ export function clearSession() {
   localStorage.removeItem(STORAGE_KEYS.TOKEN);
   localStorage.removeItem(STORAGE_KEYS.USER);
 }
+// هنا أحدث بيانات المستخدم المحفوظة بعد ما يعدلها
+export function updateUser(data) {
+  const user = getUser() || {};
+  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify({ ...user, ...data }));
+}

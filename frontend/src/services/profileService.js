@@ -1,11 +1,11 @@
 import { API_URL, USE_MOCK } from "../config.js";
-import { getToken } from "./session.js";
+import { getToken, updateUser } from "./session.js";
 
 // هنا أرسل بيانات النشاط المعدلة للباك
 export async function updateProfile(data) {
-  // لين يجهز رابط الباك، أطبع البيانات بس وأرجع إنها انحفظت
+  // لين يجهز رابط الباك، أحفظ البيانات في المتصفح بس
   if (USE_MOCK) {
-    console.log("بيانات النشاط:", data);
+    updateUser(data);
     return { status: 200 };
   }
 
@@ -17,6 +17,11 @@ export async function updateProfile(data) {
     },
     body: JSON.stringify(data),
   });
+
+  // إذا انحفظت في الباك، أحدثها في المتصفح بعد
+  if (response.status === 200) {
+    updateUser(data);
+  }
 
   return { status: response.status };
 }
