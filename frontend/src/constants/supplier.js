@@ -12,14 +12,14 @@ export const getStockStatus = (value) =>
 export const SUPPLIER_TEXT = Object.freeze({
   
   greeting: (name) => `أهلًا ${name}`,
-  SUBTITLE: "تابع منتجاتك ومخزونك من مكان واحد",
-  SEARCH_PLACEHOLDER: "ابحث  في منتجاتك...",
+  SUBTITLE: "	منتجاتك ومخزونك، تحت عينك",
+  SEARCH_PLACEHOLDER: "البحث في منتجاتك...",
   STAT_TOTAL: "كل المنتجات",
   STAT_IN_STOCK: "متوفرة",
   STAT_OUT_OF_STOCK: "نفدت",
   LOADING: "جاري تحميل منتجاتك...",
   EMPTY: "ما عندك منتجات تطابق بحثك",
-  ERROR: "ما قدرنا نجيب منتجاتك، حاول بعد شوي",
+  ERROR: "منتجاتك ما وصلت هالمرة، نرجو المحاولة بعد شوي",
   CURRENCY: "ر.س",
   EDIT: "تعديل",
 });

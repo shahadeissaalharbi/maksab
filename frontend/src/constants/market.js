@@ -30,6 +30,7 @@ export const NAV_LINKS = [
   { label: "حاسبة التسعير", to: ROUTES.CALCULATOR },
   { label: "سوق الجملة", to: ROUTES.TRADER_HOME },
   { label: "بيانات النشاط ", to: ROUTES.BUSINESS_INFO },
+  { label: "طلباتي", to: ROUTES.MY_ORDERS },
 ];
 
 // هنا روابط شريط المورد
