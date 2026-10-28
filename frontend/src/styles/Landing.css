@@ -1,0 +1,231 @@
+/* صفحة الهبوط - الألوان من المتغيرات اللي في Auth.css */
+
+.landing {
+  min-height: 100vh;
+  background: #f2f6f4;
+  color: var(--text);
+}
+
+/* ========== الشريط العلوي ========== */
+
+.landing-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 40px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+}
+
+.landing-header nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.landing-login {
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* ========== الأزرار ========== */
+
+.landing-button {
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.landing-outline {
+  padding: 10px 24px;
+  border: 1.5px solid #ffffff;
+  border-radius: 999px;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* ========== الواجهة ========== */
+
+.landing-hero {
+  position: relative;
+  overflow: hidden;
+  max-width: 1060px;
+  margin: 32px auto 0;
+  padding: 64px 48px;
+  border-radius: 24px;
+  background: var(--green-dark);
+  color: #ffffff;
+}
+
+/* نفس الدائرة اللي في صفحة التسجيل */
+.landing-circle {
+  position: absolute;
+  top: -120px;
+  left: -80px;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: var(--green);
+  opacity: 0.6;
+}
+
+/* عشان الكلام والأزرار يطلعون فوق الدائرة */
+.landing-hero > *:not(.landing-circle) {
+  position: relative;
+}
+
+.landing-kicker {
+  margin-bottom: 10px;
+  color: var(--yellow);
+  font-weight: 700;
+}
+
+.landing-hero h1 {
+  max-width: 560px;
+  margin-bottom: 14px;
+  font-size: 40px;
+  line-height: 1.4;
+}
+
+.landing-text {
+  max-width: 480px;
+  margin-bottom: 28px;
+  color: #cfe3da;
+  font-size: 17px;
+}
+
+.landing-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* ========== الأقسام ========== */
+
+.landing-section {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 56px 0 0;
+}
+
+.landing-section h2 {
+  margin-bottom: 20px;
+  font-size: 26px;
+  text-align: center;
+}
+
+.landing-steps,
+.landing-cards {
+  display: flex;
+  gap: 16px;
+}
+
+.landing-step,
+.landing-card {
+  flex: 1;
+  padding: 24px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: #ffffff;
+}
+
+.landing-step-icon {
+  display: block;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--yellow);
+}
+
+.landing-step h3,
+.landing-card h3 {
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.landing-step p,
+.landing-card p {
+  color: var(--muted);
+}
+
+.landing-card {
+  border-color: #bfe7d6;
+  background: #e8faf3;
+}
+
+.landing-card.yellow {
+  border-color: #ffe6a3;
+  background: #fffaeb;
+}
+
+/* ========== الدعوة الأخيرة ========== */
+
+.landing-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1060px;
+  margin: 56px auto 0;
+  padding: 32px 40px;
+  border-radius: 20px;
+  background: var(--green-dark);
+  color: #ffffff;
+}
+
+.landing-cta h2 {
+  font-size: 24px;
+}
+
+/* ========== التذييل ========== */
+
+.landing-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 40px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ========== الجوال ========== */
+
+@media (max-width: 800px) {
+  .landing-header {
+    padding: 12px 16px;
+  }
+
+  .landing-hero,
+  .landing-cta {
+    margin: 16px;
+    padding: 40px 24px;
+  }
+
+  .landing-hero h1 {
+    font-size: 28px;
+  }
+
+  .landing-section {
+    padding: 40px 16px 0;
+  }
+
+  .landing-steps,
+  .landing-cards,
+  .landing-cta,
+  .landing-footer {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .landing-footer {
+    padding: 32px 16px;
+    text-align: center;
+  }
+}

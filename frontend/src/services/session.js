@@ -1,9 +1,8 @@
-const STORAGE_KEYS = Object.freeze({
+const STORAGE_KEYS = {
   TOKEN: "token",
   USER: "user",
-});
+};
 
-// هنا أحفظ التوكن وبيانات المستخدم بعد الدخول
 export function saveSession(token, user) {
   localStorage.setItem(STORAGE_KEYS.TOKEN, token);
   localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
@@ -24,4 +23,9 @@ export function getUser() {
 export function clearSession() {
   localStorage.removeItem(STORAGE_KEYS.TOKEN);
   localStorage.removeItem(STORAGE_KEYS.USER);
+}
+// هنا أحدث بيانات المستخدم المحفوظة بعد ما يعدلها
+export function updateUser(data) {
+  const user = getUser() || {};
+  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify({ ...user, ...data }));
 }
