@@ -37,10 +37,14 @@ function BusinessInfo() {
     // السجل اختياري، بس إذا انكتب لازم يكون 10 أرقام
     const register = form.commercial_register;
     if (register !== "" && !/^\d{10}$/.test(register)) {
-      setMessage({
-        type: "error",
-        text: "رقم السجل التجاري لازم يكون 10 أرقام",
-      });
+      setMessage({ type: "error", text: "رقم السجل التجاري لازم يكون 10 أرقام" });
+      return;
+    }
+
+    // الجوال اختياري، ونقبل 05xxxxxxxx أو +9665xxxxxxxx
+    const phone = form.phone;
+    if (phone !== "" && !/^(05|\+9665)\d{8}$/.test(phone)) {
+      setMessage({ type: "error", text: "رقم الجوال لازم يكون مثل 05xxxxxxxx" });
       return;
     }
 
@@ -105,6 +109,7 @@ function BusinessInfo() {
             type="tel"
             value={form.phone}
             onChange={handleChange}
+            maxLength={13}
             placeholder="05xxxxxxxx"
           />
 
@@ -112,21 +117,3 @@ function BusinessInfo() {
           <textarea
             id="address_text"
             name="address_text"
-            value={form.address_text}
-            onChange={handleChange}
-            rows="3"
-            placeholder="الحي، الشارع، رقم المبنى"
-          />
-
-          <button type="submit" className="register-submit" disabled={loading}>
-            {loading ? "جاري الحفظ..." : "حفظ التغييرات"}
-          </button>
-
-          <FormMessage message={message} />
-        </form>
-      </main>
-    </div>
-  );
-}
-
-export default BusinessInfo;
