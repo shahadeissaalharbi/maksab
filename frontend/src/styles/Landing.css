@@ -6,7 +6,6 @@
   color: var(--text);
 }
 
-
 /* ========== الشريط العلوي ========== */
 
 .landing-header {
@@ -30,7 +29,6 @@
   text-decoration: none;
 }
 
-
 /* ========== الأزرار ========== */
 
 .landing-button {
@@ -50,7 +48,6 @@
   font-weight: 700;
   text-decoration: none;
 }
-
 
 /* ========== الواجهة ========== */
 
@@ -107,7 +104,6 @@
   gap: 12px;
 }
 
-
 /* ========== الأقسام ========== */
 
 .landing-section {
@@ -137,16 +133,14 @@
   background: #ffffff;
 }
 
-.landing-step span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
+.landing-step-icon {
+  display: block;
+  width: 44px;
+  height: 44px;
   margin-bottom: 12px;
-  border-radius: 10px;
+  padding: 10px;
+  border-radius: 12px;
   background: var(--yellow);
-  font-weight: 700;
 }
 
 .landing-step h3,
@@ -170,7 +164,6 @@
   background: #fffaeb;
 }
 
-
 /* ========== الدعوة الأخيرة ========== */
 
 .landing-cta {
@@ -189,7 +182,6 @@
   font-size: 24px;
 }
 
-
 /* ========== التذييل ========== */
 
 .landing-footer {
@@ -202,7 +194,6 @@
   color: var(--muted);
   font-size: 14px;
 }
-
 
 /* ========== الجوال ========== */
 
