@@ -247,3 +247,36 @@
   opacity: 0.6;
   cursor: wait;
 }
+/* هنا شاشة رابط التوثيق */
+.check-email {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.check-email-hint {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.check-email-login {
+  text-align: center;
+  text-decoration: none;
+}
+
+.check-email-wait {
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+.check-email-resend {
+  border: none;
+  background: none;
+  color: var(--green);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
