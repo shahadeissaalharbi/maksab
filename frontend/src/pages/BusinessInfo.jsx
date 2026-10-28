@@ -33,6 +33,17 @@ function BusinessInfo() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+
+    // السجل اختياري، بس إذا انكتب لازم يكون 10 أرقام
+    const register = form.commercial_register;
+    if (register !== "" && !/^\d{10}$/.test(register)) {
+      setMessage({
+        type: "error",
+        text: "رقم السجل التجاري لازم يكون 10 أرقام",
+      });
+      return;
+    }
+
     setLoading(true);
     setMessage(null);
 
@@ -76,15 +87,15 @@ function BusinessInfo() {
             required
           />
 
-          <label htmlFor="commercial_register">
-            رقم السجل التجاري أو وثيقة العمل الحر
-          </label>
+          <label htmlFor="commercial_register">رقم السجل التجاري</label>
           <input
             id="commercial_register"
             name="commercial_register"
             value={form.commercial_register}
             onChange={handleChange}
             inputMode="numeric"
+            maxLength={10}
+            placeholder="10 أرقام"
           />
 
           <label htmlFor="phone">رقم الجوال</label>
