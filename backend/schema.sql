@@ -1,4 +1,4 @@
--- 1. جدول المستخدمين 
+-- 1. جدول المستخدمين
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -13,34 +13,26 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. جدول التصنيفات 
+-- 2. جدول التصنيفات
 CREATE TABLE IF NOT EXISTS categories (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    type VARCHAR(50) NOT NULL DEFAULT 'raw_material' -- القيم المتاحة: raw_material أو packaging
+    type VARCHAR(50) NOT NULL DEFAULT 'raw_material'
 );
 
--- 3. جدول المنتجات 
+-- 3. جدول المنتجات
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
-    supplier_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    supplier_id INT REFERENCES users(id),
     category_id INT REFERENCES categories(id) ON DELETE SET NULL,
     name VARCHAR(150) NOT NULL,
     description TEXT,
-    price NUMERIC(10, 2) NOT NULL,
+    price NUMERIC(10, 2) NOT NULL CHECK (price >= 0),
+    stock_quantity INT NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
     unit VARCHAR(50),
     moq INT DEFAULT 1,
     stock_status VARCHAR(50) DEFAULT 'in_stock',
     image_url VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-
-
-
-
-
-
-
-
