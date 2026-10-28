@@ -6,8 +6,16 @@ import "../styles/Landing.css";
 
 // هنا خطوات "كيف يشتغل مكسب"
 const steps = [
-  { number: "١", title: "تسعير بالأرقام", text: "حاسبة تعرّفك تكلفة منتجك وسعره الصح" },
-  { number: "٢", title: "شراء بالجملة", text: "موادك وتغليفك من موردين سعوديين مباشرة" },
+  {
+    number: "١",
+    title: "تسعير بالأرقام",
+    text: "حاسبة تعرّفك تكلفة منتجك وسعره الصح",
+  },
+  {
+    number: "٢",
+    title: "شراء بالجملة",
+    text: "موادك وتغليفك من موردين سعوديين مباشرة",
+  },
   { number: "٣", title: "مكسب أوضح", text: "تكلفة أقل، وربح واضح بالأرقام" },
 ];
 
@@ -32,11 +40,12 @@ function Landing() {
         <p className="landing-kicker">مكسب لأعمال أوضح</p>
         <h1>من أول تكلفة، إلى طلب جملة ناجح.</h1>
         <p className="landing-text">
-          منصة تجمع الأسر المنتجة والموردين: تسعير أوضح، وشراء بالجملة من مكان واحد.
+          منصة تجمع الأسر المنتجة والموردين: تسعير أوضح، وشراء بالجملة من مكان
+          واحد.
         </p>
         <div className="landing-actions">
           <Link to={ROUTES.REGISTER} className="landing-button">
-            إنشاء حساب
+            إنضمام لمكسب
           </Link>
           <Link to={ROUTES.LOGIN} className="landing-outline">
             عندي حساب
@@ -74,7 +83,7 @@ function Landing() {
       <section className="landing-cta">
         <h2>مشروعك يستاهل مكسب أكبر</h2>
         <Link to={ROUTES.REGISTER} className="landing-button">
-          إنشاء حساب
+          يلا نبدأ ←
         </Link>
       </section>
 
