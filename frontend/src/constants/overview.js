@@ -1,6 +1,5 @@
 import { ROUTES } from "./routes.js";
 
-
 export const OVERVIEW_LOAD = Object.freeze({
   LOADING: "loading",
   SUCCESS: "success",
@@ -14,7 +13,6 @@ export const ORDER_STATUS = Object.freeze({
   DELIVERED: Object.freeze({ value: "delivered", label: "تم التسليم" }),
 });
 
-
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
 //روابط القائمة الجانبيةا
@@ -22,6 +20,7 @@ export const NAV_ITEMS = [
   { id: "overview", label: "نظرة عامة", to: ROUTES.SUPPLIER_HOME },
   { id: "products", label: "المنتجات والمخزون", to: ROUTES.SUPPLIER_PRODUCTS },
   { id: "orders", label: "الطلبات الواردة", to: null },
+  { id: "business", label: "بيانات النشاط", to: ROUTES.BUSINESS_INFO },
   { id: "messages", label: "الرسائل", to: null },
 ];
 
