@@ -6,16 +6,21 @@ import "../styles/Landing.css";
 
 // هنا خطوات "كيف يشتغل مكسب"
 const steps = [
-  { icon: "/icons/calculator.svg", title: "تسعير بالأرقام", text: "حاسبة تعرّفك تكلفة منتجك وسعره الصح" },
-  { icon: "/icons/shopping-cart.svg", title: "شراء بالجملة", text: "موادك وتغليفك من موردين سعوديين مباشرة" },
-  { icon: "/icons/trending-up.svg", title: "مكسب أوضح", text: "تكلفة أقل، وربح واضح بالأرقام" },
-];
   {
-    number: "٢",
+    icon: "/icons/calculator.svg",
+    title: "تسعير بالأرقام",
+    text: "حاسبة تعرّفك تكلفة منتجك وسعره الصح",
+  },
+  {
+    icon: "/icons/shopping-cart.svg",
     title: "شراء بالجملة",
     text: "موادك وتغليفك من موردين سعوديين مباشرة",
   },
-  { number: "٣", title: "مكسب أوضح", text: "تكلفة أقل، وربح واضح بالأرقام" },
+  {
+    icon: "/icons/trending-up.svg",
+    title: "مكسب أوضح",
+    text: "تكلفة أقل، وربح واضح بالأرقام",
+  },
 ];
 
 // هنا الصفحة الأولى اللي يشوفها الزائر، ومفتوحة بدون حساب
@@ -56,7 +61,7 @@ function Landing() {
         <h2>كيف يشتغل مكسب؟</h2>
         <div className="landing-steps">
           {steps.map((step) => (
-                       <div key={step.title} className="landing-step">
+            <div key={step.title} className="landing-step">
               <img src={step.icon} alt="" className="landing-step-icon" />
               <h3>{step.title}</h3>
               <p>{step.text}</p>
