@@ -5,14 +5,16 @@ import AccountTypeSelector from "../components/AccountTypeSelector.jsx";
 import FormField from "../components/FormField.jsx";
 import SubmitButton from "../components/SubmitButton.jsx";
 import FormMessage from "../components/FormMessage.jsx";
+import CheckEmail from "../components/CheckEmail.jsx";
 import { DEFAULT_ACCOUNT_TYPE } from "../constants/accountTypes.js";
 import {
   HTTP_STATUS,
   SUCCESS_MESSAGES,
+  VERIFY_TEXT,
   getErrorMessage,
 } from "../constants/messages.js";
 import { ROUTES } from "../constants/routes.js";
-import { registerUser } from "../services/authService.js";
+import { registerUser, VERIFICATION_LIVE } from "../services/authService.js";
 import { useFormStatus } from "../hooks/useFormStatus.js";
 
 const REDIRECT_DELAY_MS = 1500;
@@ -24,6 +26,8 @@ function Register() {
   const [form, setForm] = useState(EMPTY_FORM);
   const { loading, message, showSuccess, showError, run } = useFormStatus();
   const navigate = useNavigate();
+  // هنا الإيميل اللي انرسل له الرابط
+  const [sentTo, setSentTo] = useState("");
 
   // هنا دالة وحدة لكل الحقول، تعرف الحقل من name
   const updateField = (event) =>
@@ -39,13 +43,32 @@ function Register() {
       });
 
       if (status === HTTP_STATUS.CREATED) {
-        showSuccess(SUCCESS_MESSAGES.REGISTER);
-        setTimeout(() => navigate(ROUTES.LOGIN), REDIRECT_DELAY_MS);
+        // إذا التوثيق شغال نوريه شاشة الرابط، وإذا لا يروح للدخول مثل قبل
+        if (VERIFICATION_LIVE) {
+          setSentTo(form.email);
+        } else {
+          showSuccess(SUCCESS_MESSAGES.REGISTER);
+          setTimeout(() => navigate(ROUTES.LOGIN), REDIRECT_DELAY_MS);
+        }
       } else {
         showError(getErrorMessage(status));
       }
     });
   };
+
+  // بعد التسجيل تطلع شاشة الرابط بدال الفورم
+  if (sentTo) {
+    return (
+      <AuthLayout
+        subtitle={VERIFY_TEXT.SUBTITLE}
+        title={VERIFY_TEXT.TITLE}
+        description={`${VERIFY_TEXT.SENT_TO} ${sentTo}`}
+        showBrand
+      >
+        <CheckEmail email={sentTo} onBack={() => setSentTo("")} />{" "}
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout
