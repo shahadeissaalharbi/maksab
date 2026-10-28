@@ -379,3 +379,32 @@ def list_products():
     except psycopg.Error:
         current_app.logger.exception("Database error while fetching products")
         return jsonify({"error": "Database temporarily unavailable"}), 503
+@products_bp.route("/api/categories", methods=["GET"])
+def get_categories():
+    try:
+        with psycopg.connect(Config.DATABASE_URL) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT id, name, type
+                    FROM categories
+                    ORDER BY id;
+                """)
+                rows = cursor.fetchall()
+
+        categories = [
+            {
+                "id": row[0],
+                "name": row[1],
+                "type": row[2]
+            }
+            for row in rows
+        ]
+
+        return jsonify({
+            "categories": categories,
+            "count": len(categories)
+        }), 200
+
+    except psycopg.Error:
+        current_app.logger.exception("Database error while fetching categories")
+        return jsonify({"error": "Database temporarily unavailable"}), 503
