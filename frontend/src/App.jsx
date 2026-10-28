@@ -7,6 +7,7 @@ import BusinessInfo from "./pages/BusinessInfo.jsx";
 import Landing from "./pages/Landing.jsx";
 import SupplierOverview from "./pages/SupplierOverview.jsx";
 import SupplierHome from "./pages/SupplierHome.jsx";
+import MyOrders from "./pages/MyOrders.jsx";
 import { ROUTES } from "./constants/routes.js";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         {/* صفحات الأسرة المنتجة */}
         <Route path={ROUTES.TRADER_HOME} element={<TraderHome />} />
         <Route path={ROUTES.BUSINESS_INFO} element={<BusinessInfo />} />
+        <Route path={ROUTES.MY_ORDERS} element={<MyOrders />} />
 
         {/* صفحات المورد */}
         <Route path={ROUTES.SUPPLIER_HOME} element={<SupplierOverview />} />
