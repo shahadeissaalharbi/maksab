@@ -10,6 +10,7 @@ import { SUPPLIER_TEXT } from "../constants/supplier.js";
 import { getToken, getUser } from "../services/session.js";
 import { useSupplierHome } from "../hooks/useSupplierHome.js";
 import { useProductFilters } from "../hooks/useProductFilters.js";
+import "../styles/Supplier.css";
 import "../styles/Auth.css";
 import "../styles/Trader.css";
 import "../styles/Supplier.css";

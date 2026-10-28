@@ -9,6 +9,7 @@ export const ROUTES = {
   CALCULATOR: "/calculator",
   TRADER_HOME: "/trader",
   SUPPLIER_HOME: "/supplier",
+  SUPPLIER_PRODUCTS: "/supplier/products",
   BUSINESS_INFO: "/business-info",
 };
 

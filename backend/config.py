@@ -1,4 +1,11 @@
 import os
+from dotenv import load_dotenv
+
+# تحميل المتغيرات من ملف .env
+load_dotenv()
+
+class Config:
+    DATABASE_URL = os.getenv("DATABASE_URL")
 
 class Config:
     DATABASE_URL = os.environ.get("DATABASE_URL")
