@@ -1,4 +1,4 @@
-import { Navigate, Router } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import Banner from "../components/Banner.jsx";
 import BestSellers from "../components/BestSellers.jsx";
@@ -26,16 +26,13 @@ function TraderHome() {
     <div className="trader-page" dir="rtl">
       <Navbar userName={getUser()?.full_name} />
       <Banner />
+      <BestSellers products={products} />
+
       <section className="market-hero">
         <span className="market-badge">{MARKET_TEXT.BADGE}</span>
         <h1>{MARKET_TEXT.TITLE}</h1>
-        <SearchBar
-          value={search}
-          onChange={setSearch}
-          placeholder={MARKET_TEXT.SEARCH_PLACEHOLDER}
-        />
       </section>
-      <BestSellers products={products} />
+
       <div className="market-body">
         <CategoryFilter
           selected={category}
@@ -44,6 +41,12 @@ function TraderHome() {
         />
 
         <main className="market-results">
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder={MARKET_TEXT.SEARCH_PLACEHOLDER}
+          />
+
           <p className="market-count">
             {MARKET_TEXT.productsCount(filtered.length)}
           </p>

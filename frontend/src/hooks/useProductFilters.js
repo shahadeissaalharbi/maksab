@@ -1,34 +1,27 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { CATEGORIES } from "../constants/categories.js";
 
-// هنا منطق البحث والتصنيف، مفصول عن الشكل
+// هنا البحث والتصنيف، وتستخدمه صفحة التاجر وصفحة المورد
 export function useProductFilters(products) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState(CATEGORIES.ALL.value);
 
-  // هنا أحسب كم منتج في كل تصنيف عشان الأرقام جنب الأزرار
-  const counts = useMemo(
-    () =>
-      products.reduce(
-        (result, product) => {
-          const type = product.category?.type;
-          if (type) result[type] = (result[type] ?? 0) + 1;
-          return result;
-        },
-        { [CATEGORIES.ALL.value]: products.length }
-      ),
-    [products]
-  );
+  // أعد كم منتج في كل تصنيف، عشان الرقم اللي جنب كل زر
+  const counts = { [CATEGORIES.ALL.value]: products.length };
+  for (const product of products) {
+    const type = product.category?.type;
+    if (type) {
+      counts[type] = (counts[type] || 0) + 1;
+    }
+  }
 
-  // هنا المنتجات اللي تطابق البحث والتصنيف المختار
-  const filtered = useMemo(() => {
-    const query = search.trim();
-    return products.filter(
-      (product) =>
-        (category === CATEGORIES.ALL.value || product.category?.type === category) &&
-        (!query || product.name.includes(query))
-    );
-  }, [products, search, category]);
+  // أخلي بس المنتجات اللي تطابق التصنيف والبحث
+  const filtered = products.filter((product) => {
+    const matchCategory =
+      category === CATEGORIES.ALL.value || product.category?.type === category;
+    const matchSearch = product.name.includes(search.trim());
+    return matchCategory && matchSearch;
+  });
 
   return { search, setSearch, category, setCategory, counts, filtered };
 }

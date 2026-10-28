@@ -165,7 +165,9 @@
 /* ========== الأكثر مبيعًا ========== */
 
 .best-sellers {
-  margin-bottom: 32px;
+  width: calc(100% - 40px);
+  max-width: 1060px;
+  margin: 24px auto 0;
   padding: 20px;
   border: 1.5px solid #ffe6a3;
   border-radius: 20px;
@@ -176,6 +178,12 @@
   margin-bottom: 12px;
   color: var(--amber);
   font-size: 20px;
+}
+
+/* البحث داخل عمود النتائج ياخذ العرض كله */
+.market-results .search-bar {
+  max-width: none;
+  margin-bottom: 12px;
 }
 /* ========== التصنيفات (يمين) والمنتجات (يسار) ========== */
 
