@@ -7,6 +7,8 @@ import { getToken, getUser } from "../services/session.js";
 import { updateProfile } from "../services/profileService.js";
 import "../styles/Auth.css";
 import "../styles/Trader.css";
+import { NAV_LINKS, SUPPLIER_NAV_LINKS } from "../constants/market.js";
+import { ACCOUNT_TYPES } from "../constants/accountTypes.js";
 
 // هنا صفحة بيانات النشاط والعنوان
 function BusinessInfo() {
@@ -80,8 +82,15 @@ function BusinessInfo() {
 
   return (
     <div className="trader-page" dir="rtl">
-      <Navbar userName={user.full_name} />
-
+      {/* المورد يشوف روابطه، والأسرة المنتجة روابطها */}
+      <Navbar
+        userName={user.full_name}
+        links={
+          user.role === ACCOUNT_TYPES.SUPPLIER.value
+            ? SUPPLIER_NAV_LINKS
+            : NAV_LINKS
+        }
+      />
       <main className="business-info">
         <h1>بيانات النشاط والعنوان</h1>
         <p>عنوان دقيق = طلبات توصل أسرع</p>
