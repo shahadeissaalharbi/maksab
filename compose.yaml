@@ -1,4 +1,4 @@
-﻿ services:
+﻿services:
   backend:
     build:
       context: .
@@ -8,6 +8,9 @@
     environment:
       - DATABASE_URL=postgresql://maksab_user:maksab_dev_password@db:5432/maksab_db
       - JWT_SECRET=${JWT_SECRET:-your_default_jwt_secret}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - EMAIL_VERIFICATION_BASE_URL=${EMAIL_VERIFICATION_BASE_URL:-http://localhost:5000}
     depends_on:
       db:
         condition: service_healthy
