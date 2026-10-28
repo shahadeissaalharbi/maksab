@@ -6,7 +6,11 @@ import FormField from "../components/FormField.jsx";
 import SubmitButton from "../components/SubmitButton.jsx";
 import FormMessage from "../components/FormMessage.jsx";
 import { DEFAULT_ACCOUNT_TYPE } from "../constants/accountTypes.js";
-import { HTTP_STATUS, SUCCESS_MESSAGES, getErrorMessage } from "../constants/messages.js";
+import {
+  HTTP_STATUS,
+  SUCCESS_MESSAGES,
+  getErrorMessage,
+} from "../constants/messages.js";
 import { ROUTES } from "../constants/routes.js";
 import { registerUser } from "../services/authService.js";
 import { useFormStatus } from "../hooks/useFormStatus.js";
@@ -22,13 +26,17 @@ function Register() {
   const navigate = useNavigate();
 
   // هنا دالة وحدة لكل الحقول، تعرف الحقل من name
-  const updateField = (event) => setForm({ ...form, [event.target.name]: event.target.value });
+  const updateField = (event) =>
+    setForm({ ...form, [event.target.name]: event.target.value });
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     run(async () => {
-      const { status } = await registerUser({ ...form, accountType: accountType.value });
+      const { status } = await registerUser({
+        ...form,
+        accountType: accountType.value,
+      });
 
       if (status === HTTP_STATUS.CREATED) {
         showSuccess(SUCCESS_MESSAGES.REGISTER);
@@ -41,9 +49,9 @@ function Register() {
 
   return (
     <AuthLayout
-      subtitle="ابدئي مشروعك مع مكسب"
-      title="أنشئي حساب أعمالك"
-      description="اختاري نوع الحساب وأدخلي بياناتك الأساسية."
+      subtitle="أول خطوة… أول مكسب"
+      title="حساب أعمال جديد"
+      description="دقيقة وحدة، ومشروعك على الطريق."
       showBrand
     >
       <AccountTypeSelector selected={accountType} onSelect={setAccountType} />
@@ -81,12 +89,16 @@ function Register() {
           required
         />
 
-        <SubmitButton loading={loading} label="إنشاء الحساب" loadingLabel="جاري إنشاء الحساب..." />
+        <SubmitButton
+          loading={loading}
+          label="إنشاء الحساب"
+          loadingLabel="جاري إنشاء الحساب..."
+        />
         <FormMessage message={message} />
       </form>
 
       <p className="register-login">
-        لديك حساب؟ <Link to={ROUTES.LOGIN}>سجلي الدخول</Link>
+        لديك حساب؟ <Link to={ROUTES.LOGIN}>تسجيل الدخول</Link>
       </p>
     </AuthLayout>
   );

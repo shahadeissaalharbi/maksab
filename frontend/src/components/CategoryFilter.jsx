@@ -15,7 +15,7 @@ function CategoryFilter({ selected, onSelect, counts }) {
           onClick={() => onSelect(category.value)}
         >
           <span>{category.label}</span>
-          <small>{counts[category.value] ?? 0}</small>
+          <small>{counts[category.value] || 0}</small>
         </button>
       ))}
     </aside>

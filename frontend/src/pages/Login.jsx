@@ -44,7 +44,7 @@ function Login() {
   };
 
   return (
-    <AuthLayout subtitle="أهلًا فيك من جديد" title="سجلي دخولك" description="أدخلي الإيميل وكلمة المرور.">
+    <AuthLayout subtitle="رجعتك مكسب" title="تسجيل الدخول" description="طلباتك وأرقامك بانتظارك.">
       <form onSubmit={handleSubmit}>
         <FormField
           id="email"
@@ -72,7 +72,7 @@ function Login() {
       </form>
 
       <p className="register-login">
-        ما عندك حساب؟ <Link to={ROUTES.REGISTER}>أنشئي حساب</Link>
+        ما عندك حساب؟ <Link to={ROUTES.REGISTER}>إنشاء حساب</Link>
       </p>
     </AuthLayout>
   );

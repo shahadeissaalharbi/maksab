@@ -1,22 +1,37 @@
-import { useState, useEffect } from "react";
-import { OVERVIEW_LOAD } from "../constants/overview.js";
+import { useEffect, useState } from "react";
+import { HTTP_STATUS } from "../constants/messages.js";
+import { LOAD_STATUS } from "../constants/market.js";
+import { getOverview } from "../services/overviewService.js";
 
+// هنا أجيب بيانات المورد وأرقامه وطلباته أول ما تفتح الصفحة
 export function useOverview() {
-  const [supplier, setSupplier] = useState({ business_name: "متجر بيادر للتمور" });
-  const [stats, setStats] = useState({
-    total_sales: 15420,
-    new_orders: 5,
-    active_products: 12
-  });
-  const [orders, setOrders] = useState([
-    { id: 1, customer_name: "سارة أحمد", total: 250, status: "جديد", date: "2026-10-24" },
-    { id: 2, customer_name: "محمد خالد", total: 420, status: "قيد التنفيذ", date: "2026-10-23" }
-  ]);
-  const [status, setStatus] = useState(OVERVIEW_LOAD.SUCCESS);
+  const [supplier, setSupplier] = useState(null);
+  const [stats, setStats] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [status, setStatus] = useState(LOAD_STATUS.LOADING);
 
-  const changeOrderStatus = (orderId, newStatus) => {
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
-  };
+  useEffect(() => {
+    getOverview()
+      .then(({ status: code, data }) => {
+        if (code === HTTP_STATUS.OK) {
+          setSupplier(data.supplier);
+          setStats(data.stats);
+          setOrders(data.orders || []);
+          setStatus(LOAD_STATUS.READY);
+        } else {
+          setStatus(LOAD_STATUS.ERROR);
+        }
+      })
+      .catch(() => setStatus(LOAD_STATUS.ERROR));
+  }, []);
+
+  // هنا أغير حالة طلب واحد في الصفحة، ولما ينربط الباك نرسلها له
+  function changeOrderStatus(orderId, newStatus) {
+    const updated = orders.map((order) =>
+      order.id === orderId ? { ...order, status: newStatus } : order
+    );
+    setOrders(updated);
+  }
 
   return { supplier, stats, orders, status, changeOrderStatus };
 }

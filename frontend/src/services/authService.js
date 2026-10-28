@@ -1,9 +1,9 @@
 import { postJson } from "./http.js";
 
-const AUTH_ENDPOINTS = Object.freeze({
+const AUTH_ENDPOINTS = {
   REGISTER: "/api/auth/register",
   LOGIN: "/api/auth/login",
-});
+};
 
 // هنا أحول بيانات الواجهة لنفس الأسماء اللي ينتظرها الباك
 export const registerUser = ({ businessName, email, password, accountType }) =>
