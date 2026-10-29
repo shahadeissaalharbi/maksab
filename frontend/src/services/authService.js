@@ -7,8 +7,7 @@ const AUTH_ENDPOINTS = {
 };
 
 // التوثيق ما نزل على Railway للحين، فلما ينزل نخليها true
-export const VERIFICATION_LIVE = false;
-
+export const VERIFICATION_LIVE = true;
 // هنا أحول بيانات الواجهة لنفس الأسماء اللي ينتظرها الباك
 export const registerUser = ({ businessName, email, password, accountType }) =>
   postJson(AUTH_ENDPOINTS.REGISTER, {

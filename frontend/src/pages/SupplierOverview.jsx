@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import OverviewSidebar from "../components/OverviewSidebar.jsx";
 import OverviewStatCard from "../components/OverviewStatCard.jsx";
 import OverviewOrderRow from "../components/OverviewOrderRow.jsx";
+import AddProductModal from "../components/AddProductModal.jsx";
 import { ROUTES } from "../constants/routes.js";
 import { LOAD_STATUS } from "../constants/market.js";
+import { HTTP_STATUS } from "../constants/messages.js";
 import { OVERVIEW_TEXT } from "../constants/overview.js";
 import { getToken } from "../services/session.js";
 import { useOverview } from "../hooks/useOverview.js";
+import { addSupplierProduct } from "../services/supplierService.js";
 import { formatNumber, formatToday } from "../utils/overviewFormat.js";
 import "../styles/Auth.css";
 import "../styles/SupplierOverview.css";
@@ -21,6 +25,17 @@ function getSalutation() {
 function SupplierOverview() {
   const { supplier, stats, orders, status, changeOrderStatus } = useOverview();
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+
+  // هنا أضيف المنتج، وإذا انضاف أروح لصفحة المنتجات عشان يشوفه
+  const handleAdd = async (product) => {
+    const result = await addSupplierProduct(product);
+    if (result.status === HTTP_STATUS.CREATED) {
+      navigate(ROUTES.SUPPLIER_PRODUCTS);
+    }
+    return result;
+  };
 
   // هنا اللي ما سجل دخول يرجع لصفحة الدخول
   if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
@@ -49,6 +64,7 @@ function SupplierOverview() {
             className="ov-btn-primary ov-add"
             onClick={() => navigate("/supplier/products")}
           >
+          <button type="button" className="ov-btn-primary ov-add" onClick={() => setShowModal(true)}>
             {OVERVIEW_TEXT.ADD_PRODUCT}
           </button>
         </header>
@@ -89,6 +105,8 @@ function SupplierOverview() {
           <p>{OVERVIEW_TEXT.DELIVERY_BODY}</p>
         </section>
       </main>
+
+      {showModal && <AddProductModal onClose={() => setShowModal(false)} onSubmit={handleAdd} />}
     </div>
   );
 }

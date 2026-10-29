@@ -1,0 +1,82 @@
+/* هنا شكل الفوتر: أخضر غامق بهوية مكسب */
+.site-footer {
+  padding: 40px 24px 20px;
+  background: var(--green-dark, #022c22);
+  color: #cfe3da;
+  font-size: 14px;
+}
+
+/* هنا الأقسام الثلاثة: الشعار ياخذ عمود أعرض */
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+/* هنا كلمة مكسب في الشعار تصير بيضاء عشان تبان على الأخضر */
+.site-footer .register-logo {
+  color: #ffffff;
+}
+
+/* هنا جملة مكسب وسطر رؤية 2030 تحت الشعار */
+.footer-tagline {
+  margin-top: 14px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.footer-vision {
+  display: block;
+  margin-top: 6px;
+  color: #cfe3da;
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.footer-links,
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.site-footer h4 {
+  margin-bottom: 4px;
+  color: var(--yellow, #ffbd20);
+  font-size: 15px;
+}
+
+.site-footer a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: var(--yellow, #ffbd20);
+}
+
+/* هنا سطر الحقوق تحت خط فاصل */
+.footer-copy {
+  max-width: 1060px;
+  margin: 32px auto 0;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  text-align: center;
+  font-size: 13px;
+}
+
+/* هنا الجوال: الأقسام فوق بعض وفي النص */
+@media (max-width: 800px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .site-footer .register-logo {
+    justify-content: center;
+  }
+}
