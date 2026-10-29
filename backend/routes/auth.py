@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from config import Config
 from decorators import token_required
-from email_service import send_verification_email
+# from email_service import send_verification_email
 from verification_tokens import (
     generate_verification_token,
     hash_verification_token,
@@ -60,13 +60,11 @@ def register():
 
     password_hash = generate_password_hash(password)
 
-    # Generate verification token
-    token, token_hash, expires_at = generate_verification_token()
-
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
 
+                # تم تعيين is_verified = TRUE لتجاوز تفعيل البريد للاختبار
                 cursor.execute("""
                     INSERT INTO users (
                         name,
@@ -75,7 +73,7 @@ def register():
                         role,
                         is_verified
                     )
-                    VALUES (%s, %s, %s, %s, FALSE)
+                    VALUES (%s, %s, %s, %s, TRUE)
                     RETURNING id;
                 """, (
                     full_name,
@@ -85,19 +83,6 @@ def register():
                 ))
 
                 user_id = cursor.fetchone()[0]
-
-                cursor.execute("""
-                    INSERT INTO email_verification_tokens (
-                        user_id,
-                        token_hash,
-                        expires_at
-                    )
-                    VALUES (%s, %s, %s);
-                """, (
-                    user_id,
-                    token_hash,
-                    expires_at
-                ))
 
     except psycopg.errors.UniqueViolation:
         return jsonify({
@@ -112,106 +97,14 @@ def register():
             "error": "Database unavailable"
         }), 503
 
-    verification_url = (
-        f"{Config.EMAIL_VERIFICATION_BASE_URL.rstrip('/')}"
-        f"/api/auth/verify-email?"
-        f"{urlencode({'token': token})}"
-    )
-
-    # Send verification email
-    try:
-        send_verification_email(email, verification_url)
-
-    except Exception:
-        current_app.logger.exception(
-            "Failed to send verification email"
-        )
-
-        # Delete only the token created by this failed attempt.
-        try:
-            with get_db_connection() as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute("""
-                        DELETE FROM email_verification_tokens
-                        WHERE token_hash = %s
-                          AND user_id = %s
-                          AND used_at IS NULL;
-                    """, (token_hash, user_id))
-
-        except psycopg.Error:
-            current_app.logger.exception(
-                "Failed to clean up verification token"
-            )
-
-        return jsonify({
-            "error": "Verification email could not be sent"
-        }), 502
-
     return jsonify({
-        "message": "Account created. Please verify your email.",
+        "message": "Account created successfully (OTP bypassed for testing).",
         "user_id": user_id
     }), 201
 
 @auth_bp.route("/verify-email", methods=["GET"])
 def verify_email():
-    token = request.args.get("token")
-
-    if not token:
-        return jsonify({
-            "error": "Verification token is required"
-        }), 400
-
-    token_hash = hash_verification_token(token)
-
-    try:
-        with get_db_connection() as connection:
-            with connection.cursor() as cursor:
-
-                cursor.execute("""
-                    SELECT id, user_id
-                    FROM email_verification_tokens
-                    WHERE token_hash = %s
-                      AND used_at IS NULL
-                      AND expires_at > NOW()
-                    FOR UPDATE;
-                """, (token_hash,))
-
-                verification = cursor.fetchone()
-
-                if not verification:
-                    return jsonify({
-                        "error": "Invalid or expired verification link"
-                    }), 400
-
-                verification_id, user_id = verification
-
-                # Activate account
-                cursor.execute("""
-                    UPDATE users
-                    SET is_verified = TRUE,
-                        email_verified_at = NOW()
-                    WHERE id = %s;
-                """, (user_id,))
-
-                # Mark token as used
-                cursor.execute("""
-                    UPDATE email_verification_tokens
-                    SET used_at = NOW()
-                    WHERE id = %s;
-                """, (verification_id,))
-
-    except psycopg.Error:
-        current_app.logger.exception(
-            "Email verification database error"
-        )
-
-        return jsonify({
-            "error": "Database unavailable"
-        }), 503
-
-    return jsonify({
-        "message": "Email verified successfully. You can now log in."
-    }), 200
+    return jsonify({"message": "Email verification is temporarily bypassed."}), 200
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
@@ -265,12 +158,6 @@ def login():
         return jsonify({
             "error": "Invalid email or password"
         }), 401
-
-    # Prevent login before email verification
-    if not user[5]:
-        return jsonify({
-            "error": "Please verify your email before logging in"
-        }), 403
 
     now = datetime.now(timezone.utc)
 
@@ -336,102 +223,7 @@ def logout():
     return jsonify({
         "message": "Remove the token on the client to logout"
     }), 200
+
 @auth_bp.route("/resend-verification", methods=["POST"])
 def resend_verification():
-    data = request.get_json(silent=True)
-
-    if not isinstance(data, dict):
-        return jsonify({"error": "Invalid data"}), 400
-
-    email = data.get("email")
-
-    if not isinstance(email, str):
-        return jsonify({"error": "Valid email is required"}), 400
-
-    email = email.strip().lower()
-
-    if not is_valid_email(email):
-        return jsonify({"error": "Valid email is required"}), 400
-
-    # Same response whether the account exists or is already verified.
-    generic_response = {
-        "message": "If this account needs verification, an email will be sent."
-    }
-
-    try:
-        with get_db_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    SELECT id, is_verified
-                    FROM users
-                    WHERE email = %s;
-                """, (email,))
-
-                user = cursor.fetchone()
-
-                if not user or user[1]:
-                    return jsonify(generic_response), 200
-
-                user_id = user[0]
-
-                # Limit requests: one new token per 5 minutes.
-                cursor.execute("""
-                    SELECT 1
-                    FROM email_verification_tokens
-                    WHERE user_id = %s
-                      AND created_at > NOW() - INTERVAL '5 minutes'
-                    LIMIT 1;
-                """, (user_id,))
-
-                if cursor.fetchone():
-                    return jsonify(generic_response), 200
-
-                token, token_hash, expires_at = generate_verification_token()
-
-                cursor.execute("""
-                    INSERT INTO email_verification_tokens (
-                        user_id,
-                        token_hash,
-                        expires_at
-                    )
-                    VALUES (%s, %s, %s);
-                """, (user_id, token_hash, expires_at))
-
-    except psycopg.Error:
-        current_app.logger.exception("Resend verification database error")
-        return jsonify({"error": "Database unavailable"}), 503
-
-    verification_url = (
-        f"{Config.EMAIL_VERIFICATION_BASE_URL.rstrip('/')}"
-        f"/api/auth/verify-email?"
-        f"{urlencode({'token': token})}"
-    )
-
-    try:
-        send_verification_email(email, verification_url)
-
-    except Exception:
-        current_app.logger.exception(
-            "Failed to resend verification email"
-        )
-
-        # Delete the token created by this failed attempt only.
-        try:
-            with get_db_connection() as connection:
-                with connection.cursor() as cursor:
-                    cursor.execute("""
-                        DELETE FROM email_verification_tokens
-                        WHERE token_hash = %s
-                          AND user_id = %s
-                          AND used_at IS NULL;
-                    """, (token_hash, user_id))
-
-        except psycopg.Error:
-            current_app.logger.exception(
-                "Failed to clean up verification token"
-            )
-
-        return jsonify({
-            "error": "Verification email could not be sent"
-        }), 502
-    return jsonify(generic_response), 200
+    return jsonify({"message": "Bypassed"}), 200
