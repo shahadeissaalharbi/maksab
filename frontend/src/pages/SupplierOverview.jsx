@@ -57,12 +57,7 @@ function SupplierOverview() {
             <h1>{OVERVIEW_TEXT.greeting(getSalutation(), supplier.business_name)}</h1>
             <p className="ov-subtitle">{OVERVIEW_TEXT.newOrdersNotice(stats.new_orders)}</p>
           </div>
-          
-          <button 
-            type="button" 
-            className="ov-btn-primary ov-add" 
-            onClick={() => setShowModal(true)}
-          >
+          <button type="button" className="ov-btn-primary ov-add" onClick={() => setShowModal(true)}>
             {OVERVIEW_TEXT.ADD_PRODUCT}
           </button>
         </header>
@@ -110,3 +105,9 @@ function SupplierOverview() {
 }
 
 export default SupplierOverview;
+.ov-btn-primary.ov-add {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 99;
+}
