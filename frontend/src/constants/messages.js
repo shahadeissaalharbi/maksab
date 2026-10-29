@@ -1,4 +1,3 @@
-// هنا أرقام الردود اللي نتعامل معها من الباك
 export const HTTP_STATUS = {
   OK: 200,
   CREATED: 201,
@@ -6,6 +5,7 @@ export const HTTP_STATUS = {
   UNAUTHORIZED: 401,
   CONFLICT: 409,
   FORBIDDEN: 403,
+  NOT_FOUND: 404,
 };
 
 // هنا نوع الرسالة اللي تطلع تحت الزر، وهو نفس اسم الكلاس في CSS
@@ -48,3 +48,6 @@ export const VERIFY_TEXT = {
   WAIT: "إعادة الإرسال متاحة بعد",
   RESENT: "إذا الحساب يحتاج توثيق، بيوصلك رابط جديد",
 };
+
+
+

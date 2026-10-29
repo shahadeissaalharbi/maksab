@@ -1,17 +1,28 @@
 import { useState } from "react";
-import { getStockStatus, SUPPLIER_TEXT } from "../constants/supplier.js";
+import { getStockStatus, SUPPLIER_TEXT, PRODUCT_MESSAGES } from "../constants/supplier.js";
 
-// هنا بطاقة منتج المورد، مع إمكانية تعديل السعر
-function SupplierProductCard({ product, onUpdatePrice }) {
+// هنا بطاقة منتج المورد: تعديل السعر وحذف المنتج
+function SupplierProductCard({ product, onUpdatePrice, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
   const [price, setPrice] = useState(product.price);
   const stock = getStockStatus(product.stock_status);
 
+  // هنا أبدأ التعديل من السعر الحالي
+  const startEditing = () => {
+    setPrice(product.price);
+    setIsEditing(true);
+  };
+
   const handleSave = () => {
-    if (onUpdatePrice) {
-      onUpdatePrice(product.id, price);
-    }
+    onUpdatePrice(product.id, price);
     setIsEditing(false);
+  };
+
+  // هنا أتأكد قبل الحذف، لأن الحذف نهائي
+  const handleDelete = () => {
+    if (window.confirm(PRODUCT_MESSAGES.DELETE_CONFIRM)) {
+      onDelete(product.id);
+    }
   };
 
   return (
@@ -21,36 +32,42 @@ function SupplierProductCard({ product, onUpdatePrice }) {
         <h4>{product.name}</h4>
 
         {isEditing ? (
-          <div className="edit-price-box" style={{ margin: "10px 0", display: "flex", gap: "5px", alignItems: "center" }}>
+          <div className="edit-price-box">
             <input
               type="number"
+              min="0"
+              step="0.01"
               value={price}
-              onChange={(e) => setPrice(e.target.value)}
+              onChange={(event) => setPrice(event.target.value)}
               className="price-input"
-              style={{ width: "80px", padding: "4px" }}
             />
             <span>{SUPPLIER_TEXT.CURRENCY}</span>
           </div>
         ) : (
           <p className="product-price">
-            <strong>{Number(price)}</strong> {SUPPLIER_TEXT.CURRENCY}
+            <strong>{Number(product.price)}</strong> {SUPPLIER_TEXT.CURRENCY}
           </p>
         )}
 
-        <div className="product-actions" style={{ marginTop: "10px" }}>
+        <div className="product-actions">
           {isEditing ? (
-            <div style={{ display: "flex", gap: "5px" }}>
+            <>
               <button type="button" className="save-button" onClick={handleSave}>
-                حفظ
+                {SUPPLIER_TEXT.SAVE}
               </button>
-              <button type="button" className="cancel-button" onClick={() => { setPrice(product.price); setIsEditing(false); }}>
-                إلغاء
+              <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>
+                {SUPPLIER_TEXT.CANCEL}
               </button>
-            </div>
+            </>
           ) : (
-            <button type="button" className="edit-button" onClick={() => setIsEditing(true)}>
-              {SUPPLIER_TEXT.EDIT}
-            </button>
+            <>
+              <button type="button" className="edit-button" onClick={startEditing}>
+                {SUPPLIER_TEXT.EDIT}
+              </button>
+              <button type="button" className="delete-button" onClick={handleDelete}>
+                {PRODUCT_MESSAGES.DELETE}
+              </button>
+            </>
           )}
         </div>
       </div>
