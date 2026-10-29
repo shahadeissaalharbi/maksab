@@ -20,9 +20,13 @@ DATABASE_URL = Config.DATABASE_URL
 def get_db_connection():
     return psycopg.connect(DATABASE_URL)
 
-# --- دالة إنشاء الجداول تلقائياً عند الإقلاع ---
+# --- دالة إنشاء الجداول تلقائياً وبشكل آمن ---
 def init_db():
     try:
+        if not DATABASE_URL:
+            print("تحذير: DATABASE_URL غير معرف، تم تخطي إنشاء الجداول.")
+            return
+        
         with get_db_connection() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -50,10 +54,6 @@ def init_db():
         print("✨ تم التحقق من الجداول وإنشاؤها بنجاح في قاعدة البيانات!")
     except Exception as e:
         print(f"ملاحظة أثناء إنشاء الجداول: {e}")
-
-# تشغيل دالة إنشاء الجداول أول ما يبدأ السيرفر
-with app.app_context():
-    init_db()
 
 @app.route("/api/health", methods=["GET"])
 def health_check():
@@ -155,4 +155,6 @@ def trader_home():
     }), 200
 
 if __name__ == "__main__":
+    with app.app_context():
+        init_db()
     app.run(host="0.0.0.0", port=5000)
