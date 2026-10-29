@@ -105,3 +105,9 @@ function SupplierOverview() {
 }
 
 export default SupplierOverview;
+.ov-btn-primary.ov-add {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 99;
+}
