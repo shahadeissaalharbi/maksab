@@ -20,6 +20,41 @@ DATABASE_URL = Config.DATABASE_URL
 def get_db_connection():
     return psycopg.connect(DATABASE_URL)
 
+# --- دالة إنشاء الجداول تلقائياً عند الإقلاع ---
+def init_db():
+    try:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS users (
+                        id SERIAL PRIMARY KEY,
+                        full_name VARCHAR(100) NOT NULL,
+                        email VARCHAR(120) UNIQUE NOT NULL,
+                        password VARCHAR(255) NOT NULL,
+                        role VARCHAR(50) DEFAULT 'merchant' NOT NULL,
+                        is_verified BOOLEAN DEFAULT FALSE NOT NULL,
+                        otp_code VARCHAR(10),
+                        otp_expires_at TIMESTAMP,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                    CREATE TABLE IF NOT EXISTS products (
+                        id SERIAL PRIMARY KEY,
+                        name VARCHAR(150) NOT NULL,
+                        description TEXT,
+                        price NUMERIC(10, 2) NOT NULL,
+                        stock_quantity INTEGER DEFAULT 0 NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                """)
+                conn.commit()
+        print("✨ تم التحقق من الجداول وإنشاؤها بنجاح في قاعدة البيانات!")
+    except Exception as e:
+        print(f"ملاحظة أثناء إنشاء الجداول: {e}")
+
+# تشغيل دالة إنشاء الجداول أول ما يبدأ السيرفر
+with app.app_context():
+    init_db()
+
 @app.route("/api/health", methods=["GET"])
 def health_check():
     return jsonify({
