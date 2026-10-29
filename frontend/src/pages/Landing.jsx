@@ -90,11 +90,6 @@ function Landing() {
           يلا نبدأ ←
         </Link>
       </section>
-
-      <footer className="landing-footer">
-        <Logo />
-        <p>© 2026 مكسب · مشروع Holberton School – أكاديمية طويق</p>
-      </footer>
     </div>
   );
 }
