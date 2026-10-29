@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import OverviewSidebar from "../components/OverviewSidebar.jsx";
 import OverviewStatCard from "../components/OverviewStatCard.jsx";
@@ -26,7 +25,6 @@ function SupplierOverview() {
   const { supplier, stats, orders, status, changeOrderStatus } = useOverview();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
 
   // هنا أضيف المنتج، وإذا انضاف أروح لصفحة المنتجات عشان يشوفه
   const handleAdd = async (product) => {
@@ -59,12 +57,12 @@ function SupplierOverview() {
             <h1>{OVERVIEW_TEXT.greeting(getSalutation(), supplier.business_name)}</h1>
             <p className="ov-subtitle">{OVERVIEW_TEXT.newOrdersNotice(stats.new_orders)}</p>
           </div>
+          
           <button 
             type="button" 
-            className="ov-btn-primary ov-add"
-            onClick={() => navigate("/supplier/products")}
+            className="ov-btn-primary ov-add" 
+            onClick={() => setShowModal(true)}
           >
-          <button type="button" className="ov-btn-primary ov-add" onClick={() => setShowModal(true)}>
             {OVERVIEW_TEXT.ADD_PRODUCT}
           </button>
         </header>
