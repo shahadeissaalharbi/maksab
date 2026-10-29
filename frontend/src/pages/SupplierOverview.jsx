@@ -1,4 +1,5 @@
-import { Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import OverviewSidebar from "../components/OverviewSidebar.jsx";
 import OverviewStatCard from "../components/OverviewStatCard.jsx";
 import OverviewOrderRow from "../components/OverviewOrderRow.jsx";
@@ -19,6 +20,7 @@ function getSalutation() {
 // هنا النظرة العامة للمورد: الترحيب والأرقام وأحدث الطلبات
 function SupplierOverview() {
   const { supplier, stats, orders, status, changeOrderStatus } = useOverview();
+  const navigate = useNavigate();
 
   // هنا اللي ما سجل دخول يرجع لصفحة الدخول
   if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
@@ -42,7 +44,11 @@ function SupplierOverview() {
             <h1>{OVERVIEW_TEXT.greeting(getSalutation(), supplier.business_name)}</h1>
             <p className="ov-subtitle">{OVERVIEW_TEXT.newOrdersNotice(stats.new_orders)}</p>
           </div>
-          <button type="button" className="ov-btn-primary ov-add">
+          <button 
+            type="button" 
+            className="ov-btn-primary ov-add"
+            onClick={() => navigate("/supplier/products")}
+          >
             {OVERVIEW_TEXT.ADD_PRODUCT}
           </button>
         </header>
