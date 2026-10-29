@@ -66,3 +66,17 @@
 @media (max-width: 800px) {
   .stat-row { grid-template-columns: 1fr; }
 }
+
+/* هنا صف البحث وزر إضافة منتج */
+.supplier-toolbar { display: flex; gap: 12px; align-items: center; }
+.supplier-toolbar .search-bar { flex: 1; }
+.add-product-button { padding: 12px 22px; border: none; border-radius: 999px; background: var(--yellow); color: var(--text); font-family: inherit; font-size: 15px; font-weight: 700; white-space: nowrap; cursor: pointer; }
+
+/* هنا زر الحذف جنب زر التعديل */
+.product-actions .edit-button,
+.product-actions .delete-button { flex: 1; }
+.delete-button { padding: 10px; border: 1.5px solid #b42318; border-radius: 999px; background: #ffffff; color: #b42318; font-family: inherit; font-weight: 700; cursor: pointer; }
+
+@media (max-width: 800px) {
+  .supplier-toolbar { flex-direction: column; align-items: stretch; }
+}
