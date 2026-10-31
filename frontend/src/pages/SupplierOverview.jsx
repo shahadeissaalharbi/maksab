@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import OverviewSidebar from "../components/OverviewSidebar.jsx";
 import OverviewStatCard from "../components/OverviewStatCard.jsx";
@@ -23,8 +23,8 @@ function getSalutation() {
 // هنا النظرة العامة للمورد: الترحيب والأرقام وأحدث الطلبات
 function SupplierOverview() {
   const { supplier, stats, orders, status, changeOrderStatus } = useOverview();
-  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   // هنا أضيف المنتج، وإذا انضاف أروح لصفحة المنتجات عشان يشوفه
   const handleAdd = async (product) => {
@@ -105,3 +105,9 @@ function SupplierOverview() {
 }
 
 export default SupplierOverview;
+.ov-btn-primary.ov-add {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 99;
+}
