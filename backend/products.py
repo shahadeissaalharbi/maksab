@@ -353,23 +353,55 @@ def list_products():
         with psycopg.connect(Config.DATABASE_URL) as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, name, description, price, stock_quantity
-                    FROM products
-                    WHERE stock_quantity > 0
-                    ORDER BY id DESC;
+                    SELECT
+                        p.id,
+                        p.name,
+                        p.description,
+                        p.price,
+                        p.stock_quantity,
+                        p.supplier_id,
+                        COALESCE(u.business_name, u.name) AS supplier_name,
+                        p.category_id,
+                        c.name AS category_name,
+                        c.type AS category_type,
+                        p.unit,
+                        p.moq,
+                        p.stock_status,
+                        p.image_url
+                    FROM products p
+                    LEFT JOIN users u ON p.supplier_id = u.id
+                    LEFT JOIN categories c ON p.category_id = c.id
+                    WHERE p.stock_quantity > 0
+                    ORDER BY p.id DESC;
                 """)
+
                 rows = cursor.fetchall()
 
-        products = [
-            {
+        products = []
+
+        for row in rows:
+            product = {
                 "id": row[0],
                 "name": row[1],
                 "description": row[2],
                 "price": str(row[3]),
-                "stock_quantity": row[4]
+                "stock_quantity": row[4],
+                "supplier_id": row[5],
+                "supplier_name": row[6],
+                "category_id": row[7],
+                "category_name": row[8],
+                "category": {
+                    "id": row[7],
+                    "name": row[8],
+                    "type": row[9]
+                } if row[7] is not None else None,
+                "unit": row[10],
+                "moq": row[11],
+                "stock_status": row[12],
+                "image_url": row[13]
             }
-            for row in rows
-        ]
+
+            products.append(product)
 
         return jsonify({
             "products": products,
@@ -377,8 +409,12 @@ def list_products():
         }), 200
 
     except psycopg.Error:
-        current_app.logger.exception("Database error while fetching products")
-        return jsonify({"error": "Database temporarily unavailable"}), 503
+        current_app.logger.exception(
+            "Database error while fetching products"
+        )
+        return jsonify({
+            "error": "Database temporarily unavailable"
+        }), 503
 @products_bp.route("/api/categories", methods=["GET"])
 def get_categories():
     try:
