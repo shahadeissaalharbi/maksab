@@ -9,9 +9,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
 from decorators import token_required
 # from email_service import send_verification_email
+from email_service import send_otp_email
 from verification_tokens import (
-    generate_verification_token,
-    hash_verification_token,
+    generate_otp,
+    verify_otp_hash,
 )
 
 
@@ -21,6 +22,25 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 def get_db_connection():
     return psycopg.connect(Config.DATABASE_URL)
 
+def save_otp(cursor, user_id, code_hash, expires_at):
+    """Save a new OTP and invalidate previous unused codes."""
+
+    cursor.execute("""
+        UPDATE email_verification_tokens
+        SET used_at = NOW()
+        WHERE user_id = %s
+          AND used_at IS NULL;
+    """, (user_id,))
+
+    cursor.execute("""
+        INSERT INTO email_verification_tokens (
+            user_id,
+            token_hash,
+            expires_at,
+            attempts
+        )
+        VALUES (%s, %s, %s, 0);
+    """, (user_id, code_hash, expires_at))
 
 def is_valid_email(email):
     return isinstance(email, str) and "@" in email and len(email.strip()) <= 120
@@ -63,8 +83,6 @@ def register():
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-
-                # تم تعيين is_verified = TRUE لتجاوز تفعيل البريد للاختبار
                 cursor.execute("""
                     INSERT INTO users (
                         name,
@@ -73,7 +91,7 @@ def register():
                         role,
                         is_verified
                     )
-                    VALUES (%s, %s, %s, %s, TRUE)
+                    VALUES (%s, %s, %s, %s, FALSE)
                     RETURNING id;
                 """, (
                     full_name,
@@ -83,6 +101,17 @@ def register():
                 ))
 
                 user_id = cursor.fetchone()[0]
+
+                code, code_hash, expires_at = generate_otp(user_id)
+
+                save_otp(
+                    cursor,
+                    user_id,
+                    code_hash,
+                    expires_at
+                )
+
+        send_otp_email(email, code)
 
     except psycopg.errors.UniqueViolation:
         return jsonify({
@@ -97,14 +126,129 @@ def register():
             "error": "Database unavailable"
         }), 503
 
+    except Exception:
+        current_app.logger.exception(
+            "OTP email delivery failed"
+        )
+        return jsonify({
+            "error": "Unable to send verification email. Please try again."
+        }), 503
+
     return jsonify({
-        "message": "Account created successfully (OTP bypassed for testing).",
-        "user_id": user_id
+        "message": "Account created. Check your email for the verification code.",
+        "user_id": user_id,
+        "verification_required": True
     }), 201
+
+
+@auth_bp.route("/verify-otp", methods=["POST"])
+def verify_otp():
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid data"}), 400
+
+    email = data.get("email")
+    code = data.get("code")
+
+    if (
+        not isinstance(email, str)
+        or not isinstance(code, str)
+        or len(code) != 6
+        or not code.isascii()
+        or not code.isdigit()
+    ):
+        return jsonify({"error": "Invalid verification code"}), 400
+
+    email = email.strip().lower()
+
+    if not is_valid_email(email):
+        return jsonify({"error": "Invalid email"}), 400
+
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT id, is_verified
+                    FROM users
+                    WHERE email = %s
+                    FOR UPDATE;
+                """, (email,))
+
+                user = cursor.fetchone()
+
+                if not user:
+                    return jsonify({"error": "Invalid verification code"}), 400
+
+                user_id, is_verified = user
+
+                if is_verified:
+                    return jsonify({
+                        "error": "Invalid verification code"
+                    }), 400
+
+                cursor.execute("""
+                    SELECT id, token_hash, expires_at, attempts
+                    FROM email_verification_tokens
+                    WHERE user_id = %s
+                      AND used_at IS NULL
+                    ORDER BY created_at DESC, id DESC
+                    LIMIT 1
+                    FOR UPDATE;
+                """, (user_id,))
+
+                token = cursor.fetchone()
+
+                if not token:
+                    return jsonify({"error": "Invalid verification code"}), 400
+
+                token_id, stored_hash, expires_at, attempts = token
+
+                if attempts >= 5:
+                    return jsonify({"error": "Too many attempts"}), 429
+
+                if expires_at <= datetime.now(timezone.utc):
+                    return jsonify({"error": "Verification code expired"}), 410
+
+                if not verify_otp_hash(user_id, code, stored_hash):
+                    cursor.execute("""
+                        UPDATE email_verification_tokens
+                        SET attempts = attempts + 1
+                        WHERE id = %s;
+                    """, (token_id,))
+
+                    connection.commit()
+
+                    return jsonify({"error": "Invalid verification code"}), 400
+
+                cursor.execute("""
+                    UPDATE email_verification_tokens
+                    SET used_at = NOW()
+                    WHERE id = %s;
+                """, (token_id,))
+
+                cursor.execute("""
+                    UPDATE users
+                    SET is_verified = TRUE,
+                        email_verified_at = NOW()
+                    WHERE id = %s;
+                """, (user_id,))
+
+    except psycopg.Error:
+        current_app.logger.exception("OTP verification database error")
+        return jsonify({"error": "Database unavailable"}), 503
+
+    return jsonify({
+        "message": "Email verified successfully"
+    }), 200
+
 
 @auth_bp.route("/verify-email", methods=["GET"])
 def verify_email():
-    return jsonify({"message": "Email verification is temporarily bypassed."}), 200
+    return jsonify({
+        "error": "This verification method is no longer supported.",
+        "verification_method": "otp"
+    }), 410
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
@@ -158,6 +302,12 @@ def login():
         return jsonify({
             "error": "Invalid email or password"
         }), 401
+
+    if not user[5]:
+        return jsonify({
+            "error": "Email verification required",
+            "verification_required": True
+        }), 403
 
     now = datetime.now(timezone.utc)
 
@@ -225,5 +375,73 @@ def logout():
     }), 200
 
 @auth_bp.route("/resend-verification", methods=["POST"])
+@auth_bp.route("/resend-otp", methods=["POST"])
 def resend_verification():
-    return jsonify({"message": "Bypassed"}), 200
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({"error": "Invalid data"}), 400
+
+    email = data.get("email")
+
+    if not is_valid_email(email):
+        return jsonify({"error": "Invalid email"}), 400
+
+    email = email.strip().lower()
+
+    generic_response = {
+        "message": "If verification is required, a code will be sent."
+    }
+
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT id, is_verified
+                    FROM users
+                    WHERE email = %s
+                    FOR UPDATE;
+                """, (email,))
+
+                user = cursor.fetchone()
+
+                if not user or user[1]:
+                    return jsonify(generic_response), 200
+
+                user_id = user[0]
+
+                cursor.execute("""
+                    SELECT created_at
+                    FROM email_verification_tokens
+                    WHERE user_id = %s
+                    ORDER BY created_at DESC, id DESC
+                    LIMIT 1;
+                """, (user_id,))
+
+                latest = cursor.fetchone()
+
+                if latest:
+                    elapsed = (
+                        datetime.now(timezone.utc) - latest[0]
+                    ).total_seconds()
+
+                    if elapsed < 60:
+                        return jsonify(generic_response), 200
+
+                code, code_hash, expires_at = generate_otp(user_id)
+
+                save_otp(cursor, user_id, code_hash, expires_at)
+
+        send_otp_email(email, code)
+
+    except psycopg.Error:
+        current_app.logger.exception("OTP resend database error")
+        return jsonify({"error": "Database unavailable"}), 503
+
+    except Exception:
+        current_app.logger.exception("OTP resend email error")
+        return jsonify({
+            "error": "Unable to send verification code"
+        }), 503
+
+    return jsonify(generic_response), 200
