@@ -122,4 +122,5 @@ function SupplierOverview() {
     </div>
   );
 }
+
 export default SupplierOverview;
