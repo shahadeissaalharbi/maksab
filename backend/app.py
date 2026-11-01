@@ -17,6 +17,7 @@ app.register_blueprint(products_bp)
 app.register_blueprint(supplier_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(orders_bp)
+
 DATABASE_URL = Config.DATABASE_URL
 
 def get_db_connection():
@@ -56,6 +57,10 @@ def init_db():
         print("✨ تم التحقق من الجداول وإنشاؤها بنجاح في قاعدة البيانات!")
     except Exception as e:
         print(f"ملاحظة أثناء إنشاء الجداول: {e}")
+
+# تشغيل إنشاء الجداول فور تحميل التطبيق لضمان عملها على Railway ومحلياً
+with app.app_context():
+    init_db()
 
 @app.route("/api/health", methods=["GET"])
 def health_check():
@@ -157,6 +162,4 @@ def trader_home():
     }), 200
 
 if __name__ == "__main__":
-    with app.app_context():
-        init_db()
     app.run(host="0.0.0.0", port=5000)
