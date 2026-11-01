@@ -3,7 +3,8 @@ import { postJson } from "./http.js";
 const AUTH_ENDPOINTS = {
   REGISTER: "/api/auth/register",
   LOGIN: "/api/auth/login",
-  RESEND_VERIFICATION: "/api/auth/resend-verification",
+  VERIFY_OTP: "/api/auth/verify-otp",
+  RESEND_OTP: "/api/auth/resend-otp",
 };
 
 // التوثيق ما نزل على Railway للحين، فلما ينزل نخليها true
@@ -20,6 +21,10 @@ export const registerUser = ({ businessName, email, password, accountType }) =>
 export const loginUser = ({ email, password }) =>
   postJson(AUTH_ENDPOINTS.LOGIN, { email, password });
 
-// هنا أطلب رابط توثيق جديد لنفس الإيميل
+// هنا أرسل رمز التحقق (6 أرقام) عشان يتوثق الحساب
+export const verifyOtp = (email, code) =>
+  postJson(AUTH_ENDPOINTS.VERIFY_OTP, { email, code });
+
+// هنا أطلب رمز جديد لنفس الإيميل
 export const resendVerification = (email) =>
-  postJson(AUTH_ENDPOINTS.RESEND_VERIFICATION, { email });
+  postJson(AUTH_ENDPOINTS.RESEND_OTP, { email });
