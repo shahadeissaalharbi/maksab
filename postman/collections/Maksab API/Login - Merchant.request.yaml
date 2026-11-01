@@ -1,0 +1,27 @@
+$kind: http-request
+description: ""
+url: http://localhost:5000/api/auth/login
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"email\": \"postmanmerchant@example.com\",\r
+
+    \    \"password\": \"TestPass123!\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "const response = pm.response.json();\r
+
+      \r
+
+      if (pm.response.code === 200 && response.token) {\r
+
+      \    pm.collectionVariables.set(\"token\", response.token);\r
+
+      }"
+    language: text/javascript
+examples: .resources/Login - Merchant.resources/examples
+order: 3000
