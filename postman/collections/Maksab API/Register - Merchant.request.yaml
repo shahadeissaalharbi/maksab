@@ -1,0 +1,18 @@
+$kind: http-request
+description: ""
+url: http://localhost:5000/api/auth/register
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"full_name\": \"Postman Test Merchant\",\r
+
+    \    \"email\": \"postmanmerchant@example.com\",\r
+
+    \    \"password\": \"TestPass123!\",\r
+
+    \    \"role\": \"merchant\"\r
+
+    }"
+order: 2000
