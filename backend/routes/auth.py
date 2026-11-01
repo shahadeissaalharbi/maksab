@@ -111,7 +111,12 @@ def register():
                     expires_at
                 )
 
-        send_otp_email(email, code)
+        try:
+            send_otp_email(email, code)
+        except RuntimeError:
+            current_app.logger.warning(
+                "OTP email is not configured; account created in development mode"
+            )
 
     except psycopg.errors.UniqueViolation:
         return jsonify({

@@ -34,6 +34,23 @@
   font-family: inherit;
 }
 
+.edit-price-box label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.stock-input {
+  width: 70px;
+  padding: 6px 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  text-align: center;
+  font-family: inherit;
+}
+
 .product-actions {
   display: flex;
   gap: 8px;

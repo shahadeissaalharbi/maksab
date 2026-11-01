@@ -5,16 +5,18 @@ import { getStockStatus, SUPPLIER_TEXT, PRODUCT_MESSAGES } from "../constants/su
 function SupplierProductCard({ product, onUpdatePrice, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
   const [price, setPrice] = useState(product.price);
+  const [stockQuantity, setStockQuantity] = useState(product.stock_quantity ?? 0);
   const stock = getStockStatus(product.stock_status);
 
   // هنا أبدأ التعديل من السعر الحالي
   const startEditing = () => {
     setPrice(product.price);
+    setStockQuantity(product.stock_quantity ?? 0);
     setIsEditing(true);
   };
 
   const handleSave = () => {
-    onUpdatePrice(product.id, price);
+    onUpdatePrice(product.id, price, stockQuantity);
     setIsEditing(false);
   };
 
@@ -42,6 +44,17 @@ function SupplierProductCard({ product, onUpdatePrice, onDelete }) {
               className="price-input"
             />
             <span>{SUPPLIER_TEXT.CURRENCY}</span>
+            <label>
+              الكمية
+              <input
+                type="number"
+                min="0"
+                step="1"
+                value={stockQuantity}
+                onChange={(event) => setStockQuantity(event.target.value)}
+                className="stock-input"
+              />
+            </label>
           </div>
         ) : (
           <p className="product-price">

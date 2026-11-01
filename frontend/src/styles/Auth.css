@@ -280,3 +280,31 @@
   font-weight: 700;
   cursor: pointer;
 }
+
+/* خانة رمز التحقق (6 أرقام) */
+.check-email-label {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.check-email-code {
+  width: 100%;
+  padding: 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 26px;
+  letter-spacing: 12px;
+  text-align: center;
+  direction: ltr;
+}
+
+.check-email-code:focus {
+  outline: none;
+  border-color: var(--green);
+}
+
+.check-email-login:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
