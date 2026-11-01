@@ -35,22 +35,65 @@ def init_db():
                 cur.execute("""
                     CREATE TABLE IF NOT EXISTS users (
                         id SERIAL PRIMARY KEY,
-                        full_name VARCHAR(100) NOT NULL,
+                        name VARCHAR(100) NOT NULL,
                         email VARCHAR(120) UNIQUE NOT NULL,
-                        password VARCHAR(255) NOT NULL,
+                        password_hash VARCHAR(255) NOT NULL,
                         role VARCHAR(50) DEFAULT 'merchant' NOT NULL,
                         is_verified BOOLEAN DEFAULT FALSE NOT NULL,
+                        email_verified_at TIMESTAMPTZ,
                         otp_code VARCHAR(10),
                         otp_expires_at TIMESTAMP,
+                        phone VARCHAR(20),
+                        business_name VARCHAR(150),
+                        commercial_register VARCHAR(50),
+                        address_text TEXT,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     );
                     CREATE TABLE IF NOT EXISTS products (
                         id SERIAL PRIMARY KEY,
+                        supplier_id INTEGER REFERENCES users(id),
                         name VARCHAR(150) NOT NULL,
                         description TEXT,
                         price NUMERIC(10, 2) NOT NULL,
                         stock_quantity INTEGER DEFAULT 0 NOT NULL,
+                        category_id INTEGER,
+                        unit VARCHAR(50),
+                        moq INTEGER DEFAULT 1,
+                        stock_status VARCHAR(50) DEFAULT 'in_stock',
+                        image_url VARCHAR(255),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    );
+                    CREATE TABLE IF NOT EXISTS categories (
+                        id SERIAL PRIMARY KEY,
+                        name VARCHAR(100) NOT NULL,
+                        type VARCHAR(50) NOT NULL DEFAULT 'raw_material'
+                    );
+                    CREATE TABLE IF NOT EXISTS email_verification_tokens (
+                        id SERIAL PRIMARY KEY,
+                        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                        token_hash VARCHAR(64) NOT NULL UNIQUE,
+                        expires_at TIMESTAMPTZ NOT NULL,
+                        used_at TIMESTAMPTZ,
+                        attempts INTEGER NOT NULL DEFAULT 0,
+                        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                    );
+                    CREATE TABLE IF NOT EXISTS orders (
+                        id SERIAL PRIMARY KEY,
+                        merchant_id INTEGER NOT NULL REFERENCES users(id),
+                        supplier_id INTEGER NOT NULL REFERENCES users(id),
+                        total_amount NUMERIC(10, 2) NOT NULL DEFAULT 0 CHECK (total_amount >= 0),
+                        status VARCHAR(30) NOT NULL DEFAULT 'pending',
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                    );
+                    CREATE TABLE IF NOT EXISTS order_items (
+                        id SERIAL PRIMARY KEY,
+                        order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+                        product_id INTEGER NOT NULL REFERENCES products(id),
+                        quantity INTEGER NOT NULL CHECK (quantity > 0),
+                        unit_price NUMERIC(10, 2) NOT NULL CHECK (unit_price >= 0),
+                        subtotal NUMERIC(10, 2) GENERATED ALWAYS AS (quantity * unit_price) STORED,
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
                     );
                 """)
                 conn.commit()

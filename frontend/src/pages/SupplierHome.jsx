@@ -53,8 +53,11 @@ function SupplierHome() {
     return result;
   };
 
-  const handleUpdatePrice = async (productId, newPrice) => {
-    const result = await updateProduct(productId, { price: Number(newPrice) });
+  const handleUpdatePrice = async (productId, newPrice, newStockQuantity) => {
+    const result = await updateProduct(productId, {
+      price: Number(newPrice),
+      stock_quantity: Number(newStockQuantity),
+    });
     showResult(result, HTTP_STATUS.OK, PRODUCT_MESSAGES.UPDATED);
   };
 
