@@ -17,7 +17,9 @@ import "../styles/SupplierOverview.css";
 
 // هنا صباح الخير قبل الساعة 12، وبعدها مساء الخير
 function getSalutation() {
-  return new Date().getHours() < 12 ? OVERVIEW_TEXT.GOOD_MORNING : OVERVIEW_TEXT.GOOD_EVENING;
+  return new Date().getHours() < 12
+    ? OVERVIEW_TEXT.GOOD_MORNING
+    : OVERVIEW_TEXT.GOOD_EVENING;
 }
 
 // هنا النظرة العامة للمورد: الترحيب والأرقام وأحدث الطلبات
@@ -54,10 +56,18 @@ function SupplierOverview() {
         <header className="ov-header">
           <div>
             <p className="ov-date">{formatToday()}</p>
-            <h1>{OVERVIEW_TEXT.greeting(getSalutation(), supplier.business_name)}</h1>
-            <p className="ov-subtitle">{OVERVIEW_TEXT.newOrdersNotice(stats.new_orders)}</p>
+            <h1>
+              {OVERVIEW_TEXT.greeting(getSalutation(), supplier.business_name)}
+            </h1>
+            <p className="ov-subtitle">
+              {OVERVIEW_TEXT.newOrdersNotice(stats.new_orders)}
+            </p>
           </div>
-          <button type="button" className="ov-btn-primary ov-add" onClick={() => setShowModal(true)}>
+          <button
+            type="button"
+            className="ov-btn-primary ov-add"
+            onClick={() => setShowModal(true)}
+          >
             {OVERVIEW_TEXT.ADD_PRODUCT}
           </button>
         </header>
@@ -89,7 +99,11 @@ function SupplierOverview() {
           </div>
 
           {orders.map((order) => (
-            <OverviewOrderRow key={order.id} order={order} onStatusChange={changeOrderStatus} />
+            <OverviewOrderRow
+              key={order.id}
+              order={order}
+              onStatusChange={changeOrderStatus}
+            />
           ))}
         </section>
 
@@ -99,15 +113,13 @@ function SupplierOverview() {
         </section>
       </main>
 
-      {showModal && <AddProductModal onClose={() => setShowModal(false)} onSubmit={handleAdd} />}
+      {showModal && (
+        <AddProductModal
+          onClose={() => setShowModal(false)}
+          onSubmit={handleAdd}
+        />
+      )}
     </div>
   );
 }
-
 export default SupplierOverview;
-.ov-btn-primary.ov-add {
-  cursor: pointer !important;
-  pointer-events: auto !important;
-  position: relative;
-  z-index: 99;
-}
