@@ -8,7 +8,7 @@ from products import products_bp
 from routes.supplier import supplier_bp
 from routes.profile import profile_bp
 from routes.orders import orders_bp
-
+  from routes.calculator import calculator_bp
 app = Flask(__name__)
 CORS(app)
 
@@ -17,7 +17,7 @@ app.register_blueprint(products_bp)
 app.register_blueprint(supplier_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(orders_bp)
-
+  app.register_blueprint(calculator_bp)
 DATABASE_URL = Config.DATABASE_URL
 
 def get_db_connection():
