@@ -9,10 +9,12 @@ const CALCULATOR_ENDPOINT = "/api/calculator/price";
 // هنا أرسل نفس الأرقام للباك عشان يتأكد، وأجرة العمل = الساعات × أجرة الساعة
 export function verifyPrice(values) {
   return postJson(CALCULATOR_ENDPOINT, {
-    material: toNumber(values.material),
-    packaging: toNumber(values.packaging),
-    labor: toNumber(values.hours) * toNumber(values.hourlyRate),
-    quantity: toNumber(values.quantity),
-    margin: toNumber(values.margin),
+    material: toNumber(values.material), //تكلفة المواد
+    packaging: toNumber(values.packaging), //تكلفة التغليف.
+    labor: toNumber(values.hours) * toNumber(values.hourlyRate),//تكلفة أجرة العمل
+    quantity: toNumber(values.quantity),//عدد القطع.
+    margin: toNumber(values.margin),//نسبة الربح.
   });
 }
+
+//ترسل هذه البيانات وتنتظر الرد من السيرفر للتأكد من مطابقة الحسابات وتوثيقها.
