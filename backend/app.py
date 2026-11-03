@@ -1,4 +1,4 @@
-﻿import psycopg
+import psycopg
 from decorators import token_required
 from config import Config
 from flask import Flask, jsonify, request
@@ -8,7 +8,8 @@ from products import products_bp
 from routes.supplier import supplier_bp
 from routes.profile import profile_bp
 from routes.orders import orders_bp
-
+from routes.cart import cart_bp
+from routes.calculator import calculator_bp
 app = Flask(__name__)
 CORS(app)
 
@@ -17,7 +18,8 @@ app.register_blueprint(products_bp)
 app.register_blueprint(supplier_bp)
 app.register_blueprint(profile_bp)
 app.register_blueprint(orders_bp)
-
+app.register_blueprint(cart_bp)
+app.register_blueprint(calculator_bp)
 DATABASE_URL = Config.DATABASE_URL
 
 def get_db_connection():
@@ -86,6 +88,17 @@ def init_db():
                         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
                     );
+                    CREATE TABLE IF NOT EXISTS cart_items (
+                        id SERIAL PRIMARY KEY,
+                        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                        product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+                        quantity INTEGER NOT NULL CHECK (quantity > 0),
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        CONSTRAINT unique_user_cart_product UNIQUE (user_id, product_id)
+                    );
+                    CREATE INDEX IF NOT EXISTS idx_cart_items_user_id
+                    ON cart_items(user_id);
                     CREATE TABLE IF NOT EXISTS order_items (
                         id SERIAL PRIMARY KEY,
                         order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
