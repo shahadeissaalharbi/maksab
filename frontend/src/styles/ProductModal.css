@@ -135,6 +135,7 @@
   border: none;
   border-radius: 0;
   text-align: center;
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 
