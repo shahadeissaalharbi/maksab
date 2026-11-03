@@ -19,10 +19,7 @@ function App() {
         <Route path={ROUTES.REGISTER} element={<Register />} />
         <Route path={ROUTES.LOGIN} element={<Login />} />
         <Route path={ROUTES.LANDING} element={<Landing />} />
-        <Route
-          path={ROUTES.CALCULATOR}
-          element={<ComingSoon title="حاسبة التسعير" />}
-        />
+        <Route path={ROUTES.CALCULATOR} element={<Calculator />} />
 
         {/* صفحات الأسرة المنتجة */}
         <Route path={ROUTES.TRADER_HOME} element={<TraderHome />} />
