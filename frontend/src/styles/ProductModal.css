@@ -192,17 +192,18 @@
   }
 }
 
-.pm-input select {
+/* تنسيق قائمة التصنيف لتتطابق مع باقي حقول النموذج */
+.pm-form select {
   width: 100%;
-  padding: 12px 14px;
-  border: 1.5px solid var(--border, #ccc);
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
   border-radius: 12px;
   background: #ffffff;
   font-family: inherit;
-  font-size: 16px;
+  font-size: 15px;
   outline: none;
 }
 
-.pm-input select:focus {
-  border-color: var(--green, #2e7d32);
+.pm-form select:focus {
+  border-color: var(--green);
 }
