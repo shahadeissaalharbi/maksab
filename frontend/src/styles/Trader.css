@@ -454,3 +454,40 @@
     width: 100%;
   }
 }
+/* ========== السلة في الشريط وزر الإضافة ========== */
+
+.navbar-cart {
+  position: relative;
+  padding: 6px 14px;
+  border: 1.5px solid var(--green);
+  border-radius: 999px;
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.navbar-cart.active {
+  background: #e8faf3;
+}
+
+.cart-badge {
+  display: inline-block;
+  min-width: 20px;
+  margin-inline-start: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--text);
+  font-size: 12px;
+  text-align: center;
+}
+
+.add-to-cart.added {
+  background: var(--green);
+}
+
+.add-to-cart:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
