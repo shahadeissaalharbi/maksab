@@ -24,6 +24,31 @@ export const MARKET_TEXT = {
   productsCount: (count) => `${count} منتج`,
 };
 
+// هنا خيارات الترتيب ونصوص الفلاتر
+export const SORT_OPTIONS = {
+  NEWEST: "newest",
+  PRICE_ASC: "price_asc",
+  PRICE_DESC: "price_desc",
+  NAME: "name",
+};
+
+export const FILTER_TEXT = {
+  PRICE_LABEL: "السعر (ر.س)",
+  PRICE_FROM: "من",
+  PRICE_TO: "إلى",
+  SORT_LABEL: "الترتيب",
+  RESET: "مسح الفلاتر",
+  SORT: {
+    [SORT_OPTIONS.NEWEST]: "الأحدث",
+    [SORT_OPTIONS.PRICE_ASC]: "السعر: الأقل أول",
+    [SORT_OPTIONS.PRICE_DESC]: "السعر: الأعلى أول",
+    [SORT_OPTIONS.NAME]: "الاسم",
+  },
+};
+
+
+
+
 // هنا روابط الشريط العلوي، وكل رابط يودي لصفحته
 export const NAV_LINKS = [
   { label: "الرئيسية", to: ROUTES.LANDING },
