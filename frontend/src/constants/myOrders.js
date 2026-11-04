@@ -35,3 +35,46 @@ export const ACCOUNT_LINKS = [
   { id: "messages", label: "رسائل الموردين", to: null },
   { id: "switch", label: "الانتقال لحساب المورد", to: null },
 ];
+
+// هنا خطوات تتبع الطلب، من الاستلام لين التسليم
+export const ORDER_TRACK_STEPS = [
+  { id: "received", label: "تم استلام الطلب" },
+  { id: "preparing", label: "قيد التجهيز" },
+  { id: "shipped", label: "في الطريق" },
+  { id: "delivered", label: "تم التسليم" },
+];
+
+// هنا كل حالة تقع في أي خطوة (ابتداء من 0)
+export const ORDER_STEP_INDEX = {
+  pending: 0,
+  new: 0,
+  paid: 0,
+  processing: 1,
+  preparing: 1,
+  shipped: 2,
+  delivered: 3,
+};
+
+// هنا تبويبات الطلبات، وكل حالة تتبع أي مجموعة
+export const ORDER_FILTERS = [
+  { id: "all", label: "الكل" },
+  { id: "active", label: "جارية" },
+  { id: "done", label: "مكتملة" },
+  { id: "cancelled", label: "ملغاة" },
+];
+
+export const ORDER_GROUP = {
+  pending: "active",
+  new: "active",
+  paid: "active",
+  processing: "active",
+  preparing: "active",
+  shipped: "active",
+  delivered: "done",
+  cancelled: "cancelled",
+};
+
+export const ORDER_TRACK_TEXT = {
+  CANCELLED: "تم إلغاء هذا الطلب",
+  EMPTY_FILTER: "ما فيه طلبات في هالتبويب",
+};

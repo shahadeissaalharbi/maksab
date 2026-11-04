@@ -51,3 +51,38 @@ export const OVERVIEW_TEXT = Object.freeze({
   LOADING: "جاري تحميل لوحتك...",
   ERROR: "ما قدرنا نجيب بياناتك، نرجو المحاولة بعد شوي",
 });
+
+// هنا ترتيب حالات الطلب في الواجهة، من أول خطوة لآخر خطوة
+export const ORDER_STATUS_FLOW = Object.freeze(
+  ORDER_STATUS_OPTIONS.map((option) => option.value),
+);
+
+// هنا اسم الحالة عند الباك لكل حالة في الواجهة
+export const BACKEND_STATUS = Object.freeze({
+  new: "pending",
+  preparing: "processing",
+  shipped: "shipped",
+  delivered: "delivered",
+});
+
+// وهنا العكس: الحالة اللي جاية من الباك وش تصير في الواجهة
+export const UI_STATUS = Object.freeze({
+  pending: "new",
+  paid: "new",
+  processing: "preparing",
+  shipped: "shipped",
+  delivered: "delivered",
+});
+
+// هنا رسالة لكل رد من الباك على تغيير الحالة
+export const STATUS_ERRORS = Object.freeze({
+  401: "انتهت جلستك، نرجو تسجيل الدخول من جديد",
+  403: "هذا الطلب مو لحسابك",
+  404: "الطلب ما عاد موجود",
+  409: "الحالة تتغير خطوة خطوة، اختاروا الخطوة اللي بعدها",
+  NETWORK: "الإنترنت فصل في نص الطريق، نرجو التأكد منه",
+  DEFAULT: "الحالة ما انحفظت، نرجو المحاولة بعد شوي",
+});
+
+export const getStatusError = (status) =>
+  STATUS_ERRORS[status] || STATUS_ERRORS.DEFAULT;
