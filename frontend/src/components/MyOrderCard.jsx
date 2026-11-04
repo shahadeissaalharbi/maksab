@@ -1,3 +1,4 @@
+import OrderTracker from "./OrderTracker.jsx";
 import { MY_ORDERS_TEXT, MY_ORDER_STATUS } from "../constants/myOrders.js";
 
 // هنا التاريخ بالعربي، مثل: 12 مارس 2026
@@ -24,6 +25,8 @@ function MyOrderCard({ order }) {
         </div>
         <span className={`mo-status ${status.tone}`}>{status.label}</span>
       </div>
+
+      <OrderTracker status={order.status} />
 
       <div className="mo-card-body">
         <div>

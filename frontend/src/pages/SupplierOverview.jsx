@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import OverviewSidebar from "../components/OverviewSidebar.jsx";
 import OverviewStatCard from "../components/OverviewStatCard.jsx";
 import OverviewOrderRow from "../components/OverviewOrderRow.jsx";
+import FormMessage from "../components/FormMessage.jsx";
 import AddProductModal from "../components/AddProductModal.jsx";
 import { ROUTES } from "../constants/routes.js";
 import { LOAD_STATUS } from "../constants/market.js";
@@ -24,7 +25,8 @@ function getSalutation() {
 
 // هنا النظرة العامة للمورد: الترحيب والأرقام وأحدث الطلبات
 function SupplierOverview() {
-  const { supplier, stats, orders, status, changeOrderStatus } = useOverview();
+  const { supplier, stats, orders, status, message, changeOrderStatus } =
+    useOverview();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
@@ -97,6 +99,8 @@ function SupplierOverview() {
             </div>
             <span className="ov-link">{OVERVIEW_TEXT.VIEW_ALL_ORDERS}</span>
           </div>
+
+          <FormMessage message={message} />
 
           {orders.map((order) => (
             <OverviewOrderRow

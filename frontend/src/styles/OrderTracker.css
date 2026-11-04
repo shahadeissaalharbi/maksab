@@ -1,0 +1,111 @@
+/* تتبع الطلب وتبويباته - كل الكلاسات تبدأ بـ ot- */
+
+.ot-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 14px 0 4px;
+  list-style: none;
+}
+
+.ot-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+/* الخط الواصل بين النقاط */
+.ot-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 13px;
+  right: 50%;
+  left: -50%;
+  height: 3px;
+  background: var(--border);
+}
+
+.ot-step.done:not(:last-child)::after {
+  background: var(--green);
+}
+
+.ot-dot {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid var(--border);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ot-step.done .ot-dot {
+  border-color: var(--green);
+  background: var(--green);
+  color: #ffffff;
+}
+
+.ot-step.current .ot-dot {
+  border-color: var(--yellow);
+  background: var(--yellow);
+  color: var(--text);
+}
+
+.ot-label {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.ot-step.done .ot-label,
+.ot-step.current .ot-label {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.ot-cancelled {
+  margin: 12px 0 4px;
+  padding: 8px 12px;
+  border-radius: var(--radius-field, 12px);
+  background: #fdecec;
+  color: #b42318;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ot-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+.ot-tabs button {
+  flex: none;
+  min-height: 44px;
+  padding: 6px 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ot-tabs button.active {
+  border-color: var(--green);
+  background: #e8faf3;
+  color: var(--green);
+  font-weight: 700;
+}
+
+.ot-tabs small {
+  margin-inline-start: 4px;
+  color: var(--muted);
+}

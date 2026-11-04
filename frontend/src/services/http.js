@@ -46,6 +46,16 @@ export async function putJson(path, body) {
   return readResponse(response);
 }
 
+// هنا PATCH: تعديل جزء من شي موجود (مثل حالة الطلب)
+export async function patchJson(path, body) {
+  const response = await fetch(`${API_URL}${path}`, {
+    method: "PATCH",
+    headers: buildHeaders(true),
+    body: JSON.stringify(body),
+  });
+  return readResponse(response);
+}
+
 // هنا DELETE: حذف شي موجود
 export async function deleteJson(path) {
   const response = await fetch(`${API_URL}${path}`, {
