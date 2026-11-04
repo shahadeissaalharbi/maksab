@@ -5,4 +5,7 @@ export const API_URL =
     ? `${window.location.protocol}//${window.location.hostname}:5000`
     : "https://maksab-production-dca7.up.railway.app");
 // هنا أختار مصدر بيانات السوق: مؤقت لين يجهز الباك، و false في .env يحوله للحقيقي
-export const USE_MOCK = import.meta.env.VITE_USE_MOCK !== "false";
+// هنا الموقع المنشور يستخدم الباك الحقيقي لحاله، والتجريبي يشتغل بس لو كتبنا VITE_USE_MOCK=true
+export const USE_MOCK = import.meta.env.PROD
+  ? import.meta.env.VITE_USE_MOCK === "true"
+  : import.meta.env.VITE_USE_MOCK !== "false";
