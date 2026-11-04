@@ -1,10 +1,13 @@
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useSearchParams } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import AccountSidebar from "../components/AccountSidebar.jsx";
+import FormMessage from "../components/FormMessage.jsx";
 import MyOrderCard from "../components/MyOrderCard.jsx";
 import { ROUTES } from "../constants/routes.js";
 import { LOAD_STATUS } from "../constants/market.js";
 import { MY_ORDERS_TEXT } from "../constants/myOrders.js";
+import { CART_TEXT } from "../constants/cart.js";
+import { MESSAGE_TYPES } from "../constants/messages.js";
 import { getToken, getUser } from "../services/session.js";
 import { useMyOrders } from "../hooks/useMyOrders.js";
 import "../styles/Auth.css";
@@ -15,6 +18,7 @@ import "../styles/MyOrders.css";
 function MyOrders() {
   const { orders, status } = useMyOrders();
   const user = getUser() || {};
+  const [searchParams] = useSearchParams();
 
   // اللي ما سجل دخول يرجع لصفحة الدخول
   if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
@@ -36,6 +40,10 @@ function MyOrders() {
               {MY_ORDERS_TEXT.NEW_ORDER}
             </Link>
           </header>
+          {/* لو جاي من السلة بعد إرسال الطلب */}
+          {searchParams.get("placed") && (
+            <FormMessage message={{ type: MESSAGE_TYPES.SUCCESS, text: CART_TEXT.PLACED }} />
+          )}
 
           {status === LOAD_STATUS.LOADING && <p className="mo-state">{MY_ORDERS_TEXT.LOADING}</p>}
           {status === LOAD_STATUS.ERROR && <p className="mo-state error">{MY_ORDERS_TEXT.ERROR}</p>}

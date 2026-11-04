@@ -16,12 +16,16 @@ export const MY_ORDERS_TEXT = {
   ERROR: "طلباتك ما وصلت هالمرة، نرجو المحاولة بعد شوي",
 };
 
-// هنا شكل كل حالة من جهة الأسرة المنتجة، و value نفس اللي في overview.js
+// هنا شكل كل حالة من جهة الأسرة المنتجة. فوق حالات الباك، وتحت حالات البيانات المؤقتة، و value نفس اللي في overview.js
 export const MY_ORDER_STATUS = {
-  new: { label: "بانتظار المورد", tone: "gray" },
-  preparing: { label: "قيد التجهيز لدى المورد", tone: "yellow" },
+  pending: { label: "بانتظار المورد", tone: "gray" },
+  paid: { label: "تم الدفع", tone: "green" },
+  processing: { label: "قيد التجهيز لدى المورد", tone: "yellow" },
   shipped: { label: "في الطريق", tone: "blue" },
   delivered: { label: "تم التسليم بواسطة المورد", tone: "green" },
+  cancelled: { label: "ملغي", tone: "red" },
+  new: { label: "بانتظار المورد", tone: "gray" },
+  preparing: { label: "قيد التجهيز لدى المورد", tone: "yellow" },
 };
 
 // هنا روابط القائمة الجانبية، واللي ما له رابط يطلع "قريبًا"
