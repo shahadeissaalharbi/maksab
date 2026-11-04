@@ -200,3 +200,7 @@
     align-items: flex-start;
   }
 }
+.mo-status.red {
+  background: #fdecec;
+  color: #b42318;
+}
