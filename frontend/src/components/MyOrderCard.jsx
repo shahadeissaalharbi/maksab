@@ -11,7 +11,7 @@ function formatDate(date) {
 
 // هنا بطاقة طلب واحد: رقمه وحالته ومورده ومجموعه
 function MyOrderCard({ order }) {
-  const status = MY_ORDER_STATUS[order.status] || MY_ORDER_STATUS.new;
+  const status = MY_ORDER_STATUS[order.status] || MY_ORDER_STATUS.pending;
 
   return (
     <article className="mo-card">

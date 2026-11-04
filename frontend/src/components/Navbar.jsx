@@ -2,9 +2,19 @@ import { NavLink } from "react-router-dom";
 import Logo from "./Logo.jsx";
 import LogoutButton from "./LogoutButton.jsx";
 import { NAV_LINKS } from "../constants/market.js";
+import { CART_TEXT } from "../constants/cart.js";
+import { ROUTES } from "../constants/routes.js";
+import { getUser } from "../services/session.js";
+import { useCart } from "../hooks/useCart.js";
 
 // هنا الشريط العلوي، والروابط تجي من الصفحة عشان التاجر والمورد يستخدمونه
 function Navbar({ userName, links = NAV_LINKS }) {
+  const { items } = useCart();
+  const user = getUser() || {};
+
+  // السلة تطلع للأسرة المنتجة بس
+  const showCart = user.role === "merchant";
+
   return (
     <header className="navbar">
       <Logo />
@@ -18,6 +28,12 @@ function Navbar({ userName, links = NAV_LINKS }) {
       </nav>
 
       <div className="navbar-user">
+        {showCart && (
+          <NavLink to={ROUTES.CART} className="navbar-cart">
+            {CART_TEXT.NAV_LABEL}
+            {items.length > 0 && <span className="cart-badge">{items.length}</span>}
+          </NavLink>
+        )}
         {userName && <strong>{userName}</strong>}
         <LogoutButton />
       </div>
