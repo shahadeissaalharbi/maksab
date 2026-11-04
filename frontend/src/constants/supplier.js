@@ -6,6 +6,13 @@ export const STOCK_STATUS = Object.freeze({
   OUT_OF_STOCK: Object.freeze({ value: "out_of_stock", label: "نفد", tone: "red" }),
 });
 
+// هنا التصنيفات، والرقم هو id التصنيف في القاعدة (1 مواد خام، 2 تغليف، 3 علب وعبوات)
+export const PRODUCT_CATEGORIES = Object.freeze([
+  { id: 1, label: "مواد خام" },
+  { id: 2, label: "تغليف" },
+  { id: 3, label: "علب وعبوات" },
+]);
+
 // هنا أجيب حالة المخزون من قيمتها، ولو ما لقيتها أعتبرها نفدت
 export const getStockStatus = (value) =>
   Object.values(STOCK_STATUS).find((status) => status.value === value) ?? STOCK_STATUS.OUT_OF_STOCK;
@@ -36,6 +43,8 @@ export const PRODUCT_FORM_TEXT = {
   NAME_PLACEHOLDER: "مثل: علب كرتون للحلا",
   DESCRIPTION: "تفاصيل المنتج",
   DESCRIPTION_PLACEHOLDER: "المقاس، الخامة، وأي تفصيل يهم المشتري",
+  CATEGORY: "التصنيف",
+  CATEGORY_PLACEHOLDER: "اختاري التصنيف",
   PRICE: "السعر",
   STOCK: "الكمية المتوفرة",
   STOCK_HINT: "عدد القطع الموجودة في المخزون الحين",
