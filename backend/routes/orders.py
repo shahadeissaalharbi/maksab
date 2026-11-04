@@ -309,6 +309,7 @@ def create_order():
         }), 503
 
 
+@orders_bp.route("/api/supplier/orders/<int:order_id>/status", methods=["PATCH"])
 @orders_bp.route("/api/orders/<int:order_id>/status", methods=["PATCH"])
 @token_required
 def update_order_status(order_id):
