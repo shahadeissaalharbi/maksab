@@ -325,6 +325,7 @@ def update_order_status(order_id):
     new_status = data.get("status")
 
     allowed_transitions = {
+        "pending": "processing",
         "paid": "processing",
         "processing": "shipped",
         "shipped": "delivered",
