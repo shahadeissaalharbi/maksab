@@ -12,6 +12,7 @@ export const ROUTES = {
   SUPPLIER_PRODUCTS: "/supplier/products",
   BUSINESS_INFO: "/business-info",
   MY_ORDERS: "/orders",
+  CART: "/cart",
 };
 
 // هنا كل نوع حساب وين يروح بعد الدخول
