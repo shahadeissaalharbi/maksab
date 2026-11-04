@@ -63,7 +63,8 @@ def init_db():
                         moq INTEGER DEFAULT 1,
                         stock_status VARCHAR(50) DEFAULT 'in_stock',
                         image_url VARCHAR(255),
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     );
                     CREATE TABLE IF NOT EXISTS categories (
                         id SERIAL PRIMARY KEY,
