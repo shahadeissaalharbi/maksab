@@ -1,9 +1,15 @@
-import { ORDER_STATUS, ORDER_STATUS_OPTIONS, OVERVIEW_TEXT } from "../constants/overview.js";
+import {
+  ORDER_STATUS,
+  ORDER_STATUS_OPTIONS,
+  OVERVIEW_TEXT,
+} from "../constants/overview.js";
 import { formatNumber } from "../utils/overviewFormat.js";
+import { getAllowedStatuses } from "../utils/overviewOrders.js";
 
 // هنا صف طلب واحد: رقمه وعميله ومبلغه وحالته
 function OverviewOrderRow({ order, onStatusChange }) {
   const isNew = order.status === ORDER_STATUS.NEW.value;
+  const allowed = getAllowedStatuses(order.status);
 
   return (
     <div className="ov-order-row">
@@ -11,9 +17,11 @@ function OverviewOrderRow({ order, onStatusChange }) {
         <span className="ov-order-id">#{order.id}</span>
         <div>
           <p className="ov-order-customer">
-            {order.customer} · {order.district}
+            {[order.customer, order.district].filter(Boolean).join(" · ")}
           </p>
-          <p className="ov-order-items">{OVERVIEW_TEXT.itemsCount(order.items_count)}</p>
+          <p className="ov-order-items">
+            {OVERVIEW_TEXT.itemsCount(order.items_count)}
+          </p>
         </div>
       </div>
 
@@ -28,13 +36,20 @@ function OverviewOrderRow({ order, onStatusChange }) {
           aria-label={OVERVIEW_TEXT.STATUS_LABEL}
         >
           {ORDER_STATUS_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option
+              key={option.value}
+              value={option.value}
+              disabled={!allowed.includes(option.value)}
+            >
               {option.label}
             </option>
           ))}
         </select>
 
-        <button type="button" className={isNew ? "ov-btn-primary" : "ov-btn-light"}>
+        <button
+          type="button"
+          className={isNew ? "ov-btn-primary" : "ov-btn-light"}
+        >
           {isNew ? OVERVIEW_TEXT.ACTION_REVIEW : OVERVIEW_TEXT.ACTION_DETAILS}
         </button>
       </div>
