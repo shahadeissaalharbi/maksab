@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar.jsx";
 import Banner from "../components/Banner.jsx";
 import BestSellers from "../components/BestSellers.jsx";
 import SearchBar from "../components/SearchBar.jsx";
+import MarketFilters from "../components/MarketFilters.jsx";
 import CategoryFilter from "../components/CategoryFilter.jsx";
 import ProductCard from "../components/ProductCard.jsx";
 import { ROUTES } from "../constants/routes.js";
@@ -16,8 +17,22 @@ import "../styles/Trader.css";
 // هنا صفحة التاجر الرئيسية: تركّب الشريط والبحث والتصنيفات والبطاقات
 function TraderHome() {
   const { products, status } = useTraderProducts();
-  const { search, setSearch, category, setCategory, counts, filtered } =
-    useProductFilters(products);
+  const {
+    search,
+    setSearch,
+    category,
+    setCategory,
+    minPrice,
+    setMinPrice,
+    maxPrice,
+    setMaxPrice,
+    sort,
+    setSort,
+    hasFilters,
+    reset,
+    counts,
+    filtered,
+  } = useProductFilters(products);
 
   // هنا اللي ما سجل دخول يرجع لصفحة الدخول
   if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
@@ -45,6 +60,17 @@ function TraderHome() {
             value={search}
             onChange={setSearch}
             placeholder={MARKET_TEXT.SEARCH_PLACEHOLDER}
+          />
+          
+          <MarketFilters
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            sort={sort}
+            hasFilters={hasFilters}
+            onMin={setMinPrice}
+            onMax={setMaxPrice}
+            onSort={setSort}
+            onReset={reset}
           />
 
           <p className="market-count">
