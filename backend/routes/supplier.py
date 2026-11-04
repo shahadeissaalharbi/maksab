@@ -135,10 +135,22 @@ def supplier_dashboard():
                 total_orders, new_orders, total_sales, month_sales = cursor.fetchone()
 
                 cursor.execute("""
-                    SELECT id, merchant_id, total_amount, status, created_at
-                    FROM orders
-                    WHERE supplier_id = %s
-                    ORDER BY created_at DESC, id DESC
+                    SELECT
+                        o.id,
+                        o.merchant_id,
+                        o.total_amount,
+                        o.status,
+                        o.created_at,
+                        COALESCE(NULLIF(u.business_name, ''), u.name) AS customer,
+                        (
+                            SELECT COUNT(*)
+                            FROM order_items oi
+                            WHERE oi.order_id = o.id
+                        ) AS items_count
+                    FROM orders o
+                    JOIN users u ON u.id = o.merchant_id
+                    WHERE o.supplier_id = %s
+                    ORDER BY o.created_at DESC, o.id DESC
                     LIMIT 5;
                 """, (request.user_id,))
 
@@ -153,8 +165,12 @@ def supplier_dashboard():
             "id": row[0],
             "merchant_id": row[1],
             "total_amount": str(row[2]),
+            "total": float(row[2]),
             "status": row[3],
-            "created_at": row[4].isoformat() if row[4] else None
+            "created_at": row[4].isoformat() if row[4] else None,
+            "customer": row[5],
+            "items_count": row[6],
+            "district": None
         }
         for row in rows
     ]

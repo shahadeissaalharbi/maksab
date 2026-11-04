@@ -15,6 +15,7 @@ class Config:
 
     # Email Verification
     RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
+    BREVO_API_KEY = os.environ.get("BREVO_API_KEY")
     EMAIL_FROM = os.environ.get("EMAIL_FROM")
 
     EMAIL_VERIFICATION_BASE_URL = os.environ.get(

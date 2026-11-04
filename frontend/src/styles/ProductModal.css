@@ -135,6 +135,7 @@
   border: none;
   border-radius: 0;
   text-align: center;
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 
@@ -190,4 +191,20 @@
   .pm-row {
     grid-template-columns: 1fr;
   }
+}
+
+/* تنسيق قائمة التصنيف لتتطابق مع باقي حقول النموذج */
+.pm-form select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+}
+
+.pm-form select:focus {
+  border-color: var(--green);
 }

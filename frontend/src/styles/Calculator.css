@@ -1,0 +1,289 @@
+/* حاسبة التسعير - كل الكلاسات تبدأ بـ cl- */
+
+.cl-main {
+  max-width: var(--page-wide, 1100px);
+  margin: 0 auto;
+  padding: 32px var(--page-pad, 24px) 64px;
+}
+
+.cl-eyebrow {
+  color: var(--amber);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cl-header h1 {
+  margin: 2px 0 6px;
+  font-size: var(--fs-h1, 28px);
+}
+
+.cl-subtitle {
+  margin-bottom: 22px;
+  color: var(--muted);
+}
+
+.cl-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.cl-layout > * {
+  min-width: 0;
+}
+
+.cl-card,
+.cl-result {
+  padding: 22px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-card, 16px);
+  background: #ffffff;
+}
+
+.cl-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.cl-card-head h2 {
+  font-size: 18px;
+}
+
+.cl-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cl-actions button {
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 1.5px solid var(--green);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--green);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cl-field {
+  margin-bottom: 14px;
+}
+
+.cl-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cl-field label small {
+  margin-inline-start: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.cl-input {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-field, 12px);
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.cl-input:focus-within {
+  border-color: var(--green);
+}
+
+.cl-input.invalid {
+  border-color: #b42318;
+}
+
+.cl-input input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.cl-input span {
+  padding: 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.cl-error {
+  margin-top: 4px;
+  color: #b42318;
+  font-size: 13px;
+}
+
+.cl-margin {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px;
+  align-items: center;
+  gap: 14px;
+}
+
+.cl-margin input[type="range"] {
+  width: 100%;
+  accent-color: var(--green);
+}
+
+/* النتيجة */
+
+.cl-result {
+  position: sticky;
+  top: 16px;
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+  color: #ffffff;
+}
+
+.cl-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  background: #f6f5f1;
+  border-style: dashed;
+  border-color: var(--border);
+  color: var(--muted);
+  text-align: center;
+}
+
+.cl-result-label {
+  color: var(--yellow);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cl-price {
+  margin-top: 4px;
+  font-size: 18px;
+}
+
+.cl-price strong {
+  font-size: 48px;
+  line-height: 1.1;
+}
+
+.cl-per {
+  margin-bottom: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+}
+
+.cl-facts {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 14px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 15px;
+}
+
+.cl-facts dt {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.cl-facts dd {
+  font-weight: 700;
+}
+
+.cl-profit {
+  color: var(--yellow);
+}
+
+.cl-breakdown {
+  margin-top: 14px;
+}
+
+.cl-breakdown h3 {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.cl-bar {
+  display: flex;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+
+.cl-bar-material {
+  background: #ffbd20;
+}
+
+.cl-bar-packaging {
+  background: #5dcaa5;
+}
+
+.cl-bar-labor {
+  background: #85b7eb;
+}
+
+.cl-legend {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  list-style: none;
+  font-size: 14px;
+}
+
+.cl-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cl-legend strong {
+  margin-inline-start: auto;
+}
+
+.cl-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.cl-formula {
+  margin-top: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+}
+
+.cl-verified {
+  margin-top: 6px;
+  color: #5dcaa5;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (max-width: 800px) {
+  .cl-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cl-result {
+    position: static;
+  }
+
+  .cl-price strong {
+    font-size: 40px;
+  }
+}

@@ -1,12 +1,13 @@
 import { useState } from "react";
 import FormMessage from "./FormMessage.jsx";
 import { HTTP_STATUS, MESSAGE_TYPES } from "../constants/messages.js";
-import { PRODUCT_FORM_TEXT, SUPPLIER_TEXT, getProductError } from "../constants/supplier.js";
+import { PRODUCT_FORM_TEXT, SUPPLIER_TEXT, PRODUCT_CATEGORIES, getProductError } from "../constants/supplier.js";
 import "../styles/ProductModal.css";
 
 const EMPTY_PRODUCT = {
   name: "",
   description: "",
+  category_id: "",
   price: "",
   stock_quantity: 1,
   unit: "",
@@ -35,6 +36,7 @@ function AddProductModal({ onClose, onSubmit }) {
     const product = {
       name: form.name.trim(),
       description: form.description.trim() || undefined,
+      category_id: Number(form.category_id),
       price: Number(form.price),
       stock_quantity: Number(form.stock_quantity),
       unit: form.unit.trim() || undefined,
@@ -99,6 +101,20 @@ function AddProductModal({ onClose, onSubmit }) {
             onChange={updateField}
             placeholder={PRODUCT_FORM_TEXT.DESCRIPTION_PLACEHOLDER}
           />
+
+          <label htmlFor="product-category">{PRODUCT_FORM_TEXT.CATEGORY}</label>
+          <select
+            id="product-category"
+            name="category_id"
+            value={form.category_id}
+            onChange={updateField}
+            required
+          >
+            <option value="" disabled>{PRODUCT_FORM_TEXT.CATEGORY_PLACEHOLDER}</option>
+            {PRODUCT_CATEGORIES.map((category) => (
+              <option key={category.id} value={category.id}>{category.label}</option>
+            ))}
+          </select>
 
           <div className="pm-row">
             <div className="pm-field">

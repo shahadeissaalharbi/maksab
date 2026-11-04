@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import TraderHome from "./pages/TraderHome.jsx";
-import ComingSoon from "./pages/ComingSoon.jsx";
+import Calculator from "./pages/Calculator.jsx";
 import BusinessInfo from "./pages/BusinessInfo.jsx";
 import Landing from "./pages/Landing.jsx";
 import SupplierOverview from "./pages/SupplierOverview.jsx";
@@ -19,10 +19,7 @@ function App() {
         <Route path={ROUTES.REGISTER} element={<Register />} />
         <Route path={ROUTES.LOGIN} element={<Login />} />
         <Route path={ROUTES.LANDING} element={<Landing />} />
-        <Route
-          path={ROUTES.CALCULATOR}
-          element={<ComingSoon title="حاسبة التسعير" />}
-        />
+        <Route path={ROUTES.CALCULATOR} element={<Calculator />} />
 
         {/* صفحات الأسرة المنتجة */}
         <Route path={ROUTES.TRADER_HOME} element={<TraderHome />} />
