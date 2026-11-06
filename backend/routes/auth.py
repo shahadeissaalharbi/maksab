@@ -75,6 +75,11 @@ def register():
     if not is_valid_email(email):
         return jsonify({"error": "Invalid email"}), 400
 
+    if len(full_name) < 2 or not any(ch.isalpha() for ch in full_name):
+        return jsonify({
+            "error": "Name must be at least 2 characters"
+        }), 400
+
     if len(full_name) > 100:
         return jsonify({"error": "Name is too long"}), 400
 
