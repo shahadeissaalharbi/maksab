@@ -173,7 +173,8 @@ def create_order():
                         supplier_id,
                         price,
                         stock_quantity,
-                        COALESCE(moq, 1)
+                        COALESCE(moq, 1),
+                        name
                     FROM products
                     WHERE id = ANY(%s)
                     ORDER BY id
@@ -185,7 +186,8 @@ def create_order():
                         "supplier_id": row[1],
                         "price": row[2],
                         "stock": row[3],
-                        "moq": row[4]
+                        "moq": row[4],
+                        "name": row[5]
                     }
                     for row in cursor.fetchall()
                 }
@@ -206,12 +208,22 @@ def create_order():
 
                     if quantity < product["moq"]:
                         return jsonify({
-                            "error": f"Minimum quantity for product {product_id} is {product['moq']}"
+                            "error": f"Minimum quantity for product {product_id} is {product['moq']}",
+                            "code": "below_min_order",
+                            "product_id": product_id,
+                            "product_name": product["name"],
+                            "min_order": product["moq"],
+                            "requested": quantity
                         }), 400
 
                     if quantity > product["stock"]:
                         return jsonify({
-                            "error": f"Insufficient stock for product {product_id}"
+                            "error": f"Insufficient stock for product {product_id}",
+                            "code": "insufficient_stock",
+                            "product_id": product_id,
+                            "product_name": product["name"],
+                            "available": product["stock"],
+                            "requested": quantity
                         }), 400
 
                 # Group products by supplier
