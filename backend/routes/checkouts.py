@@ -258,3 +258,85 @@ def create_checkout():
         return jsonify({
             "error": "Database temporarily unavailable"
         }), 503
+
+
+@checkouts_bp.route("/api/checkouts/<int:checkout_id>", methods=["GET"])
+@token_required
+def get_checkout(checkout_id):
+    # Only merchants can view their own checkouts
+    if request.user_role != "merchant":
+        return jsonify({"error": "Access denied"}), 403
+
+    try:
+        with psycopg.connect(Config.DATABASE_URL) as connection:
+            with connection.cursor() as cursor:
+
+                cursor.execute("""
+                    SELECT
+                        id,
+                        merchant_id,
+                        total_amount,
+                        currency,
+                        status,
+                        payment_id,
+                        paid_at,
+                        created_at
+                    FROM checkouts
+                    WHERE id = %s;
+                """, (checkout_id,))
+
+                checkout = cursor.fetchone()
+
+                if checkout is None:
+                    return jsonify({"error": "Checkout not found"}), 404
+
+                if checkout[1] != request.user_id:
+                    return jsonify({"error": "Access denied"}), 403
+
+                cursor.execute("""
+                    SELECT id, supplier_id, total_amount, status
+                    FROM orders
+                    WHERE checkout_id = %s
+                    ORDER BY id;
+                """, (checkout_id,))
+
+                orders = [
+                    {
+                        "id": row[0],
+                        "supplier_id": row[1],
+                        "total_amount": str(row[2]),
+                        "status": row[3]
+                    }
+                    for row in cursor.fetchall()
+                ]
+
+        return jsonify({
+            "checkout": {
+                "id": checkout[0],
+                "total_amount": str(checkout[2]),
+                "currency": checkout[3],
+                "status": checkout[4],
+                "payment_id": checkout[5],
+                "paid_at": (
+                    checkout[6].isoformat()
+                    if checkout[6] is not None
+                    else None
+                ),
+                "created_at": (
+                    checkout[7].isoformat()
+                    if checkout[7] is not None
+                    else None
+                )
+            },
+            "orders": orders,
+            "count": len(orders)
+        }), 200
+
+    except psycopg.Error:
+        current_app.logger.exception(
+            "Database error while fetching checkout"
+        )
+
+        return jsonify({
+            "error": "Database temporarily unavailable"
+        }), 503
