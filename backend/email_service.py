@@ -134,3 +134,69 @@ def send_order_notification(notification_type, recipient, order_data):
             order_id,
         )
         return None
+
+
+def notify_checkout_paid(checkout_id):
+    """Notify merchant and suppliers after confirmed checkout payment."""
+    import psycopg
+
+    try:
+        with psycopg.connect(Config.DATABASE_URL) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT c.merchant_id, u.email
+                    FROM checkouts AS c
+                    JOIN users AS u ON u.id = c.merchant_id
+                    WHERE c.id = %s AND c.status = 'paid';
+                """, (checkout_id,))
+
+                checkout = cursor.fetchone()
+
+                if checkout is None:
+                    logger.warning(
+                        "Checkout %s not found or not paid",
+                        checkout_id,
+                    )
+                    return False
+
+                merchant_id, merchant_email = checkout
+
+                cursor.execute("""
+                    SELECT o.id, s.email
+                    FROM orders AS o
+                    JOIN users AS s ON s.id = o.supplier_id
+                    WHERE o.checkout_id = %s
+                      AND o.status = 'paid'
+                    ORDER BY o.id;
+                """, (checkout_id,))
+
+                orders = cursor.fetchall()
+
+        if not orders:
+            logger.warning(
+                "No paid orders found for checkout %s",
+                checkout_id,
+            )
+            return False
+
+        for order_id, supplier_email in orders:
+            send_order_notification(
+                "new_order",
+                supplier_email,
+                {"order_id": order_id},
+            )
+
+        send_order_notification(
+            "payment_success",
+            merchant_email,
+            {"order_id": orders[0][0]},
+        )
+
+        return True
+
+    except Exception:
+        logger.exception(
+            "Failed to process checkout %s notifications",
+            checkout_id,
+        )
+        return False
