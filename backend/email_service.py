@@ -74,3 +74,63 @@ def send_otp_email(to_email, code):
 def send_verification_email(to_email, verification_url):
     html = f'<p>رابط التوثيق: <a href="{verification_url}">توثيق البريد</a></p>'
     return send_email(to_email, "توثيق بريدك - مكسب", html)
+# Order notifications
+
+import logging
+from html import escape
+
+logger = logging.getLogger(__name__)
+
+ORDER_NOTIFICATION_SUBJECTS = {
+    "new_order": "طلب جديد - مكسب",
+    "order_processing": "طلبك قيد التجهيز - مكسب",
+    "order_shipped": "تم شحن طلبك - مكسب",
+    "order_delivered": "تم تسليم طلبك - مكسب",
+    "payment_success": "تم تأكيد الدفع - مكسب",
+}
+
+ORDER_NOTIFICATION_MESSAGES = {
+    "new_order": "لديك طلب جديد في مكسب.",
+    "order_processing": "بدأ المورد بتجهيز طلبك.",
+    "order_shipped": "تم شحن طلبك.",
+    "order_delivered": "تم تسليم طلبك.",
+    "payment_success": "تم تأكيد دفع طلبك بنجاح.",
+}
+
+
+def send_order_notification(notification_type, recipient, order_data):
+    """Send an order notification without interrupting the main operation."""
+
+    if notification_type not in ORDER_NOTIFICATION_SUBJECTS:
+        raise ValueError("Unsupported notification type")
+
+    if not isinstance(order_data, dict):
+        raise ValueError("order_data must be a dictionary")
+
+    if not isinstance(recipient, str) or not recipient.strip():
+        raise ValueError("A recipient email is required")
+
+    order_id = escape(str(order_data.get("order_id", "غير محدد")))
+
+    subject = ORDER_NOTIFICATION_SUBJECTS[notification_type]
+    message = ORDER_NOTIFICATION_MESSAGES[notification_type]
+
+    html = f"""
+    <div dir="rtl" style="font-family: Tahoma, Arial, sans-serif;
+                          max-width: 600px; margin: auto;">
+        <h2 style="color: #006B52;">مكسب</h2>
+        <p>{message}</p>
+        <p><strong>رقم الطلب:</strong> {order_id}</p>
+        <p>شكرًا لاستخدامك منصة مكسب.</p>
+    </div>
+    """
+
+    try:
+        return send_email(recipient, subject, html)
+    except Exception:
+        logger.exception(
+            "Failed to send %s notification for order %s",
+            notification_type,
+            order_id,
+        )
+        return None
