@@ -24,3 +24,13 @@ class Config:
     )
 
     EMAIL_VERIFICATION_EXPIRATION_HOURS = 24
+
+    # Moyasar payments (sandbox keys: sk_test_ / pk_test_)
+    MOYASAR_SECRET_KEY = os.environ.get("MOYASAR_SECRET_KEY", "").strip()
+    MOYASAR_PUBLISHABLE_KEY = os.environ.get(
+        "MOYASAR_PUBLISHABLE_KEY", ""
+    ).strip()
+    MOYASAR_WEBHOOK_SECRET = os.environ.get(
+        "MOYASAR_WEBHOOK_SECRET", ""
+    ).strip()
+    MOYASAR_API_URL = "https://api.moyasar.com/v1"
