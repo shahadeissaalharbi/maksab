@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
-import AccountSidebar from "../components/AccountSidebar.jsx";
 import FormMessage from "../components/FormMessage.jsx";
 import MyOrderCard from "../components/MyOrderCard.jsx";
 import OrderFilters from "../components/OrderFilters.jsx";
@@ -14,7 +13,7 @@ import {
 } from "../constants/myOrders.js";
 import { CART_TEXT } from "../constants/cart.js";
 import { MESSAGE_TYPES } from "../constants/messages.js";
-import { getToken, getUser } from "../services/session.js";
+import { getToken } from "../services/session.js";
 import { useMyOrders } from "../hooks/useMyOrders.js";
 import "../styles/Auth.css";
 import "../styles/Trader.css";
@@ -23,7 +22,6 @@ import "../styles/MyOrders.css";
 // هنا صفحة طلباتي وإيصالاتي للأسرة المنتجة
 function MyOrders() {
   const { orders, status } = useMyOrders();
-  const user = getUser() || {};
   const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState("all");
 
@@ -43,11 +41,9 @@ function MyOrders() {
 
   return (
     <div className="trader-page" dir="rtl">
-      <Navbar userName={user.full_name} />
+      <Navbar />
 
       <div className="mo-layout">
-        <AccountSidebar />
-
         <main className="mo-main">
           <header className="mo-header">
             <div>
