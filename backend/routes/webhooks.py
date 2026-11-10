@@ -31,7 +31,11 @@ def fetch_moyasar_payment(payment_id):
 
     api_request = urllib.request.Request(
         f"{Config.MOYASAR_API_URL}/payments/{payment_id}",
-        headers={"Authorization": f"Basic {credentials}"}
+        headers={
+            "Authorization": f"Basic {credentials}",
+            "Accept": "application/json",
+            "User-Agent": "Maksab/1.0"
+        }
     )
 
     with urllib.request.urlopen(api_request, timeout=10) as response:
@@ -90,9 +94,15 @@ def moyasar_webhook():
     # Confirm the payment directly with Moyasar
     try:
         verified = fetch_moyasar_payment(payment_id)
-    except (urllib.error.URLError, ValueError, TimeoutError):
+    except (urllib.error.URLError, ValueError, TimeoutError) as error:
+        detail = ""
+
+        if isinstance(error, urllib.error.HTTPError):
+            detail = error.read().decode(errors="replace")[:300]
+
         current_app.logger.exception(
-            "Could not verify Moyasar payment %s", payment_id
+            "Could not verify Moyasar payment %s: %s",
+            payment_id, detail
         )
         # Non-2xx makes Moyasar retry later
         return jsonify({"error": "Could not verify payment"}), 503
