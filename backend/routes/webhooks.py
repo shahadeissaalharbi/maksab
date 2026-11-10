@@ -9,6 +9,7 @@ import psycopg
 from flask import Blueprint, current_app, jsonify, request
 
 from config import Config
+from email_service import notify_checkout_paid
 
 
 webhooks_bp = Blueprint("webhooks", __name__)
@@ -161,7 +162,14 @@ def moyasar_webhook():
                       AND status = 'pending';
                 """, (checkout_id,))
 
-        # TODO: notify merchant and suppliers (notifications task)
+        # The payment is saved. A failed email must never undo or fail it.
+        try:
+            notify_checkout_paid(checkout_id)
+        except Exception:
+            current_app.logger.exception(
+                "Checkout %s paid, but notifications failed", checkout_id
+            )
+
         return jsonify({"message": "Payment recorded"}), 200
 
     except psycopg.errors.UniqueViolation:

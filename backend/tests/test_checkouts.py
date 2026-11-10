@@ -14,6 +14,18 @@ from routes.webhooks import webhooks_bp
 SECRET = "test-webhook-secret"
 
 
+@pytest.fixture(autouse=True)
+def notify_calls(monkeypatch):
+    """Record notification calls instead of sending real emails."""
+    calls = []
+    monkeypatch.setattr(
+        webhooks,
+        "notify_checkout_paid",
+        lambda checkout_id: calls.append(checkout_id)
+    )
+    return calls
+
+
 @pytest.fixture
 def client(monkeypatch):
     monkeypatch.setattr(Config, "JWT_SECRET", "test-jwt-secret")
@@ -163,7 +175,7 @@ def test_webhook_failed_payment_is_ignored(client, monkeypatch):
     assert cursor.updates() == []
 
 
-def test_webhook_marks_checkout_paid(client, monkeypatch):
+def test_webhook_marks_checkout_paid(client, monkeypatch, notify_calls):
     cursor = use_checkout(monkeypatch)
     moyasar_returns(monkeypatch)
     response = client.post("/api/webhooks/moyasar", json=event())
@@ -171,23 +183,42 @@ def test_webhook_marks_checkout_paid(client, monkeypatch):
     assert response.get_json()["message"] == "Payment recorded"
     # one UPDATE for the checkout and one for its orders
     assert len(cursor.updates()) == 2
+    # merchant and suppliers are notified once
+    assert notify_calls == [5]
 
 
-def test_webhook_duplicate_does_nothing(client, monkeypatch):
+def test_webhook_notification_failure_keeps_payment(client, monkeypatch):
+    cursor = use_checkout(monkeypatch)
+    moyasar_returns(monkeypatch)
+
+    def boom(checkout_id):
+        raise RuntimeError("email down")
+
+    monkeypatch.setattr(webhooks, "notify_checkout_paid", boom)
+    response = client.post("/api/webhooks/moyasar", json=event())
+    assert response.status_code == 200
+    assert response.get_json()["message"] == "Payment recorded"
+    assert len(cursor.updates()) == 2
+
+
+def test_webhook_duplicate_does_nothing(client, monkeypatch, notify_calls):
     cursor = use_checkout(monkeypatch, status="paid")
     moyasar_returns(monkeypatch)
     response = client.post("/api/webhooks/moyasar", json=event())
     assert response.status_code == 200
     assert response.get_json()["message"] == "Already processed"
     assert cursor.updates() == []
+    # no second round of emails
+    assert notify_calls == []
 
 
-def test_webhook_amount_mismatch(client, monkeypatch):
+def test_webhook_amount_mismatch(client, monkeypatch, notify_calls):
     cursor = use_checkout(monkeypatch)
     moyasar_returns(monkeypatch, amount=5000)
     response = client.post("/api/webhooks/moyasar", json=event())
     assert response.status_code == 400
     assert cursor.updates() == []
+    assert notify_calls == []
 
 
 def test_webhook_payment_not_paid(client, monkeypatch):
