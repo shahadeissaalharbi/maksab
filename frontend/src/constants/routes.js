@@ -13,6 +13,8 @@ export const ROUTES = {
   BUSINESS_INFO: "/business-info",
   MY_ORDERS: "/orders",
   CART: "/cart",
+  SUPPLIER_LOGIN: "/supplier/login",
+
   PROFILE: "/profile",
 };
 

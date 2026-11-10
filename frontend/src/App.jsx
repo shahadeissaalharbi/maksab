@@ -21,7 +21,6 @@ function App() {
         <Route path={ROUTES.LOGIN} element={<Login />} />
         <Route path={ROUTES.LANDING} element={<Landing />} />
         <Route path={ROUTES.CALCULATOR} element={<Calculator />} />
-
         {/* صفحات الأسرة المنتجة */}
         <Route path={ROUTES.TRADER_HOME} element={<TraderHome />} />
         {/* بيانات النشاط صارت داخل صفحة حسابي */}
@@ -35,7 +34,7 @@ function App() {
         {/* صفحات المورد */}
         <Route path={ROUTES.SUPPLIER_HOME} element={<SupplierOverview />} />
         <Route path={ROUTES.SUPPLIER_PRODUCTS} element={<SupplierHome />} />
-        <Route path="/supplier/login" element={<Login />} />
+        <Route path={ROUTES.SUPPLIER_LOGIN} element={<Login />} />{" "}
       </Routes>
       <Footer />
     </BrowserRouter>
