@@ -3,7 +3,11 @@ import { HTTP_STATUS } from "./messages.js";
 // هنا حالات المخزون، و value نفس اللي يرجعه الباك
 export const STOCK_STATUS = Object.freeze({
   IN_STOCK: Object.freeze({ value: "in_stock", label: "متوفر", tone: "green" }),
-  OUT_OF_STOCK: Object.freeze({ value: "out_of_stock", label: "نفد", tone: "red" }),
+  OUT_OF_STOCK: Object.freeze({
+    value: "out_of_stock",
+    label: "نفد",
+    tone: "red",
+  }),
 });
 
 // هنا التصنيفات، والرقم هو id التصنيف في القاعدة (1 مواد خام، 2 تغليف، 3 علب وعبوات)
@@ -15,7 +19,8 @@ export const PRODUCT_CATEGORIES = Object.freeze([
 
 // هنا أجيب حالة المخزون من قيمتها، ولو ما لقيتها أعتبرها نفدت
 export const getStockStatus = (value) =>
-  Object.values(STOCK_STATUS).find((status) => status.value === value) ?? STOCK_STATUS.OUT_OF_STOCK;
+  Object.values(STOCK_STATUS).find((status) => status.value === value) ??
+  STOCK_STATUS.OUT_OF_STOCK;
 
 // هنا نصوص لوحة المورد في مكان واحد
 export const SUPPLIER_TEXT = Object.freeze({
@@ -31,6 +36,8 @@ export const SUPPLIER_TEXT = Object.freeze({
   ERROR: "منتجاتك ما وصلت هالمرة، نرجو المحاولة بعد شوي",
   CURRENCY: "ر.س",
   EDIT: "تعديل",
+  EDIT_NAME: "اسم المنتج",
+  EDIT_STOCK: "الكمية",
   SAVE: "حفظ",
   CANCEL: "إلغاء",
 });
@@ -61,7 +68,7 @@ export const PRODUCT_FORM_TEXT = {
 // هنا رسائل إضافة وتعديل وحذف المنتجات
 export const PRODUCT_MESSAGES = {
   ADDED: "انضاف المنتج ✓",
-  UPDATED: "انحفظ السعر الجديد ✓",
+  UPDATED: "انحفظ التعديل ✓",
   DELETED: "انحذف المنتج",
   DELETE: "حذف",
   DELETE_CONFIRM: "حذف المنتج نهائي وما يرجع، نكمل؟",
@@ -69,9 +76,11 @@ export const PRODUCT_MESSAGES = {
 
 // هنا كل رد خطأ من الباك مربوط برسالته
 export const PRODUCT_ERRORS = {
-  [HTTP_STATUS.BAD_REQUEST]: "نرجو مراجعة البيانات: الاسم والسعر والكمية مطلوبة",
+  [HTTP_STATUS.BAD_REQUEST]:
+    "نرجو مراجعة البيانات: الاسم والسعر والكمية مطلوبة",
   [HTTP_STATUS.UNAUTHORIZED]: "انتهت الجلسة، نرجو تسجيل الدخول من جديد",
-  [HTTP_STATUS.FORBIDDEN]: "ما فيه صلاحية: لازم حساب مورد موثق، والمنتج يكون منتجك",
+  [HTTP_STATUS.FORBIDDEN]:
+    "ما فيه صلاحية: لازم حساب مورد موثق، والمنتج يكون منتجك",
   [HTTP_STATUS.NOT_FOUND]: "المنتج ما عاد موجود",
   NETWORK: "الإنترنت فصل في نص الطريق، نرجو المحاولة بعد شوي",
   DEFAULT: "الخلل عندنا مو عندك، نرجو المحاولة بعد شوي",
