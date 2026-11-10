@@ -74,3 +74,129 @@ def send_otp_email(to_email, code):
 def send_verification_email(to_email, verification_url):
     html = f'<p>رابط التوثيق: <a href="{verification_url}">توثيق البريد</a></p>'
     return send_email(to_email, "توثيق بريدك - مكسب", html)
+# Order notifications
+
+import logging
+from html import escape
+
+logger = logging.getLogger(__name__)
+
+ORDER_NOTIFICATION_SUBJECTS = {
+    "new_order": "طلب جديد - مكسب",
+    "order_processing": "طلبك قيد التجهيز - مكسب",
+    "order_shipped": "تم شحن طلبك - مكسب",
+    "order_delivered": "تم تسليم طلبك - مكسب",
+    "payment_success": "تم تأكيد الدفع - مكسب",
+}
+
+ORDER_NOTIFICATION_MESSAGES = {
+    "new_order": "لديك طلب جديد في مكسب.",
+    "order_processing": "بدأ المورد بتجهيز طلبك.",
+    "order_shipped": "تم شحن طلبك.",
+    "order_delivered": "تم تسليم طلبك.",
+    "payment_success": "تم تأكيد دفع طلبك بنجاح.",
+}
+
+
+def send_order_notification(notification_type, recipient, order_data):
+    """Send an order notification without interrupting the main operation."""
+
+    if notification_type not in ORDER_NOTIFICATION_SUBJECTS:
+        raise ValueError("Unsupported notification type")
+
+    if not isinstance(order_data, dict):
+        raise ValueError("order_data must be a dictionary")
+
+    if not isinstance(recipient, str) or not recipient.strip():
+        raise ValueError("A recipient email is required")
+
+    order_id = escape(str(order_data.get("order_id", "غير محدد")))
+
+    subject = ORDER_NOTIFICATION_SUBJECTS[notification_type]
+    message = ORDER_NOTIFICATION_MESSAGES[notification_type]
+
+    html = f"""
+    <div dir="rtl" style="font-family: Tahoma, Arial, sans-serif;
+                          max-width: 600px; margin: auto;">
+        <h2 style="color: #006B52;">مكسب</h2>
+        <p>{message}</p>
+        <p><strong>رقم الطلب:</strong> {order_id}</p>
+        <p>شكرًا لاستخدامك منصة مكسب.</p>
+    </div>
+    """
+
+    try:
+        return send_email(recipient, subject, html)
+    except Exception:
+        logger.exception(
+            "Failed to send %s notification for order %s",
+            notification_type,
+            order_id,
+        )
+        return None
+
+
+def notify_checkout_paid(checkout_id):
+    """Notify merchant and suppliers after confirmed checkout payment."""
+    import psycopg
+
+    try:
+        with psycopg.connect(Config.DATABASE_URL) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT c.merchant_id, u.email
+                    FROM checkouts AS c
+                    JOIN users AS u ON u.id = c.merchant_id
+                    WHERE c.id = %s AND c.status = 'paid';
+                """, (checkout_id,))
+
+                checkout = cursor.fetchone()
+
+                if checkout is None:
+                    logger.warning(
+                        "Checkout %s not found or not paid",
+                        checkout_id,
+                    )
+                    return False
+
+                merchant_id, merchant_email = checkout
+
+                cursor.execute("""
+                    SELECT o.id, s.email
+                    FROM orders AS o
+                    JOIN users AS s ON s.id = o.supplier_id
+                    WHERE o.checkout_id = %s
+                      AND o.status = 'paid'
+                    ORDER BY o.id;
+                """, (checkout_id,))
+
+                orders = cursor.fetchall()
+
+        if not orders:
+            logger.warning(
+                "No paid orders found for checkout %s",
+                checkout_id,
+            )
+            return False
+
+        for order_id, supplier_email in orders:
+            send_order_notification(
+                "new_order",
+                supplier_email,
+                {"order_id": order_id},
+            )
+
+        send_order_notification(
+            "payment_success",
+            merchant_email,
+            {"order_id": orders[0][0]},
+        )
+
+        return True
+
+    except Exception:
+        logger.exception(
+            "Failed to process checkout %s notifications",
+            checkout_id,
+        )
+        return False
