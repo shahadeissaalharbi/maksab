@@ -76,7 +76,7 @@ function SupplierHome() {
 
   return (
     <div className="trader-page" dir="rtl">
-      <Navbar userName={getUser()?.full_name} links={SUPPLIER_NAV_LINKS} />
+      <Navbar links={SUPPLIER_NAV_LINKS} />
 
       <section className="market-hero">
         <span className="market-badge">{SUPPLIER_TEXT.BADGE}</span>

@@ -26,7 +26,7 @@ export const MARKET_TEXT = {
 
 // هنا خيارات الترتيب ونصوص الفلاتر
 export const SORT_OPTIONS = {
-  NEWEST: "newest",
+  DEFAULT: "default",
   PRICE_ASC: "price_asc",
   PRICE_DESC: "price_desc",
   NAME: "name",
@@ -39,22 +39,18 @@ export const FILTER_TEXT = {
   SORT_LABEL: "الترتيب",
   RESET: "مسح الفلاتر",
   SORT: {
-    [SORT_OPTIONS.NEWEST]: "الأحدث",
+    [SORT_OPTIONS.DEFAULT]: "افتراضي",
     [SORT_OPTIONS.PRICE_ASC]: "السعر: الأقل أول",
     [SORT_OPTIONS.PRICE_DESC]: "السعر: الأعلى أول",
     [SORT_OPTIONS.NAME]: "الاسم",
   },
 };
 
-
-
-
 // هنا روابط الشريط العلوي، وكل رابط يودي لصفحته
 export const NAV_LINKS = [
   { label: "الرئيسية", to: ROUTES.LANDING },
   { label: "حاسبة التسعير", to: ROUTES.CALCULATOR },
   { label: "سوق الجملة", to: ROUTES.TRADER_HOME },
-  { label: "بيانات النشاط ", to: ROUTES.BUSINESS_INFO },
   { label: "طلباتي", to: ROUTES.MY_ORDERS },
 ];
 

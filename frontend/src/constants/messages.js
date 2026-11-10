@@ -37,6 +37,9 @@ export const SUCCESS_MESSAGES = {
 export const getErrorMessage = (status) =>
   ERROR_MESSAGES[status] || ERROR_MESSAGES.DEFAULT;
 
+// هنا جملة توضيحية تحت خانة الاسم عشان ما يغلط المستخدم
+export const NAME_HINT = "اكتب اسم نشاطك كاملًا (حرفين على الأقل)";
+
 // هنا رسالة الاسم لو كان قصير أو ما فيه حروف
 export const NAME_ERROR = "الاسم لازم يكون حرفين على الأقل ويحتوي على حروف";
 

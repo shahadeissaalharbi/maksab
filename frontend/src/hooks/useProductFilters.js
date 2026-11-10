@@ -23,7 +23,7 @@ export function useProductFilters(products) {
   const [category, setCategory] = useState(CATEGORIES.ALL.value);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
-  const [sort, setSort] = useState(SORT_OPTIONS.NEWEST);
+  const [sort, setSort] = useState(SORT_OPTIONS.DEFAULT);
 
   // أعد كم منتج في كل تصنيف، عشان الرقم اللي جنب كل زر
   const counts = { [CATEGORIES.ALL.value]: products.length };
@@ -56,14 +56,14 @@ export function useProductFilters(products) {
     search.trim() !== "" ||
     minPrice !== "" ||
     maxPrice !== "" ||
-    sort !== SORT_OPTIONS.NEWEST;
+    sort !== SORT_OPTIONS.DEFAULT;
 
   const reset = () => {
     setSearch("");
     setCategory(CATEGORIES.ALL.value);
     setMinPrice("");
     setMaxPrice("");
-    setSort(SORT_OPTIONS.NEWEST);
+    setSort(SORT_OPTIONS.DEFAULT);
   };
 
   return {

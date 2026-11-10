@@ -1,9 +1,16 @@
 import Logo from "./Logo.jsx";
 import BrandPanel from "./BrandPanel.jsx";
 import "../styles/Auth.css";
+import "../styles/AuthFit.css";
 
 // هنا الإطار المشترك لصفحتي الدخول والتسجيل، والقسم الأخضر يطلع بس إذا الصفحة طلبته
-function AuthLayout({ subtitle, title, description, showBrand = false, children }) {
+function AuthLayout({
+  subtitle,
+  title,
+  description,
+  showBrand = false,
+  children,
+}) {
   return (
     <main className="register-page" dir="rtl">
       <section className="register-form-section">

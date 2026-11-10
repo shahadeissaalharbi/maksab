@@ -1,0 +1,16 @@
+/* ========== أحدث المنتجات ========== */
+.new-arrivals {
+  width: calc(100% - 40px);
+  max-width: 1060px;
+  margin: 24px auto 0;
+  padding: 20px;
+  border: 1.5px solid #ffe6a3;
+  border-radius: 20px;
+  background: #fffaeb;
+}
+
+.new-arrivals h2 {
+  margin-bottom: 12px;
+  color: var(--amber);
+  font-size: 20px;
+}

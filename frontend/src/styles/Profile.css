@@ -1,0 +1,162 @@
+/* صفحة حسابي */
+.profile {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+.profile h1 {
+  font-size: 30px;
+}
+
+.profile-subtitle {
+  margin: 4px 0 20px;
+  color: var(--muted);
+}
+
+/* ملخص الحساب: الدائرة والاسم والبريد */
+.profile-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: #ffffff;
+}
+
+.profile-summary-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border: 3px solid var(--yellow);
+  border-radius: 50%;
+  background: var(--green);
+  color: var(--yellow);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.profile-summary-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+
+.profile-summary-text strong {
+  font-size: 20px;
+  word-break: break-word;
+}
+
+.profile-summary-text p {
+  color: var(--muted);
+  word-break: break-all;
+}
+
+.profile-verified {
+  margin-right: 8px;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.profile-card {
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: #ffffff;
+}
+
+.profile-card h2 {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.profile-note {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* حقول النماذج داخل بطاقات حسابي */
+.profile-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-card label {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.profile-card input,
+.profile-card textarea {
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+}
+
+.profile-card input:focus,
+.profile-card textarea:focus {
+  outline: none;
+  border-color: var(--green);
+}
+
+.profile-card .register-submit {
+  margin-top: 12px;
+}
+
+.profile-danger {
+  border-color: #f2b8b5;
+  background: #fff7f6;
+}
+
+.profile-danger h2 {
+  color: #b42318;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.profile-delete {
+  min-height: 44px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 999px;
+  background: #b42318;
+  color: #ffffff;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.profile-delete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.profile-cancel {
+  min-height: 44px;
+  padding: 8px 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  background: #ffffff;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
