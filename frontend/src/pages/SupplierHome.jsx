@@ -24,8 +24,15 @@ import "../styles/Supplier.css";
 
 // هنا صفحة منتجات المورد: الأرقام والبحث، وإضافة وتعديل وحذف المنتجات
 function SupplierHome() {
-  const { supplier, products, stats, status, addProduct, updateProduct, removeProduct } =
-    useSupplierHome();
+  const {
+    supplier,
+    products,
+    stats,
+    status,
+    addProduct,
+    updateProduct,
+    removeProduct,
+  } = useSupplierHome();
   const { search, setSearch, filtered } = useProductFilters(products);
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState(null);
@@ -40,7 +47,10 @@ function SupplierHome() {
     if (result.status === successStatus) {
       setMessage({ type: MESSAGE_TYPES.SUCCESS, text: successText });
     } else {
-      setMessage({ type: MESSAGE_TYPES.ERROR, text: getProductError(result.status) });
+      setMessage({
+        type: MESSAGE_TYPES.ERROR,
+        text: getProductError(result.status),
+      });
     }
   };
 
@@ -53,11 +63,9 @@ function SupplierHome() {
     return result;
   };
 
-  const handleUpdatePrice = async (productId, newPrice, newStockQuantity) => {
-    const result = await updateProduct(productId, {
-      price: Number(newPrice),
-      stock_quantity: Number(newStockQuantity),
-    });
+  // هنا التعديل: الاسم والسعر والكمية يروحون للباك مرة وحدة
+  const handleUpdate = async (productId, changes) => {
+    const result = await updateProduct(productId, changes);
     showResult(result, HTTP_STATUS.OK, PRODUCT_MESSAGES.UPDATED);
   };
 
@@ -80,20 +88,35 @@ function SupplierHome() {
         <div className="stat-row">
           <StatCard label={SUPPLIER_TEXT.STAT_TOTAL} value={stats.total} />
           <StatCard label={SUPPLIER_TEXT.STAT_IN_STOCK} value={stats.inStock} />
-          <StatCard label={SUPPLIER_TEXT.STAT_OUT_OF_STOCK} value={stats.outOfStock} />
+          <StatCard
+            label={SUPPLIER_TEXT.STAT_OUT_OF_STOCK}
+            value={stats.outOfStock}
+          />
         </div>
 
         <div className="supplier-toolbar">
-          <SearchBar value={search} onChange={setSearch} placeholder={SUPPLIER_TEXT.SEARCH_PLACEHOLDER} />
-          <button type="button" className="add-product-button" onClick={() => setShowModal(true)}>
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder={SUPPLIER_TEXT.SEARCH_PLACEHOLDER}
+          />
+          <button
+            type="button"
+            className="add-product-button"
+            onClick={() => setShowModal(true)}
+          >
             {PRODUCT_FORM_TEXT.ADD_BUTTON}
           </button>
         </div>
 
         <FormMessage message={message} />
 
-        {status === LOAD_STATUS.LOADING && <p className="market-state">{SUPPLIER_TEXT.LOADING}</p>}
-        {status === LOAD_STATUS.ERROR && <p className="market-state error">{SUPPLIER_TEXT.ERROR}</p>}
+        {status === LOAD_STATUS.LOADING && (
+          <p className="market-state">{SUPPLIER_TEXT.LOADING}</p>
+        )}
+        {status === LOAD_STATUS.ERROR && (
+          <p className="market-state error">{SUPPLIER_TEXT.ERROR}</p>
+        )}
         {status === LOAD_STATUS.READY && filtered.length === 0 && (
           <p className="market-state">{SUPPLIER_TEXT.EMPTY}</p>
         )}
@@ -103,14 +126,19 @@ function SupplierHome() {
             <SupplierProductCard
               key={product.id}
               product={product}
-              onUpdatePrice={handleUpdatePrice}
+              onUpdate={handleUpdate}
               onDelete={handleDelete}
             />
           ))}
         </div>
       </div>
 
-      {showModal && <AddProductModal onClose={() => setShowModal(false)} onSubmit={handleAdd} />}
+      {showModal && (
+        <AddProductModal
+          onClose={() => setShowModal(false)}
+          onSubmit={handleAdd}
+        />
+      )}
     </div>
   );
 }

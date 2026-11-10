@@ -4,7 +4,11 @@ import Navbar from "../components/Navbar.jsx";
 import CartLine from "../components/CartLine.jsx";
 import FormMessage from "../components/FormMessage.jsx";
 import { ROUTES } from "../constants/routes.js";
-import { CART_TEXT, getOrderError } from "../constants/cart.js";
+import {
+  CART_TEXT,
+  getOrderError,
+  getOrderErrorMessage,
+} from "../constants/cart.js";
 import { HTTP_STATUS, MESSAGE_TYPES } from "../constants/messages.js";
 import { getToken, getUser } from "../services/session.js";
 import { createOrder } from "../services/ordersService.js";
@@ -37,7 +41,7 @@ function Cart() {
     setMessage(null);
 
     try {
-      const { status } = await createOrder(items);
+      const { status, data } = await createOrder(items);
 
       // لو انسوى الطلب نفضي السلة ونوديه لطلباتي
       if (status === HTTP_STATUS.CREATED) {
@@ -45,7 +49,10 @@ function Cart() {
         navigate(`${ROUTES.MY_ORDERS}?placed=1`);
         return;
       }
-      setMessage({ type: MESSAGE_TYPES.ERROR, text: getOrderError(status) });
+      setMessage({
+        type: MESSAGE_TYPES.ERROR,
+        text: getOrderErrorMessage(status, data),
+      });
     } catch {
       setMessage({ type: MESSAGE_TYPES.ERROR, text: getOrderError("NETWORK") });
     }
@@ -81,7 +88,8 @@ function Cart() {
                   {CART_TEXT.SUPPLIER}: <strong>{supplierName}</strong>
                 </span>
                 <span>
-                  {CART_TEXT.SUBTOTAL}: {subtotal.toLocaleString("en-US")} {CART_TEXT.CURRENCY}
+                  {CART_TEXT.SUBTOTAL}: {subtotal.toLocaleString("en-US")}{" "}
+                  {CART_TEXT.CURRENCY}
                 </span>
               </header>
 
