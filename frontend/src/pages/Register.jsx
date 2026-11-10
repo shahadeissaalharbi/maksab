@@ -10,12 +10,15 @@ import { DEFAULT_ACCOUNT_TYPE } from "../constants/accountTypes.js";
 import {
   HTTP_STATUS,
   SUCCESS_MESSAGES,
+  NAME_ERROR,
+  NAME_HINT,
   VERIFY_TEXT,
-  getErrorMessage,
+  getRegisterError,
 } from "../constants/messages.js";
 import { ROUTES } from "../constants/routes.js";
 import { registerUser, VERIFICATION_LIVE } from "../services/authService.js";
 import { useFormStatus } from "../hooks/useFormStatus.js";
+import { isValidName } from "../utils/nameValidation.js";
 
 const REDIRECT_DELAY_MS = 1500;
 const EMPTY_FORM = { businessName: "", email: "", password: "" };
@@ -29,6 +32,10 @@ function Register() {
   // هنا الإيميل اللي انرسل له الرابط
   const [sentTo, setSentTo] = useState("");
 
+  // هنا الاسم يتأكد منه وقت الكتابة، والزر ما ينضغط لين يصير صحيح
+  const nameIsValid = isValidName(form.businessName);
+  const nameError = form.businessName !== "" && !nameIsValid ? NAME_ERROR : "";
+
   // هنا دالة وحدة لكل الحقول، تعرف الحقل من name
   const updateField = (event) =>
     setForm({ ...form, [event.target.name]: event.target.value });
@@ -37,7 +44,13 @@ function Register() {
     event.preventDefault();
 
     run(async () => {
-      const { status } = await registerUser({
+      // هنا أتأكد من الاسم قبل ما أرسل للباك
+      if (!isValidName(form.businessName)) {
+        showError(NAME_ERROR);
+        return;
+      }
+
+      const { status, data } = await registerUser({
         ...form,
         accountType: accountType.value,
       });
@@ -51,7 +64,7 @@ function Register() {
           setTimeout(() => navigate(ROUTES.LOGIN), REDIRECT_DELAY_MS);
         }
       } else {
-        showError(getErrorMessage(status));
+        showError(getRegisterError(status, data));
       }
     });
   };
@@ -83,6 +96,8 @@ function Register() {
         <FormField
           id="businessName"
           label="اسم النشاط التجاري"
+          hint={NAME_HINT}
+          error={nameError}
           type="text"
           placeholder={accountType.placeholder}
           value={form.businessName}
@@ -114,6 +129,7 @@ function Register() {
 
         <SubmitButton
           loading={loading}
+          disabled={!nameIsValid}
           label="إنشاء الحساب"
           loadingLabel="جاري إنشاء الحساب..."
         />
