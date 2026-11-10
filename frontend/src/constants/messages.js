@@ -37,6 +37,18 @@ export const SUCCESS_MESSAGES = {
 export const getErrorMessage = (status) =>
   ERROR_MESSAGES[status] || ERROR_MESSAGES.DEFAULT;
 
+// هنا رسالة الاسم لو كان قصير أو ما فيه حروف
+export const NAME_ERROR = "الاسم لازم يكون حرفين على الأقل ويحتوي على حروف";
+
+// هنا رسائل الباك اللي نترجمها لرسالة واضحة
+export const BACKEND_ERROR_TEXTS = {
+  "Name must be at least 2 characters": NAME_ERROR,
+};
+
+// هنا لو الباك ذكر السبب ونعرفه نعرضه، وإلا نرجع رسالة رقم الرد
+export const getRegisterError = (status, data) =>
+  BACKEND_ERROR_TEXTS[data?.error] || getErrorMessage(status);
+
 // هنا كلام شاشة رابط التوثيق
 export const VERIFY_TEXT = {
   SUBTITLE: "باقي خطوة وحدة",

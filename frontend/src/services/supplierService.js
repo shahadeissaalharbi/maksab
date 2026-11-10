@@ -14,13 +14,17 @@ const SUPPLIER_ENDPOINTS = {
 const MOCK_ADDED_PRODUCTS_KEY = "mock-market-products";
 
 function saveMockMarketProduct(product) {
-  const added = JSON.parse(localStorage.getItem(MOCK_ADDED_PRODUCTS_KEY) || "[]");
+  const added = JSON.parse(
+    localStorage.getItem(MOCK_ADDED_PRODUCTS_KEY) || "[]",
+  );
   added.push(product);
   localStorage.setItem(MOCK_ADDED_PRODUCTS_KEY, JSON.stringify(added));
 }
 
 function updateMockMarketProduct(productName, changes) {
-  const added = JSON.parse(localStorage.getItem(MOCK_ADDED_PRODUCTS_KEY) || "[]");
+  const added = JSON.parse(
+    localStorage.getItem(MOCK_ADDED_PRODUCTS_KEY) || "[]",
+  );
   const product = added.find((item) => item.name === productName);
   if (!product) return;
   Object.assign(product, changes);
@@ -28,7 +32,9 @@ function updateMockMarketProduct(productName, changes) {
 }
 
 function deleteMockMarketProduct(productName) {
-  const added = JSON.parse(localStorage.getItem(MOCK_ADDED_PRODUCTS_KEY) || "[]");
+  const added = JSON.parse(
+    localStorage.getItem(MOCK_ADDED_PRODUCTS_KEY) || "[]",
+  );
   localStorage.setItem(
     MOCK_ADDED_PRODUCTS_KEY,
     JSON.stringify(added.filter((item) => item.name !== productName)),
@@ -79,19 +85,28 @@ export async function addSupplierProduct(product) {
 // هنا أعدل منتج موجود (مثل السعر)
 export async function updateSupplierProduct(productId, changes) {
   if (USE_SUPPLIER_MOCK) {
-    const product = MOCK_SUPPLIER_HOME.products.find((item) => item.id === productId);
+    const product = MOCK_SUPPLIER_HOME.products.find(
+      (item) => item.id === productId,
+    );
     if (!product) return { status: 404 };
+    const oldName = product.name;
+    if (changes.name !== undefined) product.name = changes.name;
     if (changes.price !== undefined) product.price = String(changes.price);
     if (changes.stock_quantity !== undefined) {
       product.stock_quantity = Number(changes.stock_quantity);
-      product.stock_status = product.stock_quantity > 0 ? "in_stock" : "out_of_stock";
+      product.stock_status =
+        product.stock_quantity > 0 ? "in_stock" : "out_of_stock";
     }
-    const marketProduct = MOCK_PRODUCTS.find((item) => item.name === product.name);
+    const marketProduct = MOCK_PRODUCTS.find((item) => item.name === oldName);
     if (marketProduct && changes.price !== undefined) {
       marketProduct.price = String(changes.price);
     }
-    updateMockMarketProduct(product.name, changes.price === undefined ? {} : {
-      price: String(changes.price),
+    if (marketProduct && changes.name !== undefined) {
+      marketProduct.name = changes.name;
+    }
+    updateMockMarketProduct(oldName, {
+      ...(changes.price === undefined ? {} : { price: String(changes.price) }),
+      ...(changes.name === undefined ? {} : { name: changes.name }),
     });
     return { status: 200, data: { product: { id: productId, ...changes } } };
   }
@@ -101,7 +116,9 @@ export async function updateSupplierProduct(productId, changes) {
 // هنا أحذف منتج
 export async function deleteSupplierProduct(productId) {
   if (USE_SUPPLIER_MOCK) {
-    const index = MOCK_SUPPLIER_HOME.products.findIndex((item) => item.id === productId);
+    const index = MOCK_SUPPLIER_HOME.products.findIndex(
+      (item) => item.id === productId,
+    );
     if (index === -1) return { status: 404 };
     MOCK_SUPPLIER_HOME.products.splice(index, 1);
     const removedProduct = MOCK_SUPPLIER_HOME.products[index];

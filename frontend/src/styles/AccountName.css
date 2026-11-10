@@ -1,0 +1,30 @@
+/* اسم صاحب الحساب جنب الشعار */
+.account-name {
+  display: inline-block;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+}
+
+/* في القائمة الجانبية للمورد يجي تحت الشعار */
+.ov-user {
+  display: block;
+  margin-top: 6px;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+/* في رأس الصفحة الرئيسية: الاسم الطويل يقص بنقاط عشان زر لوحتي يبقى ظاهر */
+.landing-header nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.landing-header .account-name {
+  align-self: center;
+  max-width: 34vw;
+}
