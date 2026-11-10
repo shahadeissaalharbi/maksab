@@ -60,7 +60,7 @@ def supplier_home():
         "supplier": {
             "id": supplier[0],
             "name": supplier[1],
-            "business_name": supplier[2]
+            "business_name": supplier[2] or supplier[1]
         },
         "total_products": len(products),
         "products": products
@@ -188,7 +188,7 @@ def supplier_dashboard():
         "supplier": {
             "id": supplier[0],
             "name": supplier[1],
-            "business_name": supplier[2]
+            "business_name": supplier[2] or supplier[1]
         },
         "stats": stats,
         "orders": recent_orders,
