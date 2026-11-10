@@ -14,6 +14,14 @@ from config import Config
 webhooks_bp = Blueprint("webhooks", __name__)
 
 
+def describe_request(event):
+    """Short, secret-free description of a request body for the logs."""
+    if isinstance(event, dict):
+        event = {k: v for k, v in event.items() if k != "secret_token"}
+
+    return str(event)[:500]
+
+
 def fetch_moyasar_payment(payment_id):
     """Fetch the payment from Moyasar so we never trust the webhook body."""
     credentials = base64.b64encode(
@@ -39,6 +47,10 @@ def moyasar_webhook():
     event = request.get_json(silent=True)
 
     if not isinstance(event, dict):
+        current_app.logger.warning(
+            "Moyasar webhook with a non-JSON body: %s",
+            request.get_data(as_text=True)[:500]
+        )
         return jsonify({"error": "Invalid JSON body"}), 400
 
     # Verify the shared secret token
@@ -48,17 +60,28 @@ def moyasar_webhook():
         received_token.encode(),
         Config.MOYASAR_WEBHOOK_SECRET.encode()
     ):
+        current_app.logger.warning(
+            "Moyasar webhook rejected (bad token): %s",
+            describe_request(event)
+        )
         return jsonify({"error": "Invalid secret token"}), 401
 
     event_type = event.get("type")
     payment = event.get("data")
 
     if not isinstance(payment, dict) or not payment.get("id"):
+        current_app.logger.warning(
+            "Moyasar webhook without payment data: %s",
+            describe_request(event)
+        )
         return jsonify({"error": "Invalid payment data"}), 400
 
     # Only a successful payment changes anything.
     # A failed attempt keeps the checkout pending so the merchant can retry.
     if event_type != "payment_paid":
+        current_app.logger.warning(
+            "Moyasar webhook event ignored: %s", event_type
+        )
         return jsonify({"message": "Event ignored"}), 200
 
     payment_id = str(payment["id"])
