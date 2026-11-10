@@ -13,6 +13,7 @@ export const ROUTES = {
   BUSINESS_INFO: "/business-info",
   MY_ORDERS: "/orders",
   CART: "/cart",
+  PROFILE: "/profile",
 };
 
 // هنا كل نوع حساب وين يروح بعد الدخول

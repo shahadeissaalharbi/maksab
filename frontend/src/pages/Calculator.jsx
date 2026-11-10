@@ -15,8 +15,15 @@ import "../styles/Calculator.css";
 
 // هنا صفحة حاسبة التسعير: تكاليفك على اليمين، والسعر المقترح على اليسار، ويتحدث وأنتِ تكتبين
 function Calculator() {
-  const { values, setValue, visibleErrors, result, verified, fillExample, clearAll } =
-    usePriceCalculator();
+  const {
+    values,
+    setValue,
+    visibleErrors,
+    result,
+    verified,
+    fillExample,
+    clearAll,
+  } = usePriceCalculator();
   const user = getUser() || {};
 
   // اللي ما سجل دخول يرجع لصفحة الدخول، والمورد يرجع لصفحته
@@ -27,7 +34,7 @@ function Calculator() {
 
   return (
     <div className="trader-page" dir="rtl">
-      <Navbar userName={user.full_name} />
+      <Navbar />
 
       <main className="cl-main">
         <header className="cl-header">
@@ -55,7 +62,9 @@ function Calculator() {
                 <label htmlFor={`cl-${field.name}`}>
                   {field.label} <small>{field.hint}</small>
                 </label>
-                <div className={`cl-input ${visibleErrors[field.name] ? "invalid" : ""}`}>
+                <div
+                  className={`cl-input ${visibleErrors[field.name] ? "invalid" : ""}`}
+                >
                   <input
                     id={`cl-${field.name}`}
                     type="number"
@@ -63,18 +72,23 @@ function Calculator() {
                     min="0"
                     step="any"
                     value={values[field.name]}
-                    onChange={(event) => setValue(field.name, event.target.value)}
+                    onChange={(event) =>
+                      setValue(field.name, event.target.value)
+                    }
                     placeholder="0"
                   />
                   <span>{field.unit}</span>
                 </div>
-                {visibleErrors[field.name] && <p className="cl-error">{visibleErrors[field.name]}</p>}
+                {visibleErrors[field.name] && (
+                  <p className="cl-error">{visibleErrors[field.name]}</p>
+                )}
               </div>
             ))}
 
             <div className="cl-field">
               <label htmlFor="cl-margin">
-                {CALCULATOR_TEXT.MARGIN_LABEL} <small>{CALCULATOR_TEXT.MARGIN_HINT}</small>
+                {CALCULATOR_TEXT.MARGIN_LABEL}{" "}
+                <small>{CALCULATOR_TEXT.MARGIN_HINT}</small>
               </label>
               <div className="cl-margin">
                 <input
@@ -85,7 +99,9 @@ function Calculator() {
                   onChange={(event) => setValue("margin", event.target.value)}
                   aria-label={CALCULATOR_TEXT.MARGIN_LABEL}
                 />
-                <div className={`cl-input ${visibleErrors.margin ? "invalid" : ""}`}>
+                <div
+                  className={`cl-input ${visibleErrors.margin ? "invalid" : ""}`}
+                >
                   <input
                     id="cl-margin"
                     type="number"
@@ -99,7 +115,9 @@ function Calculator() {
                   <span>%</span>
                 </div>
               </div>
-              {visibleErrors.margin && <p className="cl-error">{visibleErrors.margin}</p>}
+              {visibleErrors.margin && (
+                <p className="cl-error">{visibleErrors.margin}</p>
+              )}
             </div>
           </section>
 
