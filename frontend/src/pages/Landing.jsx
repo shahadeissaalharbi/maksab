@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import Logo from "../components/Logo.jsx";
-import AccountName from "../components/AccountName.jsx";
-import { LANDING_TEXT } from "../constants/landing.js";
+import ProfileMenu from "../components/ProfileMenu.jsx";
+import { ACCOUNT_TYPES } from "../constants/accountTypes.js";
+import { LANDING_CTA } from "../constants/landing.js";
 import { ROLE_HOME, ROUTES } from "../constants/routes.js";
 import { getUser } from "../services/session.js";
 import "../styles/Auth.css";
@@ -31,6 +32,8 @@ function Landing() {
   // هنا لو فيه حساب داخل نوريه اسمه ولوحته بدل الدخول والتسجيل
   const user = getUser();
   const dashboardRoute = ROLE_HOME[user?.role] || ROUTES.TRADER_HOME;
+  const dashboardLabel =
+    LANDING_CTA[user?.role] || LANDING_CTA[ACCOUNT_TYPES.MERCHANT.value];
 
   return (
     <div className="landing" dir="rtl">
@@ -38,12 +41,7 @@ function Landing() {
         <Logo />
         <nav>
           {user ? (
-            <>
-              <AccountName />
-              <Link to={dashboardRoute} className="landing-button">
-                {LANDING_TEXT.DASHBOARD}
-              </Link>
-            </>
+            <ProfileMenu />
           ) : (
             <>
               <Link to={ROUTES.LOGIN} className="landing-login">
@@ -68,7 +66,7 @@ function Landing() {
         <div className="landing-actions">
           {user ? (
             <Link to={dashboardRoute} className="landing-button">
-              {LANDING_TEXT.GO_DASHBOARD}
+              {dashboardLabel}
             </Link>
           ) : (
             <>
@@ -116,7 +114,7 @@ function Landing() {
           to={user ? dashboardRoute : ROUTES.REGISTER}
           className="landing-button"
         >
-          {user ? LANDING_TEXT.GO_DASHBOARD : "يلا نبدأ ←"}
+          {user ? dashboardLabel : "يلا نبدأ ←"}
         </Link>
       </section>
     </div>

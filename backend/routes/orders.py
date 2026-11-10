@@ -3,6 +3,7 @@ from flask import Blueprint, current_app, jsonify, request
 
 from config import Config
 from decorators import token_required
+from email_service import send_order_notification
 
 
 orders_bp = Blueprint("orders", __name__)
@@ -352,10 +353,15 @@ def update_order_status(order_id):
                 # Lock order to prevent concurrent status updates
                 cursor.execute(
                     """
-                    SELECT supplier_id, status
-                    FROM orders
-                    WHERE id = %s
-                    FOR UPDATE;
+                    SELECT
+                        o.supplier_id,
+                        o.status,
+                        u.email
+                    FROM orders AS o
+                    JOIN users AS u
+                        ON u.id = o.merchant_id
+                    WHERE o.id = %s
+                    FOR UPDATE OF o;
                     """,
                     (order_id,),
                 )
@@ -365,7 +371,7 @@ def update_order_status(order_id):
                 if order is None:
                     return jsonify({"error": "Order not found"}), 404
 
-                supplier_id, current_status = order
+                supplier_id, current_status, merchant_email = order
 
                 if supplier_id != request.user_id:
                     return jsonify({"error": "Access denied"}), 403
@@ -391,6 +397,18 @@ def update_order_status(order_id):
                 )
 
                 updated_order = cursor.fetchone()
+
+        try:
+            send_order_notification(
+                f"order_{new_status}",
+                merchant_email,
+                {"order_id": order_id},
+            )
+        except Exception:
+            current_app.logger.exception(
+                "Order %s updated, but notification failed",
+                order_id,
+            )
 
         return jsonify({
             "message": "Order status updated successfully",

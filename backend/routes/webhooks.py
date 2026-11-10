@@ -9,9 +9,18 @@ import psycopg
 from flask import Blueprint, current_app, jsonify, request
 
 from config import Config
+from email_service import notify_checkout_paid
 
 
 webhooks_bp = Blueprint("webhooks", __name__)
+
+
+def describe_request(event):
+    """Short, secret-free description of a request body for the logs."""
+    if isinstance(event, dict):
+        event = {k: v for k, v in event.items() if k != "secret_token"}
+
+    return str(event)[:500]
 
 
 def fetch_moyasar_payment(payment_id):
@@ -22,7 +31,11 @@ def fetch_moyasar_payment(payment_id):
 
     api_request = urllib.request.Request(
         f"{Config.MOYASAR_API_URL}/payments/{payment_id}",
-        headers={"Authorization": f"Basic {credentials}"}
+        headers={
+            "Authorization": f"Basic {credentials}",
+            "Accept": "application/json",
+            "User-Agent": "Maksab/1.0"
+        }
     )
 
     with urllib.request.urlopen(api_request, timeout=10) as response:
@@ -39,6 +52,10 @@ def moyasar_webhook():
     event = request.get_json(silent=True)
 
     if not isinstance(event, dict):
+        current_app.logger.warning(
+            "Moyasar webhook with a non-JSON body: %s",
+            request.get_data(as_text=True)[:500]
+        )
         return jsonify({"error": "Invalid JSON body"}), 400
 
     # Verify the shared secret token
@@ -48,17 +65,28 @@ def moyasar_webhook():
         received_token.encode(),
         Config.MOYASAR_WEBHOOK_SECRET.encode()
     ):
+        current_app.logger.warning(
+            "Moyasar webhook rejected (bad token): %s",
+            describe_request(event)
+        )
         return jsonify({"error": "Invalid secret token"}), 401
 
     event_type = event.get("type")
     payment = event.get("data")
 
     if not isinstance(payment, dict) or not payment.get("id"):
+        current_app.logger.warning(
+            "Moyasar webhook without payment data: %s",
+            describe_request(event)
+        )
         return jsonify({"error": "Invalid payment data"}), 400
 
     # Only a successful payment changes anything.
     # A failed attempt keeps the checkout pending so the merchant can retry.
     if event_type != "payment_paid":
+        current_app.logger.warning(
+            "Moyasar webhook event ignored: %s", event_type
+        )
         return jsonify({"message": "Event ignored"}), 200
 
     payment_id = str(payment["id"])
@@ -66,9 +94,15 @@ def moyasar_webhook():
     # Confirm the payment directly with Moyasar
     try:
         verified = fetch_moyasar_payment(payment_id)
-    except (urllib.error.URLError, ValueError, TimeoutError):
+    except (urllib.error.URLError, ValueError, TimeoutError) as error:
+        detail = ""
+
+        if isinstance(error, urllib.error.HTTPError):
+            detail = error.read().decode(errors="replace")[:300]
+
         current_app.logger.exception(
-            "Could not verify Moyasar payment %s", payment_id
+            "Could not verify Moyasar payment %s: %s",
+            payment_id, detail
         )
         # Non-2xx makes Moyasar retry later
         return jsonify({"error": "Could not verify payment"}), 503
@@ -138,7 +172,14 @@ def moyasar_webhook():
                       AND status = 'pending';
                 """, (checkout_id,))
 
-        # TODO: notify merchant and suppliers (notifications task)
+        # The payment is saved. A failed email must never undo or fail it.
+        try:
+            notify_checkout_paid(checkout_id)
+        except Exception:
+            current_app.logger.exception(
+                "Checkout %s paid, but notifications failed", checkout_id
+            )
+
         return jsonify({"message": "Payment recorded"}), 200
 
     except psycopg.errors.UniqueViolation:

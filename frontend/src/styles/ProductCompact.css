@@ -1,0 +1,47 @@
+/* بطاقات السوق أصغر: صورة أقل ارتفاعًا وشبكة أضيق */
+.market-results .product-grid,
+.new-arrivals .product-grid {
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.market-results .product-card .product-image,
+.new-arrivals .product-card .product-image {
+  height: 104px;
+}
+
+.market-results .product-card .product-body,
+.new-arrivals .product-card .product-body {
+  padding: 12px;
+}
+
+/* على الجوال: بطاقتين جنب بعض وكل شي أصغر */
+@media (max-width: 600px) {
+  .market-results .product-grid,
+  .new-arrivals .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .market-results .product-card .product-image,
+  .new-arrivals .product-card .product-image {
+    height: 84px;
+  }
+
+  .market-results .product-card .product-body,
+  .new-arrivals .product-card .product-body {
+    gap: 4px;
+    padding: 10px;
+  }
+
+  .market-results .product-card .product-body h4,
+  .new-arrivals .product-card .product-body h4 {
+    font-size: 14px;
+  }
+
+  .market-results .product-card .add-to-cart,
+  .new-arrivals .product-card .add-to-cart {
+    padding: 8px;
+    font-size: 13px;
+  }
+}

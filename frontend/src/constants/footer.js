@@ -17,3 +17,13 @@ export const FOOTER_LINKS = [
   { label: "حاسبة التسعير", to: ROUTES.CALCULATOR },
   { label: "سوق الجملة", to: ROUTES.TRADER_HOME },
 ];
+
+// هنا حطيت الصفحات اللي ما أبي الفوتر يطلع فيها
+export const NO_FOOTER_ROUTES = [
+  // هنا صفحة دخول العميل
+  ROUTES.LOGIN,
+  // هنا صفحة التسجيل
+  ROUTES.REGISTER,
+  // هنا صفحة دخول المورّد
+  ROUTES.SUPPLIER_LOGIN,
+];

@@ -10,7 +10,7 @@ import {
   getOrderErrorMessage,
 } from "../constants/cart.js";
 import { HTTP_STATUS, MESSAGE_TYPES } from "../constants/messages.js";
-import { getToken, getUser } from "../services/session.js";
+import { getToken } from "../services/session.js";
 import { createOrder } from "../services/ordersService.js";
 import { useCart } from "../hooks/useCart.js";
 import "../styles/Auth.css";
@@ -23,7 +23,6 @@ function Cart() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
-  const user = getUser() || {};
 
   // اللي ما سجل دخول يرجع لصفحة الدخول
   if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
@@ -61,7 +60,7 @@ function Cart() {
 
   return (
     <div className="trader-page" dir="rtl">
-      <Navbar userName={user.full_name} />
+      <Navbar />
 
       <main className="ct-main">
         <h1>{CART_TEXT.TITLE}</h1>
