@@ -1,5 +1,10 @@
-import { createContext, useEffect, useState } from "react";
-import { CART_STORAGE_KEY, NO_STOCK_LIMIT } from "../constants/cart.js";
+import { createContext, useCallback, useEffect, useState } from "react";
+import CartNotice from "./CartNotice.jsx";
+import {
+  CART_STORAGE_KEY,
+  CART_TEXT,
+  NO_STOCK_LIMIT,
+} from "../constants/cart.js";
 
 export const CartContext = createContext(null);
 
@@ -20,11 +25,16 @@ function clampQuantity(quantity, item) {
 // هنا السلة مشتركة بين البطاقات والشريط وصفحة السلة
 function CartProvider({ children }) {
   const [items, setItems] = useState(loadCart);
+  const [notice, setNotice] = useState(null);
+  const closeNotice = useCallback(() => setNotice(null), []);
 
   // أحفظ السلة كل ما تتغير
   useEffect(() => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
+
+  // هنا أطلع تنبيه الحد للمستخدم
+  const showLimit = (text) => setNotice({ id: Date.now(), text });
 
   // لو المنتج موجود نزيد كميته واحد، وإلا نضيفه بأقل طلب
   const addToCart = (product) => {
@@ -33,15 +43,26 @@ function CartProvider({ children }) {
       product.stock_quantity === undefined
         ? NO_STOCK_LIMIT
         : Number(product.stock_quantity);
+    const existing = items.find((item) => item.product_id === product.id);
+
+    // هنا لو المتوفر أقل من أقل طلب ما نقدر نضيفه
+    if (!existing && stock < moq) {
+      showLimit(CART_TEXT.LIMIT_STOCK(product.name, stock));
+      return;
+    }
+
+    // هنا لو الكمية وصلت المتوفر ننبه ونوقف
+    if (existing && existing.quantity + 1 > existing.stock) {
+      showLimit(CART_TEXT.LIMIT_STOCK(existing.name, existing.stock));
+      return;
+    }
 
     setItems((current) => {
-      const exists = current.some((item) => item.product_id === product.id);
-
-      if (exists) {
+      if (existing) {
         return current.map((item) =>
           item.product_id === product.id
             ? { ...item, quantity: clampQuantity(item.quantity + 1, item) }
-            : item
+            : item,
         );
       }
 
@@ -59,17 +80,31 @@ function CartProvider({ children }) {
     });
   };
 
-  const changeQuantity = (productId, quantity) =>
+  const changeQuantity = (productId, quantity) => {
+    const target = items.find((item) => item.product_id === productId);
+    if (!target) return;
+
+    // هنا أنبه لو الكمية المطلوبة فوق المتوفر أو تحت أقل طلب
+    const wanted = Number(quantity) || target.moq;
+    if (wanted > target.stock) {
+      showLimit(CART_TEXT.LIMIT_STOCK(target.name, target.stock));
+    } else if (wanted < target.moq) {
+      showLimit(CART_TEXT.LIMIT_MOQ(target.name, target.moq));
+    }
+
     setItems((current) =>
       current.map((item) =>
         item.product_id === productId
-          ? { ...item, quantity: clampQuantity(Number(quantity) || item.moq, item) }
-          : item
-      )
+          ? { ...item, quantity: clampQuantity(wanted, item) }
+          : item,
+      ),
     );
+  };
 
   const removeItem = (productId) =>
-    setItems((current) => current.filter((item) => item.product_id !== productId));
+    setItems((current) =>
+      current.filter((item) => item.product_id !== productId),
+    );
 
   const clearCart = () => setItems([]);
 
@@ -78,9 +113,21 @@ function CartProvider({ children }) {
     total += item.price * item.quantity;
   }
 
-  const value = { items, total, addToCart, changeQuantity, removeItem, clearCart };
+  const value = {
+    items,
+    total,
+    addToCart,
+    changeQuantity,
+    removeItem,
+    clearCart,
+  };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={value}>
+      {children}
+      <CartNotice notice={notice} onClose={closeNotice} />
+    </CartContext.Provider>
+  );
 }
 
 export default CartProvider;
