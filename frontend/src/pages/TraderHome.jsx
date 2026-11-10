@@ -1,14 +1,14 @@
 import { Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import Banner from "../components/Banner.jsx";
-import BestSellers from "../components/BestSellers.jsx";
+import NewArrivals from "../components/NewArrivals.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import MarketFilters from "../components/MarketFilters.jsx";
 import CategoryFilter from "../components/CategoryFilter.jsx";
 import ProductCard from "../components/ProductCard.jsx";
 import { ROUTES } from "../constants/routes.js";
 import { LOAD_STATUS, MARKET_TEXT } from "../constants/market.js";
-import { getToken, getUser } from "../services/session.js";
+import { getToken } from "../services/session.js";
 import { useTraderProducts } from "../hooks/useTraderProducts.js";
 import { useProductFilters } from "../hooks/useProductFilters.js";
 import "../styles/Auth.css";
@@ -39,9 +39,9 @@ function TraderHome() {
 
   return (
     <div className="trader-page" dir="rtl">
-      <Navbar userName={getUser()?.full_name} />
+      <Navbar />
       <Banner />
-      <BestSellers products={products} />
+      <NewArrivals products={products} />
 
       <section className="market-hero">
         <span className="market-badge">{MARKET_TEXT.BADGE}</span>
@@ -61,7 +61,7 @@ function TraderHome() {
             onChange={setSearch}
             placeholder={MARKET_TEXT.SEARCH_PLACEHOLDER}
           />
-          
+
           <MarketFilters
             minPrice={minPrice}
             maxPrice={maxPrice}
