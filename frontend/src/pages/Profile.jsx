@@ -5,6 +5,7 @@ import ProfileInfo from "../components/ProfileInfo.jsx";
 import ProfileAccountForm from "../components/ProfileAccountForm.jsx";
 import ProfilePasswordForm from "../components/ProfilePasswordForm.jsx";
 import DeleteAccountBox from "../components/DeleteAccountBox.jsx";
+import DeliveryLocationSection from "../components/DeliveryLocationSection.jsx";
 import { ACCOUNT_TYPES } from "../constants/accountTypes.js";
 import { HTTP_STATUS } from "../constants/messages.js";
 import { NAV_LINKS, SUPPLIER_NAV_LINKS } from "../constants/market.js";
@@ -53,9 +54,9 @@ function Profile() {
       <main className="profile">
         <h1>{PROFILE_TEXT.TITLE}</h1>
         <p className="profile-subtitle">{PROFILE_TEXT.SUBTITLE}</p>
-
         <ProfileInfo user={user} />
         <ProfileAccountForm user={user} onSave={handleSave} />
+        <DeliveryLocationSection />
         <ProfilePasswordForm onChange={changePassword} />
         <DeleteAccountBox onDelete={removeAccount} />
       </main>
