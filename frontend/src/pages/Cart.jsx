@@ -13,9 +13,11 @@ import { HTTP_STATUS, MESSAGE_TYPES } from "../constants/messages.js";
 import { getToken } from "../services/session.js";
 import { createOrder } from "../services/ordersService.js";
 import { useCart } from "../hooks/useCart.js";
+import DeliveryNotice from "../components/DeliveryNotice.jsx";
 import "../styles/Auth.css";
 import "../styles/Trader.css";
 import "../styles/Cart.css";
+import "../styles/Location.css";
 
 // هنا صفحة السلة: تراجع الكميات وترسل الطلب، وكل مورد له طلب مستقل
 function Cart() {
@@ -106,6 +108,7 @@ function Cart() {
 
         {items.length > 0 && (
           <div className="ct-summary">
+            <DeliveryNotice />
             <p className="ct-note">{CART_TEXT.SPLIT_NOTE}</p>
             <div className="ct-total">
               <span>{CART_TEXT.TOTAL}</span>
