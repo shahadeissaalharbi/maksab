@@ -1,0 +1,132 @@
+/* علامة حسابي: دائرة فيها أول حرف وقائمة تنزل */
+.profile-menu {
+  position: relative;
+}
+
+.profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 10px 3px 4px;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.profile-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--yellow);
+  border-radius: 50%;
+  background: var(--green);
+  color: var(--yellow);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.profile-chevron {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 40;
+  min-width: 230px;
+  padding: 6px;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  color: var(--text);
+}
+
+.profile-dropdown-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin-bottom: 4px;
+  padding: 8px 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-badge {
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #fff3d1;
+  color: #7a5300;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.profile-dropdown a,
+.profile-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  text-align: right;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.profile-dropdown a:hover,
+.profile-dropdown button:hover {
+  background: #f4f1e8;
+}
+
+.profile-dropdown .profile-logout-item {
+  color: #b42318;
+}
+
+/* داخل القائمة الجانبية الداكنة للمورد */
+.profile-menu.on-dark {
+  margin-top: 10px;
+}
+
+.profile-menu.on-dark .profile-trigger {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.profile-menu.on-dark .profile-chevron {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.profile-menu.on-dark .profile-dropdown {
+  right: 0;
+  left: auto;
+}
+
+/* على الجوال تبقى العلامة بس بدون الكلمة */
+@media (max-width: 700px) {
+  .profile-trigger {
+    padding: 3px;
+  }
+
+  .profile-trigger-label,
+  .profile-chevron {
+    display: none;
+  }
+
+  .profile-dropdown {
+    min-width: 210px;
+  }
+}

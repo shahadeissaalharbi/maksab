@@ -2,7 +2,7 @@ import { Link, Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import { ROUTES } from "../constants/routes.js";
 import { COMING_SOON_TEXT, NAV_LINKS } from "../constants/market.js";
-import { getToken, getUser } from "../services/session.js";
+import { getToken } from "../services/session.js";
 import "../styles/Auth.css";
 import "../styles/Trader.css";
 
@@ -12,7 +12,7 @@ function ComingSoon({ title, links = NAV_LINKS, showBack = true }) {
 
   return (
     <div className="trader-page" dir="rtl">
-      <Navbar userName={getUser()?.full_name} links={links} />
+      <Navbar links={links} />
 
       <section className="market-hero coming-soon">
         <span className="market-badge">{COMING_SOON_TEXT.BADGE}</span>

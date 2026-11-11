@@ -1,12 +1,8 @@
-import { ROUTES } from "./routes.js";
-
 // هنا كلام صفحة طلباتي
 export const MY_ORDERS_TEXT = {
   EYEBROW: "حسابي",
   TITLE: "طلباتي",
   NEW_ORDER: "طلب جديد",
-  SIDEBAR_TITLE: "إدارة الحساب",
-  SOON: "قريبًا",
   ORDER_NO: "طلب رقم",
   CURRENCY: "ر.س",
   DELIVERY_NOTE: "المورد مسؤول عن التوصيل، ويتواصل معك لتأكيد الموعد",
@@ -27,14 +23,6 @@ export const MY_ORDER_STATUS = {
   new: { label: "بانتظار المورد", tone: "gray" },
   preparing: { label: "قيد التجهيز لدى المورد", tone: "yellow" },
 };
-
-// هنا روابط القائمة الجانبية، واللي ما له رابط يطلع "قريبًا"
-export const ACCOUNT_LINKS = [
-  { id: "orders", label: "طلباتي وإيصالاتي", to: ROUTES.MY_ORDERS },
-  { id: "business", label: "بيانات النشاط والعنوان", to: ROUTES.BUSINESS_INFO },
-  { id: "messages", label: "رسائل الموردين", to: null },
-  { id: "switch", label: "الانتقال لحساب المورد", to: null },
-];
 
 // هنا خطوات تتبع الطلب، من الاستلام لين التسليم
 export const ORDER_TRACK_STEPS = [

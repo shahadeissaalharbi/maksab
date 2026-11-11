@@ -16,7 +16,6 @@ function SupplierProductCard({ product, onUpdate, onDelete }) {
   const [stockQuantity, setStockQuantity] = useState(
     product.stock_quantity ?? 0,
   );
-  const [nameError, setNameError] = useState("");
   const stock = getStockStatus(product.stock_status);
 
   // هنا أبدأ التعديل من القيم الحالية
@@ -24,16 +23,15 @@ function SupplierProductCard({ product, onUpdate, onDelete }) {
     setName(product.name);
     setPrice(product.price);
     setStockQuantity(product.stock_quantity ?? 0);
-    setNameError("");
     setIsEditing(true);
   };
 
-  // هنا أتأكد من الاسم قبل ما أرسل التعديل
+  // هنا الاسم يتأكد منه وقت الكتابة، وزر الحفظ ما ينضغط لين يصير صحيح
+  const nameIsValid = isValidName(name);
+  const nameError = !nameIsValid ? NAME_ERROR : "";
+
   const handleSave = () => {
-    if (!isValidName(name)) {
-      setNameError(NAME_ERROR);
-      return;
-    }
+    if (!nameIsValid) return;
 
     onUpdate(product.id, {
       name: name.trim(),
@@ -110,6 +108,7 @@ function SupplierProductCard({ product, onUpdate, onDelete }) {
                 type="button"
                 className="save-button"
                 onClick={handleSave}
+                disabled={!nameIsValid}
               >
                 {SUPPLIER_TEXT.SAVE}
               </button>
