@@ -12,6 +12,7 @@
       - BREVO_API_KEY=${BREVO_API_KEY}
       - EMAIL_FROM=${EMAIL_FROM}
       - EMAIL_VERIFICATION_BASE_URL=${EMAIL_VERIFICATION_BASE_URL:-http://localhost:5000}
+      - CHECKOUT_EXPIRATION_MINUTES=${CHECKOUT_EXPIRATION_MINUTES:-30}
     depends_on:
       db:
         condition: service_healthy
