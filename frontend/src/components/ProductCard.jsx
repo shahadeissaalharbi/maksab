@@ -16,8 +16,11 @@ function ProductCard({ product }) {
     product.stock_quantity !== undefined && product.stock_quantity <= 0;
 
   // هنا أضيف المنتج للسلة، وأطلع «تمت الإضافة» ثانية ونص
+
+  // هنا أضيف المنتج للسلة، وأطلع «تمت الإضافة» ثانية ونص
+  // لو ما انضاف (وقفه حد المخزون) يبقى الزر مثل ما هو، والتنبيه يشرح السبب
   const handleAdd = () => {
-    addToCart(product);
+    if (!addToCart(product)) return;
     setAdded(true);
     setTimeout(() => setAdded(false), ADDED_MESSAGE_MS);
   };
