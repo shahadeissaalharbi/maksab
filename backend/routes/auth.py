@@ -348,7 +348,9 @@ def get_current_user():
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, name, email, role
+                    SELECT id, name, email, role,
+                           phone, business_name,
+                           commercial_register, address_text
                     FROM users
                     WHERE id = %s;
                 """, (request.user_id,))
@@ -374,7 +376,11 @@ def get_current_user():
             "id": user[0],
             "full_name": user[1],
             "email": user[2],
-            "role": user[3]
+            "role": user[3],
+            "phone": user[4],
+            "business_name": user[5],
+            "commercial_register": user[6],
+            "address_text": user[7]
         }
     }), 200
 
