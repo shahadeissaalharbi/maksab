@@ -30,8 +30,8 @@ function Profile() {
       .catch(() => {});
   }, []);
 
-  // هنا بعد حذف الحساب يرجع للصفحة الرئيسية
-  if (deleted) return <Navigate to={ROUTES.LANDING} />;
+  // هنا بعد حذف الحساب (الجلسة انمسحت) يروح لصفحة الدخول
+  if (deleted) return <Navigate to={ROUTES.LOGIN} replace />;
 
   // اللي ما سجل دخول يرجع لصفحة الدخول
   if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
