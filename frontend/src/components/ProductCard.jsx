@@ -3,6 +3,7 @@ import { getCategory } from "../constants/categories.js";
 import { MARKET_TEXT } from "../constants/market.js";
 import { CART_TEXT } from "../constants/cart.js";
 import { useCart } from "../hooks/useCart.js";
+import "../styles/ProductCompact.css";
 
 const ADDED_MESSAGE_MS = 1500;
 
@@ -29,7 +30,9 @@ function ProductCard({ product }) {
   return (
     <article className="product-card">
       <div className={`product-image tone-${category.tone || "green"}`}>
-        {product.image_url && <img src={product.image_url} alt={product.name} />}
+        {product.image_url && (
+          <img src={product.image_url} alt={product.name} />
+        )}
         <span className="product-badge">{category.label}</span>
       </div>
 

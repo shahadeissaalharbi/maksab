@@ -1,0 +1,22 @@
+/* سطر صغير تحت عنوان الحقل: جملة توضيحية، أو رسالة خطأ وقت الكتابة */
+.field-note {
+  display: block;
+  margin: -2px 0 6px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.field-hint {
+  color: var(--muted);
+}
+
+.field-error {
+  color: #b42318;
+  font-weight: 700;
+}
+
+/* إطار الخانة يتحول أحمر لو الكتابة غلط */
+input.input-error,
+input.input-error:focus {
+  border-color: #b42318 !important;
+}

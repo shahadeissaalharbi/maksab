@@ -11,6 +11,7 @@ import {
   HTTP_STATUS,
   SUCCESS_MESSAGES,
   NAME_ERROR,
+  NAME_HINT,
   VERIFY_TEXT,
   getRegisterError,
 } from "../constants/messages.js";
@@ -30,6 +31,10 @@ function Register() {
   const navigate = useNavigate();
   // هنا الإيميل اللي انرسل له الرابط
   const [sentTo, setSentTo] = useState("");
+
+  // هنا الاسم يتأكد منه وقت الكتابة، والزر ما ينضغط لين يصير صحيح
+  const nameIsValid = isValidName(form.businessName);
+  const nameError = form.businessName !== "" && !nameIsValid ? NAME_ERROR : "";
 
   // هنا دالة وحدة لكل الحقول، تعرف الحقل من name
   const updateField = (event) =>
@@ -91,6 +96,8 @@ function Register() {
         <FormField
           id="businessName"
           label="اسم النشاط التجاري"
+          hint={NAME_HINT}
+          error={nameError}
           type="text"
           placeholder={accountType.placeholder}
           value={form.businessName}
@@ -122,6 +129,7 @@ function Register() {
 
         <SubmitButton
           loading={loading}
+          disabled={!nameIsValid}
           label="إنشاء الحساب"
           loadingLabel="جاري إنشاء الحساب..."
         />

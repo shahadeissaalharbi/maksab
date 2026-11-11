@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Logo from "./Logo.jsx";
-import AccountName from "./AccountName.jsx";
+import ProfileMenu from "./ProfileMenu.jsx";
 import { NAV_ITEMS, OVERVIEW_TEXT } from "../constants/overview.js";
 import { ROUTES } from "../constants/routes.js";
 
@@ -11,7 +11,7 @@ function OverviewSidebar({ activeId }) {
       <div className="ov-brand">
         <Logo />
         <span>{OVERVIEW_TEXT.ACCOUNT_TYPE}</span>
-        <AccountName className="ov-user" />
+        <ProfileMenu onDark />
       </div>
 
       <nav className="ov-nav">
