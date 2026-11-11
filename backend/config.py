@@ -3,6 +3,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+try:
+    CHECKOUT_EXPIRATION_MINUTES = int(
+        os.environ.get("CHECKOUT_EXPIRATION_MINUTES", "30")
+    )
+except ValueError as error:
+    raise RuntimeError(
+        "CHECKOUT_EXPIRATION_MINUTES must be a positive integer"
+    ) from error
+
+if CHECKOUT_EXPIRATION_MINUTES < 1:
+    raise RuntimeError("CHECKOUT_EXPIRATION_MINUTES must be a positive integer")
+
 
 class Config:
     # Database
@@ -34,3 +46,8 @@ class Config:
         "MOYASAR_WEBHOOK_SECRET", ""
     ).strip()
     MOYASAR_API_URL = "https://api.moyasar.com/v1"
+    CHECKOUT_EXPIRATION_MINUTES = CHECKOUT_EXPIRATION_MINUTES
+    # Safety gate: disabled until payment initiation is server-controlled.
+    CHECKOUT_STOCK_RELEASE_ENABLED = os.environ.get(
+        "CHECKOUT_STOCK_RELEASE_ENABLED", "false"
+    ).strip().lower() == "true"

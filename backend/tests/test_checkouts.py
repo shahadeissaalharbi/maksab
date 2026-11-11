@@ -28,7 +28,9 @@ def notify_calls(monkeypatch):
 
 @pytest.fixture
 def client(monkeypatch):
-    monkeypatch.setattr(Config, "JWT_SECRET", "test-jwt-secret")
+    monkeypatch.setattr(
+        Config, "JWT_SECRET", "test-jwt-secret-long-enough-for-hs256"
+    )
     monkeypatch.setattr(Config, "MOYASAR_WEBHOOK_SECRET", SECRET)
     monkeypatch.setattr(Config, "MOYASAR_SECRET_KEY", "sk_test_dummy")
 
@@ -48,8 +50,10 @@ def headers(role="merchant"):
 
 
 class FakeCursor:
-    def __init__(self, row):
+    def __init__(self, row, payment_id="pay_1"):
         self.row = row
+        self.payment_id = payment_id
+        self.result = None
         self.queries = []
 
     def __enter__(self):
@@ -60,9 +64,31 @@ class FakeCursor:
 
     def execute(self, sql, params=None):
         self.queries.append(sql)
+        normalized = " ".join(sql.split()).lower()
+        if "from checkouts" in normalized:
+            checkout_id, amount, currency, status = self.row
+            self.result = (
+                checkout_id,
+                amount,
+                currency,
+                status,
+                self.payment_id if status == "paid" else None,
+                "paid" if status == "paid" else "not_started",
+            )
+        elif "from checkout_payment_attempts" in normalized:
+            self.result = None
+        elif normalized.startswith("insert into checkout_payment_reconciliations"):
+            self.result = None
+        elif normalized.startswith("insert into checkout_payment_attempts"):
+            self.result = None
+        else:
+            self.result = None
 
     def fetchone(self):
-        return self.row
+        return self.result
+
+    def fetchall(self):
+        return []
 
     def updates(self):
         return [q for q in self.queries if q.strip().startswith("UPDATE")]
@@ -83,7 +109,7 @@ class FakeConnection:
 
 
 def use_checkout(monkeypatch, status="pending", amount="100.00"):
-    cursor = FakeCursor((Decimal(amount), "SAR", status))
+    cursor = FakeCursor((5, Decimal(amount), "SAR", status))
     monkeypatch.setattr(
         webhooks.psycopg, "connect",
         lambda *args, **kwargs: FakeConnection(cursor)
