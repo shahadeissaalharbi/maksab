@@ -2,9 +2,8 @@ import { useCallback, useState } from "react";
 import LocationMap from "./LocationMap.jsx";
 import MapErrorBoundary from "./MapErrorBoundary.jsx";
 import MapPreview from "./MapPreview.jsx";
-import { DEFAULT_POINT, LOCATE_STATE, LOCATION_TEXT, MAPS_API_KEY } from "../constants/map.js";
+import { DEFAULT_POINT, LOCATE_STATE, LOCATION_TEXT, TOMTOM_API_KEY } from "../constants/map.js";
 import { useCurrentLocation } from "../hooks/useCurrentLocation.js";
-import { useMapsAuthFailure } from "../hooks/useMapsAuthFailure.js";
 import { SAVE_STATE, useMyLocation } from "../hooks/useMyLocation.js";
 import { parseMapLink } from "../utils/mapLink.js";
 import "../styles/Location.css";
@@ -18,8 +17,8 @@ const LOCATE_ERRORS = {
 function DeliveryLocationSection() {
   const { saved, save, saveState } = useMyLocation();
   // هنا الخريطة التفاعلية بس لو المفتاح مضبوط وGoogle قبله
-  const mapsRejected = useMapsAuthFailure();
-  const interactive = Boolean(MAPS_API_KEY) && !mapsRejected;
+  const [mapFailed, setMapFailed] = useState(false);
+  const interactive = Boolean(TOMTOM_API_KEY) && !mapFailed;
   const [picked, setPicked] = useState(null);
   const [link, setLink] = useState("");
   const [linkError, setLinkError] = useState("");
@@ -82,7 +81,7 @@ function DeliveryLocationSection() {
         <>
           <p className="location-note">{LOCATION_TEXT.MAP_HINT}</p>
           <MapErrorBoundary fallback={<MapPreview point={shown} />}>
-            <LocationMap point={shown} onPick={choose} />
+            <LocationMap point={shown} onPick={choose} onFail={() => setMapFailed(true)} />
           </MapErrorBoundary>
         </>
       ) : (
