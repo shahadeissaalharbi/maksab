@@ -1,8 +1,7 @@
 // هنا كل ثوابت الخريطة وموقع التوصيل في مكان واحد
 
 // هنا مفتاح خرائط Google ورقم الخريطة من متغيرات البيئة (ما ينكتبون في الكود)
-export const MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "";
-export const MAP_ID = import.meta.env.VITE_GOOGLE_MAP_ID || "DEMO_MAP_ID";
+export const TOMTOM_API_KEY = import.meta.env.VITE_TOMTOM_API_KEY || "";
 
 // هنا قرب الخريطة لما نعرض نقطة
 export const MAP_ZOOM = 15;
@@ -14,8 +13,11 @@ export const DEFAULT_POINT = { latitude: 24.7136, longitude: 46.6753 };
 export const LOCATE_TIMEOUT_MS = 10000;
 
 // هنا رابط خريطة Google المضمنة لنقطة معينة (تنعرض لو المفتاح ما انضبط)
-export const embedUrl = ({ latitude, longitude }) =>
-  `https://www.google.com/maps/embed?origin=mfe&pb=!1m3!2m1!1s${latitude},${longitude}!6i${MAP_ZOOM}`;
+export const embedUrl = ({ latitude, longitude }) => {
+  const d = 0.004;
+  const bbox = [longitude - d, latitude - d, longitude + d, latitude + d].join("%2C");
+  return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${latitude}%2C${longitude}`;
+};
 
 // هنا رابط يفتح النقطة في خرائط Google
 export const openInMapsUrl = ({ latitude, longitude }) =>
