@@ -1,5 +1,7 @@
 import CostBreakdown from "./CostBreakdown.jsx";
+import SoonButton from "./SoonButton.jsx";
 import { CALCULATOR_TEXT } from "../constants/calculator.js";
+import { SOON_LABELS, SOON_NOTES } from "../constants/soon.js";
 
 const format = (number) => number.toLocaleString("en-US");
 
@@ -44,6 +46,12 @@ function PriceResult({ result, verified }) {
 
       <p className="cl-formula">{CALCULATOR_TEXT.FORMULA}</p>
       {verified && <p className="cl-verified">{CALCULATOR_TEXT.VERIFIED}</p>}
+
+      {/* هنا حفظ الوصفة: من أهداف المرحلة الثالثة، وصفحته لسا ما انبنت */}
+      <SoonButton
+        label={SOON_LABELS.SAVE_RECIPE}
+        note={SOON_NOTES.SAVE_RECIPE}
+      />
     </section>
   );
 }
