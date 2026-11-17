@@ -6,9 +6,11 @@ import {
 } from "../constants/supplier.js";
 import { NAME_ERROR } from "../constants/messages.js";
 import { isValidName } from "../utils/nameValidation.js";
+import { IMAGE_TEXT } from "../constants/images.js";
+import ProductImagePicker from "./ProductImagePicker.jsx";
 import "../styles/ProductEdit.css";
 
-// هنا بطاقة منتج المورد: تعديل الاسم والسعر والكمية وحذف المنتج
+// هنا بطاقة منتج المورد: صورته، وتعديل الاسم والسعر والكمية والصورة، وحذف المنتج
 function SupplierProductCard({ product, onUpdate, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(product.name);
@@ -16,6 +18,8 @@ function SupplierProductCard({ product, onUpdate, onDelete }) {
   const [stockQuantity, setStockQuantity] = useState(
     product.stock_quantity ?? 0,
   );
+  const [imageUrl, setImageUrl] = useState(product.image_url ?? null);
+  const [imageBusy, setImageBusy] = useState(false);
   const stock = getStockStatus(product.stock_status);
 
   // هنا أبدأ التعديل من القيم الحالية
@@ -23,6 +27,7 @@ function SupplierProductCard({ product, onUpdate, onDelete }) {
     setName(product.name);
     setPrice(product.price);
     setStockQuantity(product.stock_quantity ?? 0);
+    setImageUrl(product.image_url ?? null);
     setIsEditing(true);
   };
 
@@ -33,10 +38,13 @@ function SupplierProductCard({ product, onUpdate, onDelete }) {
   const handleSave = () => {
     if (!nameIsValid) return;
 
+    // الصورة تنرسل بس لو تغيرت، وnull يعني انشالت
+    const imageChanged = imageUrl !== (product.image_url ?? null);
     onUpdate(product.id, {
       name: name.trim(),
       price: Number(price),
       stock_quantity: Number(stockQuantity),
+      ...(imageChanged ? { image_url: imageUrl } : {}),
     });
     setIsEditing(false);
   };
@@ -50,6 +58,14 @@ function SupplierProductCard({ product, onUpdate, onDelete }) {
 
   return (
     <article className="product-card">
+      {product.image_url && !isEditing && (
+        <img
+          className="sp-image"
+          src={product.image_url}
+          alt={IMAGE_TEXT.ALT(product.name)}
+        />
+      )}
+
       <div className="product-body">
         <span className={`stock-badge stock-${stock.tone}`}>{stock.label}</span>
 
@@ -91,6 +107,13 @@ function SupplierProductCard({ product, onUpdate, onDelete }) {
                 />
               </label>
             </div>
+
+            <ProductImagePicker
+              value={imageUrl}
+              onChange={setImageUrl}
+              onBusyChange={setImageBusy}
+              compact
+            />
           </>
         ) : (
           <>
@@ -108,7 +131,7 @@ function SupplierProductCard({ product, onUpdate, onDelete }) {
                 type="button"
                 className="save-button"
                 onClick={handleSave}
-                disabled={!nameIsValid}
+                disabled={!nameIsValid || imageBusy}
               >
                 {SUPPLIER_TEXT.SAVE}
               </button>
