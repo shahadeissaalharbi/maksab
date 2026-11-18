@@ -15,17 +15,25 @@ export const ORDER_STATUS = Object.freeze({
 
 export const ORDER_STATUS_OPTIONS = Object.values(ORDER_STATUS);
 
-//روابط القائمة الجانبيةا
+// هنا روابط القائمة الجانبية، واللي عليها soon صفحتها «قريبًا»
 export const NAV_ITEMS = [
   { id: "overview", label: "نظرة عامة", to: ROUTES.SUPPLIER_HOME },
   { id: "products", label: "المنتجات والمخزون", to: ROUTES.SUPPLIER_PRODUCTS },
-  { id: "orders", label: "الطلبات الواردة", to: null },
-  { id: "messages", label: "الرسائل", to: null },
+  { id: "orders", label: "الطلبات الواردة", to: ROUTES.SUPPLIER_ORDERS, soon: true },
+  { id: "messages", label: "الرسائل", to: ROUTES.SUPPLIER_MESSAGES, soon: true },
 ];
+
+// هنا وصف كل صفحة «قريبًا»: وش بتسوي لما تجهز
+export const SOON_PAGES = Object.freeze({
+  orders: "كل طلبات الأسر المنتجة في مكان واحد، مع البحث والفلترة وتحديث الحالة",
+  messages: "محادثة مباشرة مع الأسر المنتجة عن الطلبات والكميات والمواعيد",
+});
 
 export const OVERVIEW_TEXT = Object.freeze({
   ACCOUNT_TYPE: "حساب المورد",
   SOON: "قريبًا",
+  SOON_NOTE: "نشتغل عليها الحين، وبتنزل في التحديث الجاي",
+  BACK_TO_OVERVIEW: "الرجوع للنظرة العامة",
   BACK_TO_PLATFORM: "العودة للمنصة",
   GOOD_MORNING: "صباح الخير",
   GOOD_EVENING: "مساء الخير",

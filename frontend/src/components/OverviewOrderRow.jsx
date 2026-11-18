@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import { ROUTES } from "../constants/routes.js";
 import {
   ORDER_STATUS,
   ORDER_STATUS_OPTIONS,
@@ -46,15 +48,17 @@ function OverviewOrderRow({ order, onStatusChange }) {
           ))}
         </select>
 
-        <button
-          type="button"
+        {/* هنا تفاصيل الطلب تكون في صفحة الطلبات الواردة (قريبًا) */}
+        <Link
+          to={ROUTES.SUPPLIER_ORDERS}
           className={isNew ? "ov-btn-primary" : "ov-btn-light"}
         >
           {isNew ? OVERVIEW_TEXT.ACTION_REVIEW : OVERVIEW_TEXT.ACTION_DETAILS}
-        </button>
+        </Link>
       </div>
     </div>
   );
 }
 
 export default OverviewOrderRow;
+
