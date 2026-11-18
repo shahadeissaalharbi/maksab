@@ -1,0 +1,119 @@
+/* هنا تنسيق اختيار صورة المنتج وصورة بطاقة المورد - الألوان من Auth.css */
+
+.pi-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pi-label {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pi-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pi-preview {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  overflow: hidden;
+  border: 1.5px dashed var(--border);
+  border-radius: 14px;
+  background: #fafaf8;
+}
+
+.pi-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pi-preview svg {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.6;
+}
+
+.pi-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* الحقل نفسه مخفي، والضغط يصير على الزر (label) */
+.pi-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.pi-choose,
+.pi-remove {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pi-choose {
+  border: 1.5px solid var(--green);
+  color: var(--green);
+}
+
+.pi-choose.is-busy {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* لما يوصل للحقل بالكيبورد يبين الإطار على الزر */
+.pi-input:focus-visible + .pi-choose {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.pi-remove {
+  border: 0;
+  background: transparent;
+  color: #a32117;
+}
+
+.pi-status,
+.pi-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pi-error {
+  margin: 0;
+  color: #a32117;
+  font-size: 13px;
+}
+
+.pi-box.is-compact .pi-preview {
+  width: 64px;
+  height: 64px;
+}
+
+/* صورة المنتج فوق بطاقة المورد */
+.sp-image {
+  display: block;
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  background: #fafaf8;
+}

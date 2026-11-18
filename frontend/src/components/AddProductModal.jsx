@@ -1,7 +1,9 @@
 import { useState } from "react";
 import FormMessage from "./FormMessage.jsx";
+import ProductImagePicker from "./ProductImagePicker.jsx";
 import { HTTP_STATUS, MESSAGE_TYPES } from "../constants/messages.js";
 import { PRODUCT_FORM_TEXT, SUPPLIER_TEXT, PRODUCT_CATEGORIES, getProductError } from "../constants/supplier.js";
+import { IMAGE_TEXT } from "../constants/images.js";
 import "../styles/ProductModal.css";
 
 const EMPTY_PRODUCT = {
@@ -12,6 +14,7 @@ const EMPTY_PRODUCT = {
   stock_quantity: 1,
   unit: "",
   moq: 1,
+  image_url: null,
 };
 
 // هنا نافذة إضافة منتج: تجمع البيانات، والصفحة هي اللي ترسلها للباك
@@ -19,6 +22,8 @@ function AddProductModal({ onClose, onSubmit }) {
   const [form, setForm] = useState(EMPTY_PRODUCT);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
+  // هنا نعرف إذا الصورة لسا ترتفع، عشان زر الإضافة ينتظرها
+  const [imageBusy, setImageBusy] = useState(false);
 
   // هنا دالة وحدة لكل الحقول، تعرف الحقل من name
   const updateField = (event) => setForm({ ...form, [event.target.name]: event.target.value });
@@ -41,6 +46,7 @@ function AddProductModal({ onClose, onSubmit }) {
       stock_quantity: Number(form.stock_quantity),
       unit: form.unit.trim() || undefined,
       moq: Number(form.moq),
+      image_url: form.image_url || undefined,
     };
 
     try {
@@ -100,6 +106,12 @@ function AddProductModal({ onClose, onSubmit }) {
             value={form.description}
             onChange={updateField}
             placeholder={PRODUCT_FORM_TEXT.DESCRIPTION_PLACEHOLDER}
+          />
+
+          <ProductImagePicker
+            value={form.image_url}
+            onChange={(url) => setForm((current) => ({ ...current, image_url: url }))}
+            onBusyChange={setImageBusy}
           />
 
           <label htmlFor="product-category">{PRODUCT_FORM_TEXT.CATEGORY}</label>
@@ -183,8 +195,12 @@ function AddProductModal({ onClose, onSubmit }) {
           <FormMessage message={message} />
 
           <div className="pm-actions">
-            <button type="submit" className="pm-submit" disabled={loading}>
-              {loading ? PRODUCT_FORM_TEXT.SUBMITTING : PRODUCT_FORM_TEXT.SUBMIT}
+            <button type="submit" className="pm-submit" disabled={loading || imageBusy}>
+              {imageBusy
+                ? IMAGE_TEXT.UPLOADING
+                : loading
+                  ? PRODUCT_FORM_TEXT.SUBMITTING
+                  : PRODUCT_FORM_TEXT.SUBMIT}
             </button>
             <button type="button" className="pm-cancel" onClick={onClose}>
               {PRODUCT_FORM_TEXT.CANCEL}

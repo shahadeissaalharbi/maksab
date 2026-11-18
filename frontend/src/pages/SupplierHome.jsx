@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
-import Navbar from "../components/Navbar.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import StatCard from "../components/StatCard.jsx";
 import SupplierProductCard from "../components/SupplierProductCard.jsx";
 import AddProductModal from "../components/AddProductModal.jsx";
 import FormMessage from "../components/FormMessage.jsx";
-import { ROUTES } from "../constants/routes.js";
-import { LOAD_STATUS, SUPPLIER_NAV_LINKS } from "../constants/market.js";
+import { LOAD_STATUS } from "../constants/market.js";
 import { HTTP_STATUS, MESSAGE_TYPES } from "../constants/messages.js";
 import {
   SUPPLIER_TEXT,
@@ -15,14 +12,16 @@ import {
   PRODUCT_MESSAGES,
   getProductError,
 } from "../constants/supplier.js";
-import { getToken, getUser } from "../services/session.js";
+import { getUser } from "../services/session.js";
 import { useSupplierHome } from "../hooks/useSupplierHome.js";
 import { useProductFilters } from "../hooks/useProductFilters.js";
 import "../styles/Auth.css";
 import "../styles/Trader.css";
 import "../styles/Supplier.css";
+import "../styles/SupplierOverview.css";
 
 // هنا صفحة منتجات المورد: الأرقام والبحث، وإضافة وتعديل وحذف المنتجات
+// تطلع في وسط اللوحة، والقائمة الجانبية والتأكد من الدخول في SupplierLayout
 function SupplierHome() {
   const {
     supplier,
@@ -36,9 +35,6 @@ function SupplierHome() {
   const { search, setSearch, filtered } = useProductFilters(products);
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState(null);
-
-  // هنا اللي ما سجل دخول يرجع لصفحة الدخول
-  if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
 
   const displayName = supplier?.business_name ?? getUser()?.full_name;
 
@@ -75,14 +71,21 @@ function SupplierHome() {
   };
 
   return (
-    <div className="trader-page" dir="rtl">
-      <Navbar links={SUPPLIER_NAV_LINKS} />
-
-      <section className="market-hero">
-        <span className="market-badge">{SUPPLIER_TEXT.BADGE}</span>
-        <h1>{SUPPLIER_TEXT.greeting(displayName)}</h1>
-        <p className="supplier-subtitle">{SUPPLIER_TEXT.SUBTITLE}</p>
-      </section>
+    <>
+      <header className="ov-header">
+        <div>
+          <p className="ov-date">{SUPPLIER_TEXT.BADGE}</p>
+          <h1>{SUPPLIER_TEXT.greeting(displayName)}</h1>
+          <p className="ov-subtitle">{SUPPLIER_TEXT.SUBTITLE}</p>
+        </div>
+        <button
+          type="button"
+          className="ov-btn-primary ov-add"
+          onClick={() => setShowModal(true)}
+        >
+          {PRODUCT_FORM_TEXT.ADD_BUTTON}
+        </button>
+      </header>
 
       <div className="supplier-body">
         <div className="stat-row">
@@ -100,13 +103,6 @@ function SupplierHome() {
             onChange={setSearch}
             placeholder={SUPPLIER_TEXT.SEARCH_PLACEHOLDER}
           />
-          <button
-            type="button"
-            className="add-product-button"
-            onClick={() => setShowModal(true)}
-          >
-            {PRODUCT_FORM_TEXT.ADD_BUTTON}
-          </button>
         </div>
 
         <FormMessage message={message} />
@@ -139,8 +135,9 @@ function SupplierHome() {
           onSubmit={handleAdd}
         />
       )}
-    </div>
+    </>
   );
 }
 
 export default SupplierHome;
+

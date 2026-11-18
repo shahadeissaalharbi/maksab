@@ -10,6 +10,12 @@ export const ROUTES = {
   TRADER_HOME: "/trader",
   SUPPLIER_HOME: "/supplier",
   SUPPLIER_PRODUCTS: "/supplier/products",
+  // هنا صفحات «قريبًا» في لوحة المورد
+  SUPPLIER_ORDERS: "/supplier/orders",
+  SUPPLIER_MESSAGES: "/supplier/messages",
+  // هنا صفحات «قريبًا» للأسر المنتجة
+  ACADEMY: "/academy",
+  PARTNERS: "/partners",
   BUSINESS_INFO: "/business-info",
   MY_ORDERS: "/orders",
   CART: "/cart",
@@ -23,3 +29,4 @@ export const ROLE_HOME = {
   [ACCOUNT_TYPES.MERCHANT.value]: ROUTES.TRADER_HOME,
   [ACCOUNT_TYPES.SUPPLIER.value]: ROUTES.SUPPLIER_HOME,
 };
+
