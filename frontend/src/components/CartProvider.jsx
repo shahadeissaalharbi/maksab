@@ -108,7 +108,7 @@ function CartProvider({ children }) {
       current.filter((item) => item.product_id !== productId),
     );
 
-  const clearCart = () => setItems([]);
+  const clearCart = useCallback(() => setItems([]), []);
 
   let total = 0;
   for (const item of items) {

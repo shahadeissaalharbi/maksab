@@ -3,6 +3,8 @@ import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import TraderHome from "./pages/TraderHome.jsx";
 import Calculator from "./pages/Calculator.jsx";
+import Payment from "./pages/Payment.jsx";
+import PaymentResult from "./pages/PaymentResult.jsx";
 import Landing from "./pages/Landing.jsx";
 import SupplierOverview from "./pages/SupplierOverview.jsx";
 import SupplierHome from "./pages/SupplierHome.jsx";
@@ -14,12 +16,14 @@ import Profile from "./pages/Profile.jsx";
 import ComingSoon from "./pages/ComingSoon.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import Footer from "./components/Footer.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 import { ROUTES } from "./constants/routes.js";
 import { COMING_SOON_PAGES } from "./constants/market.js";
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path={ROUTES.HOME} element={<Landing />} />
         <Route path={ROUTES.REGISTER} element={<Register />} />
@@ -35,6 +39,8 @@ function App() {
         />
         <Route path={ROUTES.MY_ORDERS} element={<MyOrders />} />
         <Route path={ROUTES.CART} element={<Cart />} />
+        <Route path={ROUTES.PAYMENT} element={<Payment />} />
+        <Route path={ROUTES.PAYMENT_RESULT} element={<PaymentResult />} />
         <Route path={ROUTES.PROFILE} element={<Profile />} />
         {/* صفحات «قريبًا» للأسر المنتجة */}
         <Route
@@ -69,4 +75,3 @@ function App() {
 }
 
 export default App;
-
