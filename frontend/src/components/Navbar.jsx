@@ -6,6 +6,8 @@ import { CART_TEXT } from "../constants/cart.js";
 import { ROUTES } from "../constants/routes.js";
 import { getUser } from "../services/session.js";
 import { useCart } from "../hooks/useCart.js";
+import { SOON_TEXT } from "../constants/soon.js";
+import "../styles/Soon.css";
 
 // هنا الشريط العلوي، والروابط تجي من الصفحة عشان التاجر والمورد يستخدمونه
 function Navbar({ links = NAV_LINKS }) {
@@ -23,6 +25,7 @@ function Navbar({ links = NAV_LINKS }) {
         {links.map((link) => (
           <NavLink key={link.to} to={link.to}>
             {link.label}
+            {link.soon && <small className="soon-tag">{SOON_TEXT.TAG}</small>}
           </NavLink>
         ))}
       </nav>
@@ -43,3 +46,4 @@ function Navbar({ links = NAV_LINKS }) {
 }
 
 export default Navbar;
+

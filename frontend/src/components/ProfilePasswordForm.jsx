@@ -44,7 +44,7 @@ function ProfilePasswordForm({ onChange }) {
     } else {
       setMessage({
         type: MESSAGE_TYPES.ERROR,
-        text: getPasswordError(result.status),
+        text: getPasswordError(result.status, result.code),
       });
     }
     setLoading(false);

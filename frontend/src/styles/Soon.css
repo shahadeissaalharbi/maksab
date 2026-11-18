@@ -1,0 +1,68 @@
+/* هنا تنسيق أزرار وعلامات «قريبًا» - الألوان من Auth.css */
+
+/* العلامة الصفراء الصغيرة جنب الاسم */
+.soon-tag {
+  margin-inline-start: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #fff3cc;
+  color: var(--amber);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.soon-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.soon-button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* زر كامل (مثل حفظ الوصفة) */
+.soon-button.is-button {
+  padding: 10px 18px;
+  border: 1.5px dashed var(--border);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* نص مثل الرابط (مثل عرض التفاصيل في بطاقة المنتج) */
+.soon-button.is-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: start;
+}
+
+.soon-button:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+/* الجملة اللي تطلع بعد الضغط */
+.soon-note {
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: #fff8e1;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* جملة الوصف في صفحة «قريبًا» للأسر */
+.coming-soon .coming-soon-note {
+  max-width: 520px;
+  color: var(--text);
+  font-weight: 700;
+}

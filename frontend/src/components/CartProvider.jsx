@@ -37,6 +37,7 @@ function CartProvider({ children }) {
   const showLimit = (text) => setNotice({ id: Date.now(), text });
 
   // لو المنتج موجود نزيد كميته واحد، وإلا نضيفه بأقل طلب
+  // هنا ترجع true لو انضاف، و false لو وقفه الحد، عشان الزر يعرف وش يكتب
   const addToCart = (product) => {
     const moq = Number(product.moq) || 1;
     const stock =
@@ -48,13 +49,13 @@ function CartProvider({ children }) {
     // هنا لو المتوفر أقل من أقل طلب ما نقدر نضيفه
     if (!existing && stock < moq) {
       showLimit(CART_TEXT.LIMIT_STOCK(product.name, stock));
-      return;
+      return false;
     }
 
     // هنا لو الكمية وصلت المتوفر ننبه ونوقف
     if (existing && existing.quantity + 1 > existing.stock) {
       showLimit(CART_TEXT.LIMIT_STOCK(existing.name, existing.stock));
-      return;
+      return false;
     }
 
     setItems((current) => {
@@ -78,6 +79,7 @@ function CartProvider({ children }) {
       };
       return [...current, { ...line, quantity: clampQuantity(moq, line) }];
     });
+    return true;
   };
 
   const changeQuantity = (productId, quantity) => {

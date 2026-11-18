@@ -12,6 +12,7 @@ from routes.cart import cart_bp
 from routes.calculator import calculator_bp
 from routes.checkouts import checkouts_bp
 from routes.webhooks import webhooks_bp
+from routes.location import location_bp
 app = Flask(__name__)
 
 app.register_blueprint(auth_bp)
@@ -23,6 +24,7 @@ app.register_blueprint(cart_bp)
 app.register_blueprint(checkouts_bp)
 app.register_blueprint(webhooks_bp)
 app.register_blueprint(calculator_bp)
+app.register_blueprint(location_bp)
 init_security(app)
 DATABASE_URL = Config.DATABASE_URL
 

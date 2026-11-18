@@ -20,7 +20,7 @@ function DeleteAccountBox({ onDelete }) {
     if (result.status !== HTTP_STATUS.OK) {
       setMessage({
         type: MESSAGE_TYPES.ERROR,
-        text: getDeleteError(result.status),
+        text: getDeleteError(result.status, result.code),
       });
     }
     setLoading(false);

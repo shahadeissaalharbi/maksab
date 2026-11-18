@@ -46,12 +46,14 @@ export const FILTER_TEXT = {
   },
 };
 
-// هنا روابط الشريط العلوي، وكل رابط يودي لصفحته
+// هنا روابط الشريط العلوي، وكل رابط يودي لصفحته، واللي عليها soon صفحتها «قريبًا»
 export const NAV_LINKS = [
   { label: "الرئيسية", to: ROUTES.LANDING },
   { label: "حاسبة التسعير", to: ROUTES.CALCULATOR },
   { label: "سوق الجملة", to: ROUTES.TRADER_HOME },
   { label: "طلباتي", to: ROUTES.MY_ORDERS },
+  { label: "أكاديمية مكسب", to: ROUTES.ACADEMY, soon: true },
+  { label: "دليل الشركاء", to: ROUTES.PARTNERS, soon: true },
 ];
 
 // هنا روابط شريط المورد
@@ -64,4 +66,16 @@ export const COMING_SOON_TEXT = {
   BADGE: "قريبًا",
   MESSAGE: "نطبخها على نار هادية… وقريب تجهز",
   BACK: "العودة لسوق الجملة",
+};
+
+// هنا صفحات «قريبًا» للأسر: عنوان كل صفحة وجملة عن وش بتقدم
+export const COMING_SOON_PAGES = {
+  ACADEMY: {
+    title: "أكاديمية مكسب",
+    note: "تدريب عملي للأسر المنتجة، يساعد مشروعكم يكبر خطوة خطوة",
+  },
+  PARTNERS: {
+    title: "دليل الشركاء",
+    note: "الخدمات المهنية اللي تحتاجها الأسر المنتجة، في مكان واحد",
+  },
 };

@@ -6,8 +6,8 @@ import { getToken } from "../services/session.js";
 import "../styles/Auth.css";
 import "../styles/Trader.css";
 
-// هنا صفحة مؤقتة للصفحات اللي لسا ما انبنت، والعنوان والروابط يجون من الرابط
-function ComingSoon({ title, links = NAV_LINKS, showBack = true }) {
+// هنا صفحة مؤقتة للصفحات اللي لسا ما انبنت، والعنوان والجملة والروابط يجون من الرابط
+function ComingSoon({ title, note, links = NAV_LINKS, showBack = true }) {
   if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
 
   return (
@@ -17,6 +17,7 @@ function ComingSoon({ title, links = NAV_LINKS, showBack = true }) {
       <section className="market-hero coming-soon">
         <span className="market-badge">{COMING_SOON_TEXT.BADGE}</span>
         <h1>{title}</h1>
+        {note && <p className="coming-soon-note">{note}</p>}
         <p>{COMING_SOON_TEXT.MESSAGE}</p>
         {showBack && (
           <Link to={ROUTES.TRADER_HOME} className="coming-soon-link">

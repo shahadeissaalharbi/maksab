@@ -24,7 +24,7 @@ export function useProfileActions() {
       }
     };
 
-  // لو انحذف الحساب نمسح الجلسة والسلة، والصفحة ترجعه للرئيسية
+  // لو انحذف الحساب نمسح الجلسة (التوكن) والسلة، والصفحة توديه لصفحة الدخول
   const removeAccount = async (password) => {
     const result = await safely(deleteAccount)(password);
 

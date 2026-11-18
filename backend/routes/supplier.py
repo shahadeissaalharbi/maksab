@@ -33,7 +33,8 @@ def supplier_home():
                     return jsonify({"error": "Supplier not found"}), 404
 
                 cursor.execute("""
-                    SELECT id, name, price, stock_status
+                    SELECT id, name, price, stock_status,
+                           stock_quantity, image_url
                     FROM products
                     WHERE supplier_id = %s
                     ORDER BY id;
@@ -50,7 +51,9 @@ def supplier_home():
             "id": row[0],
             "name": row[1],
             "price": str(row[2]),
-            "stock_status": row[3]
+            "stock_status": row[3],
+            "stock_quantity": row[4],
+            "image_url": row[5]
         }
         for row in rows
     ]

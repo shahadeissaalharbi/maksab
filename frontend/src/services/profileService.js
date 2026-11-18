@@ -15,6 +15,16 @@ function authHeaders() {
   };
 }
 
+// هنا أقرأ رمز الخطأ (code) اللي يرجعه الباك، لأن نفس الرقم 400 يجي لأسباب مختلفة
+async function readErrorCode(response) {
+  try {
+    const body = await response.json();
+    return body.code || null;
+  } catch {
+    return null;
+  }
+}
+
 // هنا أقرا بيانات الحساب من الباك وأدمجها مع المحفوظة في المتصفح
 export async function refreshAccount() {
   if (USE_MOCK) return;
@@ -58,7 +68,7 @@ export async function changePassword(currentPassword, newPassword) {
     }),
   });
 
-  return { status: response.status };
+  return { status: response.status, code: await readErrorCode(response) };
 }
 
 // هنا أحذف الحساب بعد ما أرسل كلمة المرور للتأكيد
@@ -71,5 +81,5 @@ export async function deleteAccount(password) {
     body: JSON.stringify({ password }),
   });
 
-  return { status: response.status };
+  return { status: response.status, code: await readErrorCode(response) };
 }

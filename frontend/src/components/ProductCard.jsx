@@ -3,6 +3,8 @@ import { getCategory } from "../constants/categories.js";
 import { MARKET_TEXT } from "../constants/market.js";
 import { CART_TEXT } from "../constants/cart.js";
 import { useCart } from "../hooks/useCart.js";
+import { SOON_NOTES } from "../constants/soon.js";
+import SoonButton from "./SoonButton.jsx";
 import "../styles/ProductCompact.css";
 
 const ADDED_MESSAGE_MS = 1500;
@@ -16,8 +18,9 @@ function ProductCard({ product }) {
     product.stock_quantity !== undefined && product.stock_quantity <= 0;
 
   // هنا أضيف المنتج للسلة، وأطلع «تمت الإضافة» ثانية ونص
+  // لو ما انضاف (وقفه حد المخزون) يبقى الزر مثل ما هو، والتنبيه يشرح السبب
   const handleAdd = () => {
-    addToCart(product);
+    if (!addToCart(product)) return;
     setAdded(true);
     setTimeout(() => setAdded(false), ADDED_MESSAGE_MS);
   };
@@ -57,7 +60,12 @@ function ProductCard({ product }) {
           </span>
         )}
 
-        <p className="product-details">{MARKET_TEXT.DETAILS}</p>
+        {/* هنا صفحة المنتج والاستفسار من المورد لسا ما انبنت، فتطلع «قريبًا» */}
+        <SoonButton
+          label={MARKET_TEXT.DETAILS}
+          note={SOON_NOTES.PRODUCT_DETAILS}
+          variant="link"
+        />
         <button
           type="button"
           className={`add-to-cart ${added ? "added" : ""}`}
@@ -72,3 +80,4 @@ function ProductCard({ product }) {
 }
 
 export default ProductCard;
+

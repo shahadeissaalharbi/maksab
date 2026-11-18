@@ -62,8 +62,24 @@ export const DELETE_ERRORS = {
   DEFAULT: "الخلل عندنا مو عندك، نرجو المحاولة بعد شوي",
 };
 
-export const getDeleteError = (status) =>
-  DELETE_ERRORS[status] || DELETE_ERRORS.DEFAULT;
+// هنا رموز الباك (code) اللي تفرق بين أسباب نفس الرقم
+export const ERROR_CODES = {
+  WRONG_PASSWORD: "wrong_password",
+  WEAK_PASSWORD: "weak_password",
+  SAME_PASSWORD: "same_password",
+  ACCOUNT_HAS_DATA: "account_has_data",
+};
+
+const CODE_MESSAGES = {
+  [ERROR_CODES.WRONG_PASSWORD]: "كلمة المرور غير صحيحة",
+  [ERROR_CODES.WEAK_PASSWORD]: "كلمة المرور الجديدة لازم تكون 8 أحرف أو أكثر",
+  [ERROR_CODES.SAME_PASSWORD]: "كلمة المرور الجديدة لازم تختلف عن الحالية",
+  [ERROR_CODES.ACCOUNT_HAS_DATA]: "حسابك فيه طلبات أو منتجات، فما نقدر نحذفه",
+};
+
+// هنا لو الباك رجع رمز نعرض رسالته، وإلا رسالة الرقم
+export const getDeleteError = (status, code) =>
+  CODE_MESSAGES[code] || DELETE_ERRORS[status] || DELETE_ERRORS.DEFAULT;
 
 // هنا رسالة لكل رد من الباك على تغيير كلمة المرور
 export const PASSWORD_ERRORS = {
@@ -75,5 +91,9 @@ export const PASSWORD_ERRORS = {
   DEFAULT: "الخلل عندنا مو عندك، نرجو المحاولة بعد شوي",
 };
 
-export const getPasswordError = (status) =>
-  PASSWORD_ERRORS[status] || PASSWORD_ERRORS.DEFAULT;
+export const getPasswordError = (status, code) =>
+  (code === ERROR_CODES.WRONG_PASSWORD
+    ? "كلمة المرور الحالية غير صحيحة"
+    : CODE_MESSAGES[code]) ||
+  PASSWORD_ERRORS[status] ||
+  PASSWORD_ERRORS.DEFAULT;
