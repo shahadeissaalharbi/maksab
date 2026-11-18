@@ -1,7 +1,6 @@
 /* النظرة العامة للمورد - كل الكلاسات تبدأ بـ ov- عشان ما تتعارض مع الصفحات الثانية */
 /* الألوان من Auth.css، فلا نعرّف :root ولا body هنا */
 
-
 /* ========== الصفحة ========== */
 
 .ov-page {
@@ -20,7 +19,6 @@
 .ov-state.error {
   color: #b42318;
 }
-
 
 /* ========== القائمة الجانبية ========== */
 
@@ -89,14 +87,13 @@
   text-decoration: none;
 }
 
-
 /* ========== المحتوى ========== */
 
 .ov-main {
   flex: 1;
   min-width: 0;
   max-width: 1100px;
-  padding: 36px 32px 60px;
+  padding: 24px 32px 28px;
 }
 
 .ov-header {
@@ -104,7 +101,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 26px;
+  margin-bottom: 16px;
 }
 
 .ov-date {
@@ -113,13 +110,39 @@
 }
 
 .ov-header h1 {
-  font-size: 30px;
+  font-size: 24px;
+}
+
+.ov-greeting {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ov-greet-icon {
+  flex: none;
+  width: 28px;
+  height: 28px;
+}
+
+.ov-sun {
+  fill: var(--yellow);
+}
+
+.ov-sun-rays {
+  fill: none;
+  stroke: var(--yellow);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.ov-moon {
+  fill: var(--green);
 }
 
 .ov-subtitle {
   color: var(--muted);
 }
-
 
 /* ========== الأزرار ========== */
 
@@ -145,26 +168,25 @@
 }
 
 .ov-add {
-  padding: 12px 24px;
-  font-size: 15px;
+  padding: 10px 20px;
+  font-size: 14px;
   white-space: nowrap;
 }
-
 
 /* ========== بطاقات الأرقام ========== */
 
 .ov-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 26px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .ov-stat-card {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 20px 22px;
+  gap: 2px;
+  padding: 12px 18px;
   border: 1.5px solid var(--border);
   border-radius: 18px;
   background: #ffffff;
@@ -177,7 +199,7 @@
 
 .ov-stat-value {
   color: var(--green-dark);
-  font-size: 30px;
+  font-size: 24px;
 }
 
 .ov-stat-hint {
@@ -186,12 +208,11 @@
   font-weight: 700;
 }
 
-
 /* ========== الطلبات ========== */
 
 .ov-panel {
-  margin-bottom: 26px;
-  padding: 22px;
+  margin-bottom: 16px;
+  padding: 14px 18px;
   border: 1.5px solid var(--border);
   border-radius: 18px;
   background: #ffffff;
@@ -201,7 +222,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 .ov-eyebrow {
@@ -211,7 +232,7 @@
 }
 
 .ov-panel-header h2 {
-  font-size: 20px;
+  font-size: 17px;
 }
 
 .ov-link {
@@ -225,7 +246,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 14px 0;
+  padding: 8px 0;
   border-top: 1px solid #efeee9;
 }
 
@@ -270,22 +291,27 @@
   font-size: 13px;
 }
 
-
 /* ========== تنبيه التوصيل ========== */
 
 .ov-notice {
-  padding: 18px 22px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 18px;
   border: 1.5px solid #ffe6a3;
   border-radius: 18px;
   background: #fffaeb;
 }
 
 .ov-notice h3 {
-  margin-bottom: 4px;
+  flex: none;
   color: var(--amber);
-  font-size: 16px;
+  font-size: 14px;
 }
 
+.ov-notice p {
+  font-size: 14px;
+}
 
 /* ========== الجوال ========== */
 

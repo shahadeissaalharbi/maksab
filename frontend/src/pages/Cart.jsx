@@ -1,18 +1,12 @@
-import { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import CartLine from "../components/CartLine.jsx";
 import FormMessage from "../components/FormMessage.jsx";
 import { ROUTES } from "../constants/routes.js";
-import {
-  CART_TEXT,
-  getOrderError,
-  getOrderErrorMessage,
-} from "../constants/cart.js";
-import { HTTP_STATUS, MESSAGE_TYPES } from "../constants/messages.js";
+import { CART_TEXT } from "../constants/cart.js";
 import { getToken } from "../services/session.js";
-import { createOrder } from "../services/ordersService.js";
 import { useCart } from "../hooks/useCart.js";
+import { useStartCheckout } from "../hooks/useStartCheckout.js";
 import DeliveryNotice from "../components/DeliveryNotice.jsx";
 import "../styles/Auth.css";
 import "../styles/Trader.css";
@@ -22,9 +16,7 @@ import "../styles/Location.css";
 // هنا صفحة السلة: تراجع الكميات وترسل الطلب، وكل مورد له طلب مستقل
 function Cart() {
   const { items, total, changeQuantity, removeItem, clearCart } = useCart();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(null);
+  const { start, loading, message } = useStartCheckout(items, clearCart);
 
   // اللي ما سجل دخول يرجع لصفحة الدخول
   if (!getToken()) return <Navigate to={ROUTES.LOGIN} />;
@@ -36,29 +28,6 @@ function Cart() {
     if (!groups[key]) groups[key] = [];
     groups[key].push(item);
   }
-
-  const handleCheckout = async () => {
-    setLoading(true);
-    setMessage(null);
-
-    try {
-      const { status, data } = await createOrder(items);
-
-      // لو انسوى الطلب نفضي السلة ونوديه لطلباتي
-      if (status === HTTP_STATUS.CREATED) {
-        clearCart();
-        navigate(`${ROUTES.MY_ORDERS}?placed=1`);
-        return;
-      }
-      setMessage({
-        type: MESSAGE_TYPES.ERROR,
-        text: getOrderErrorMessage(status, data),
-      });
-    } catch {
-      setMessage({ type: MESSAGE_TYPES.ERROR, text: getOrderError("NETWORK") });
-    }
-    setLoading(false);
-  };
 
   return (
     <div className="trader-page" dir="rtl">
@@ -122,7 +91,7 @@ function Cart() {
             <button
               type="button"
               className="ct-checkout"
-              onClick={handleCheckout}
+              onClick={start}
               disabled={loading}
             >
               {loading ? CART_TEXT.CHECKING_OUT : CART_TEXT.CHECKOUT}

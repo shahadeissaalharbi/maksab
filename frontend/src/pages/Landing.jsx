@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Logo from "../components/Logo.jsx";
 import ProfileMenu from "../components/ProfileMenu.jsx";
+import LandingArt from "../components/LandingArt.jsx";
 import { ACCOUNT_TYPES } from "../constants/accountTypes.js";
 import { LANDING_CTA } from "../constants/landing.js";
 import { ROLE_HOME, ROUTES } from "../constants/routes.js";
@@ -56,29 +57,31 @@ function Landing() {
       </header>
 
       <section className="landing-hero">
-        <div className="landing-circle"></div>
-        <p className="landing-kicker">مكسب لأعمال أوضح</p>
-        <h1>من أول تكلفة، إلى طلب جملة ناجح.</h1>
-        <p className="landing-text">
-          منصة تجمع الأسر المنتجة والموردين: تسعير أوضح، وشراء بالجملة من مكان
-          واحد.
-        </p>
-        <div className="landing-actions">
-          {user ? (
-            <Link to={dashboardRoute} className="landing-button">
-              {dashboardLabel}
-            </Link>
-          ) : (
-            <>
-              <Link to={ROUTES.REGISTER} className="landing-button">
-                إنضمام لمكسب
+        <div className="landing-hero-text">
+          <p className="landing-kicker">مكسب لأعمال أوضح</p>
+          <h1>من أول تكلفة، إلى طلب جملة ناجح.</h1>
+          <p className="landing-text">
+            منصة تجمع الأسر المنتجة والموردين: تسعير أوضح، وشراء بالجملة من مكان
+            واحد.
+          </p>
+          <div className="landing-actions">
+            {user ? (
+              <Link to={dashboardRoute} className="landing-button">
+                {dashboardLabel}
               </Link>
-              <Link to={ROUTES.LOGIN} className="landing-outline">
-                عندي حساب
-              </Link>
-            </>
-          )}
+            ) : (
+              <>
+                <Link to={ROUTES.REGISTER} className="landing-button">
+                  إنضمام لمكسب
+                </Link>
+                <Link to={ROUTES.LOGIN} className="landing-outline">
+                  عندي حساب
+                </Link>
+              </>
+            )}
+          </div>
         </div>
+        <LandingArt />
       </section>
 
       <section className="landing-section">
@@ -87,8 +90,10 @@ function Landing() {
           {steps.map((step) => (
             <div key={step.title} className="landing-step">
               <img src={step.icon} alt="" className="landing-step-icon" />
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -106,16 +111,6 @@ function Landing() {
             <p>بضاعتي توصل لأسر منتجة في كل مكان</p>
           </div>
         </div>
-      </section>
-
-      <section className="landing-cta">
-        <h2>مشروعك يستاهل مكسب أكبر</h2>
-        <Link
-          to={user ? dashboardRoute : ROUTES.REGISTER}
-          className="landing-button"
-        >
-          {user ? dashboardLabel : "يلا نبدأ ←"}
-        </Link>
       </section>
     </div>
   );

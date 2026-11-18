@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import OverviewStatCard from "../components/OverviewStatCard.jsx";
 import OverviewOrderRow from "../components/OverviewOrderRow.jsx";
 import FormMessage from "../components/FormMessage.jsx";
+import GreetingIcon from "../components/GreetingIcon.jsx";
 import AddProductModal from "../components/AddProductModal.jsx";
 import { ROUTES } from "../constants/routes.js";
 import { LOAD_STATUS } from "../constants/market.js";
@@ -14,11 +15,9 @@ import { formatNumber, formatToday } from "../utils/overviewFormat.js";
 import "../styles/Auth.css";
 import "../styles/SupplierOverview.css";
 
-// هنا صباح الخير قبل الساعة 12، وبعدها مساء الخير
-function getSalutation() {
-  return new Date().getHours() < 12
-    ? OVERVIEW_TEXT.GOOD_MORNING
-    : OVERVIEW_TEXT.GOOD_EVENING;
+// هنا صباح قبل الساعة 12، وبعدها مساء
+function isMorning() {
+  return new Date().getHours() < 12;
 }
 
 // هنا النظرة العامة للمورد: الترحيب والأرقام وأحدث الطلبات
@@ -46,13 +45,19 @@ function SupplierOverview() {
     return <p className="ov-state error">{OVERVIEW_TEXT.ERROR}</p>;
   }
 
+  const morning = isMorning();
+  const salutation = morning
+    ? OVERVIEW_TEXT.GOOD_MORNING
+    : OVERVIEW_TEXT.GOOD_EVENING;
+
   return (
     <>
       <header className="ov-header">
         <div>
           <p className="ov-date">{formatToday()}</p>
-          <h1>
-            {OVERVIEW_TEXT.greeting(getSalutation(), supplier.business_name)}
+          <h1 className="ov-greeting">
+            <GreetingIcon morning={morning} />
+            {OVERVIEW_TEXT.greeting(salutation, supplier.business_name)}
           </h1>
           <p className="ov-subtitle">
             {OVERVIEW_TEXT.newOrdersNotice(stats.new_orders)}
