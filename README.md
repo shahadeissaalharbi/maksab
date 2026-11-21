@@ -1,177 +1,69 @@
-# maksab
-# Maksab – MVP Development and Execution
+# Maksab – MVP Development & Execution
 
-## Stage 4: MVP Development and Execution
+## Project Overview
 
-### Project Overview
+Maksab is a B2B wholesale marketplace designed to connect suppliers with home-based businesses. The platform aims to simplify wholesale purchasing and help merchants manage their products and pricing.
 
-Maksab is a B2B wholesale marketplace designed to connect suppliers with home-based businesses.
+## Stage 4: MVP Development & Execution
 
-The project aims to simplify the purchasing process and support merchants through a wholesale marketplace and a Smart Pricing Calculator.
+This stage focuses on developing the Minimum Viable Product (MVP), implementing the core features, testing the application, and preparing it for deployment.
 
-The MVP focuses on implementing the core features required to deliver a functional and reliable platform.
+### 1. Sprint Planning
 
----
+The team organized development tasks into manageable sprints and assigned responsibilities based on each member's role.
 
-## 1. Sprint Planning
+Sprint tasks and progress were managed using Trello.
 
-During Stage 4, the team organized development tasks into manageable work items based on the project requirements and technical documentation developed in the previous stage.
+### 2. Execute Development Tasks
 
-The development plan focused on:
+The team worked on implementing the core MVP features, including:
 
-- Backend development.
-- Database setup and integration.
-- API development.
-- Docker environment configuration.
-- Product and order management.
-- Checkout and payment integration.
-- Frontend and backend integration.
+- User registration and login.
+- Product listing and management.
+- Shopping cart and order management.
+- Smart Pricing Calculator.
+- Supplier and merchant functionality.
+- Payment gateway integration.
+- Application database and API development.
 
-### Sprint Planning Activities
+Development was carried out using the technologies selected for the project.
 
-- Define sprint goals.
-- Assign tasks to team members.
-- Set deadlines and priorities.
-- Identify task dependencies.
-- Track progress throughout development.
+### 3. Monitor Progress
 
-**Sprint Planning Documentation:** [Add Link]
+The team monitored task progress and coordinated development activities through Trello and GitHub.
 
-**Task Management Board:** [Add Trello or Jira Link]
+Issues and development-related problems were tracked through GitHub Issues.
 
----
+### 4. Sprint Reviews & Retrospectives
 
-## 2. Execute Development Tasks
+The team reviewed development progress and discussed completed tasks, challenges, and improvements throughout the development process.
 
-The team implemented the MVP based on the system architecture and API specifications developed in the previous stage.
+### 5. Testing & Quality Assurance
 
-### Backend Development
+Testing and quality assurance were performed to check the functionality and reliability of the MVP.
 
-- Set up the Flask backend application.
-- Implemented API routes and endpoints.
-- Developed product-related functionality.
-- Worked on order management.
-- Implemented checkout-related functionality.
-- Prepared the backend for frontend integration.
+The testing process focused on:
 
-### Database Development
+- Checking the functionality of implemented features.
+- Verifying API responses and backend behavior.
+- Checking database operations.
+- Identifying and tracking bugs.
+- Reviewing the integration between application components.
 
-- Set up PostgreSQL.
-- Configured the database environment.
-- Connected the backend application to the database.
-- Tested database operations.
+Development issues and bugs can be tracked through GitHub Issues.
 
-### Docker and Development Environment
+**Testing status:** Testing was part of the MVP development process. A separate testing report or test-results document is not linked in this README.
 
-- Configured Docker and Docker Compose.
-- Set up backend and database services.
-- Created a local development environment.
-- Tested the application services.
+### 6. Deliverables
 
-### Payment Integration
+The main project deliverables and resources are available through the following links:
 
-- Worked on the checkout process.
-- Implemented payment-related API functionality.
-- Prepared the integration with Moyasar.
-- Worked on payment attempt handling.
+- **Project Management Board:** [Trello](https://trello.com/b/FJzmmLnG/%D9%85%D9%8E%D9%83%D9%92%D8%B3%D9%8E%D8%A8-maksab)
+- **Source Code Repository:** [GitHub Repository](https://github.com/shahadeissaalharbi/maksab)
+- **Bug Tracking:** [GitHub Issues](https://github.com/shahadeissaalharbi/maksab/issues)
+- **Production Environment:** [Maksab Website](https://maksab.website/)
 
-**Source Repository:** [Add GitHub Repository Link]
-
----
-
-## 3. Monitor Progress and Adjust
-
-The team monitored development progress by tracking assigned tasks, reviewing completed work, and identifying technical challenges.
-
-Progress was evaluated through:
-
-- Completed development tasks.
-- API functionality and testing results.
-- Database integration progress.
-- Identified bugs and their resolution.
-- Remaining MVP requirements.
-
-The team adjusted development priorities when necessary to maintain progress toward the MVP objectives.
-
-**Progress Tracking:** [Add Link]
-
----
-
-## 4. Sprint Reviews and Retrospectives
-
-Sprint reviews were used to evaluate completed tasks and demonstrate the progress of the MVP.
-
-Retrospectives focused on identifying challenges, improving collaboration, and adjusting the development process.
-
-### Challenges
-
-- Configuring the development environment.
-- Integrating backend services with the database.
-- Managing API development and testing.
-- Coordinating development tasks across the team.
-
-### Improvements
-
-- Maintaining clear task assignments.
-- Improving communication between team members.
-- Testing features during development.
-- Reviewing code before integration.
-- Addressing technical issues as they arise.
-
-**Sprint Reviews:** [Add Link]
-
-**Sprint Retrospectives:** [Add Link]
-
----
-
-## 5. Final Integration and QA Testing
-
-Testing was conducted to verify the functionality and reliability of the backend services.
-
-The testing process included:
-
-- API endpoint testing.
-- Database operation testing.
-- Backend functionality testing.
-- Checkout and order workflow testing.
-- Automated test execution.
-
-The backend test suite previously recorded:
-
-- 72 tests passed.
-- 4 warnings.
-
-The final testing results should be updated based on the latest test execution.
-
-**Testing Evidence:** [Add Link]
-
-**Test Results:** [Add Link]
-
----
-
-## 6. Deliverables
-
-| Deliverable | Link |
-|---|---|
-| Sprint Planning | [Add Link] |
-| Sprint Reviews | [Add Link] |
-| Sprint Retrospectives | [Add Link] |
-| Source Repository | [Add GitHub Link] |
-| Bug Tracking | [Add Link] |
-| Testing Evidence and Results | [Add Link] |
-| Production Environment | [Add Deployment Link or N/A] |
-
----
-
-## 7. Current MVP Status
-
-The MVP development phase focused on implementing the core backend infrastructure, database setup, API functionality, and checkout-related features.
-
-The remaining work includes completing the required integrations, validating end-to-end workflows, and preparing the MVP for final demonstration and deployment.
-
----
-
-## 8. Technologies Used
+## Technologies Used
 
 - React
 - Python
@@ -180,24 +72,24 @@ The remaining work includes completing the required integrations, validating end
 - Docker
 - Docker Compose
 - Moyasar Payment Gateway
-- Google Maps API
+- TomTom Maps API
 
----
+## Collaboration
 
-## 9. Team Collaboration
+The team collaborated through GitHub for source code management and Trello for task organization and progress tracking.
 
-The team collaborated throughout Stage 4 by dividing development tasks, sharing responsibilities, and coordinating implementation and testing activities.
+## Future Improvements
 
-The project followed an iterative development approach to support continuous improvement and progress toward the MVP.
+- Enhance the user experience.
+- Improve application performance.
+- Expand testing and quality assurance.
+- Add further features based on user feedback.
 
----
+  ## Team Members
 
-## 10. Future Improvements
-
-Future improvements may include:
-
-- Completing frontend and backend integration.
-- Improving the checkout and payment workflow.
-- Expanding automated test coverage.
-- Enhancing the user experience.
-- Preparing the application for deployment.
+| Name | Role |
+|---|---|
+| Bayadir Aldossari | Team Lead |
+| Reem Alanazi | System Architecture & API Specifications Lead |
+| Shomukh Aldosari | Lead Frontend Engineer |
+| Shahad Alharbi | Lead Backend Engineer |
